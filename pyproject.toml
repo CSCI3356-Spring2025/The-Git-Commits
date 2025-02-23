@@ -1,0 +1,31 @@
+[project]
+name = "PeerVue"
+version = "0.1.0"
+description = "A peer assessment tool"
+requires-python = ">=3.12"
+maintainers = [
+  {name = "Caden Parajuli", email = "parajulc@bc.edu"},
+  {name = "Daven Pelaez", email = "pelaezd@bc.edu"},
+  {name = "Juliet McMillan", email = "mcmillju@bc.edu"},
+  {name = "Kenia Vazquez Roman", email = "vazqueke@bc.edu"},
+  {name = "Liana Winans", email = "winansl@bc.edu"},
+]
+
+dependencies = [
+  "django>=5.1.6",
+  "dj-database-url",
+]
+
+[project.optional-dependencies]
+dev = [
+  "django-stubs[compatible-mypy]>=5.1.1",
+  "mypy",
+  "ruff",
+  "python-lsp-ruff",
+  "python-lsp-server[all]",
+  "pylsp-rope",
+  "pylsp-mypy",
+]
+
+[tool.mypy]
+disable_error_code = "var-annotated"
