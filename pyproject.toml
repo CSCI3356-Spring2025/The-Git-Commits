@@ -16,13 +16,13 @@ dependencies = [
   "dj-database-url",
 ]
 
-[project.optional-dependencies]
+[dependendcy-groups]
 dev = [
   "django-stubs[compatible-mypy]>=5.1.1",
   "mypy",
   "ruff",
   "python-lsp-ruff",
-  "python-lsp-server[all]",
+  "python-lsp-server>=1.12.2",
   "pylsp-rope",
   "pylsp-mypy",
 ]
