@@ -13,12 +13,17 @@ maintainers = [
 
 dependencies = [
   "django>=5.1.6",
+  "django-stubs[compatible-mypy]>=5.1.1",
   "dj-database-url",
+
+  # OAuth
+  "google-auth",
+  "google-auth-oauthlib",
+  "google-auth-httplib2",
 ]
 
 [dependendcy-groups]
 dev = [
-  "django-stubs[compatible-mypy]>=5.1.1",
   "mypy",
   "ruff",
   "python-lsp-ruff",
@@ -28,4 +33,9 @@ dev = [
 ]
 
 [tool.mypy]
+plugins = ["mypy_django_plugin.main"]
 disable_error_code = "var-annotated"
+
+[tool.django-stubs]
+# Docs: https://github.com/typeddjango/django-stubs
+# django_settings_module = "peervue.settings"
