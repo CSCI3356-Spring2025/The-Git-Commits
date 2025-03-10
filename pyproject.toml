@@ -16,10 +16,11 @@ dependencies = [
   "django-stubs[compatible-mypy]>=5.1.1",
   "dj-database-url",
 
-  # OAuth
+  # Google OAuth
   "google-auth",
   "google-auth-oauthlib",
   "google-auth-httplib2",
+  "google-api-python-client"
 ]
 
 [dependendcy-groups]
