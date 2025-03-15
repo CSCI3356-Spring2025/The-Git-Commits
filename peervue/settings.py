@@ -138,3 +138,9 @@ OAUTH_REDIRECT_URI = ""
 if DEBUG:
     OAUTH_REDIRECT_URI = "http://127.0.0.1:8000/oauth/callback"
 
+
+# List of verified admin emails for OAuth role assignment
+VERIFIED_ADMIN_EMAILS = {
+    "admin1@example.com",
+    "admin2@example.com"
+}
