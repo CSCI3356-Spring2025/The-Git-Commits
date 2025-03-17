@@ -12,9 +12,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os 
-import json
-
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -133,14 +130,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # OAuth
 
+if DEBUG:
+    # Allow OAuth with HTTP callback
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
 OAUTH_CLIENT_SECRET_PATH = BASE_DIR / 'client_secret.json'
-
-# Get the client ID from the secret file
-with open(OAUTH_CLIENT_SECRET_PATH, "r") as json_file:
-    # This mirrors the code in the Google library for parsing client secret files. It's that simple
-    client_config = json.load(json_file)
-    OAUTH_CLIENT_ID = client_config["web"]["client_id"]
-
 
 # List of verified admin emails for OAuth role assignment
 VERIFIED_ADMIN_EMAILS = [

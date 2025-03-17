@@ -7,7 +7,7 @@ from googleapiclient.discovery import build
 
 from .models import User
 from oauth.models import Course
-from peervue.settings import OAUTH_CLIENT_SECRET_PATH, OAUTH_CLIENT_ID
+from peervue.settings import OAUTH_CLIENT_SECRET_PATH
 from google.oauth2 import id_token
 from google_auth_httplib2 import Request
 from google.auth.transport import requests
@@ -109,4 +109,37 @@ def login(request, user, token):
     request.session["logged_in"] = True
 
     return True
+
+def is_logged_in(request) -> bool:
+    """Checks if request is from a logged in user"""
+    if not request.session.get("logged_in", False):
+        return False
+    
+    user_pk = request.session.get("user", False)
+    if not user_pk:
+        return False
+
+    # We should make sure the user is in the database in case the user has been removed
+    try:
+        user = User.objects.get(pk=user_pk)
+    except User.DoesNotExist:
+        return False
+
+    return True
+
+class RequireLoggedInMixin:
+    """Django view mixin to require that the user is logged in,
+    otherwise it redirects them to the login page."""
+
+    login_url = None
+
+    def get_login_url(self) -> str:
+        if self.login_url:
+            return self.login_url
+        return reverse("login")
+
+    def dispatch(self, request, *args, **kwargs):
+        if not is_logged_in(request):
+            return redirect(self.get_login_url())
+        return super().dispatch(request, *args, **kwargs)
 

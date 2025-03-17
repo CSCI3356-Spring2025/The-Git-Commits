@@ -14,12 +14,12 @@ from oauth.models import Course
 from django.contrib.auth import login
 from django.template.loader import get_template
 
-class LoginView(TemplateView):
-    template_name = "login.html"
+class LoginView(View):
+    def get(self, request, *args, **kwargs):
+        if oauth.is_logged_in(request):
+            return redirect(reverse("landing"))
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
+        return TemplateResponse(request, "login.html", {})
 
 class RegistrationView(View):
     def get(self, request, *args, **kwargs):
@@ -61,7 +61,7 @@ class CallbackView(View):
             return redirect(reverse("login"))
         return next_redirect
 
-class LandingView(View):
+class LandingView(oauth.RequireLoggedInMixin, View):
     def get(self, request):
         return HttpResponse("<html>landing</html>")
 
