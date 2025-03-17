@@ -1,5 +1,7 @@
+from oauth.oauth import handle_oauth_callback
 from django.views import View
 from django.http.response import HttpResponse
+from django.template.response import TemplateResponse
 from django.views.generic.base import TemplateView
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
@@ -8,6 +10,9 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from . import oauth
 from django.http.response import JsonResponse
+from oauth.models import Course
+from django.contrib.auth import login
+from django.template.loader import get_template
 
 class LoginView(TemplateView):
     template_name = "login.html"
@@ -15,6 +20,24 @@ class LoginView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+
+class RegistrationView(View):
+    def get(self, request, *args, **kwargs):
+        # Ensure the user has verified an email through OAuth
+        if not request.session.get("email", False):
+            return redirect("login")
+
+        context = {"courses": Course.objects.all()}
+        return TemplateResponse(request, "user_registration.html", context)
+
+class RegistrationCallbackView(View):
+    # This should only receive POSTs
+    def get(self, request, *args, **kwargs):
+        return redirect(reverse("registration"))
+
+    def post(self, request, *args, **kwargs):
+        return oauth.register_user(request)
+
 
 class AuthView(View):
     def get(self, request, *args, **kwargs):
@@ -32,19 +55,13 @@ class AuthView(View):
 
 class CallbackView(View):
     def get(self, request, *args, **kwargs):
-        credentials = oauth.get_credentials(request)
-        if credentials == None:
-            # TODO make this show an invalid login attempt message to the user
+        next_redirect = handle_oauth_callback(request)
+        if next_redirect is None:
+            # TODO make this show an invalid login message to the user
             return redirect(reverse("login"))
+        return next_redirect
 
-        email = oauth.get_email(credentials)
-        if oauth.verify_email(email):
-            return JsonResponse({'token': credentials.token,
-                                     'refresh_token': credentials.refresh_token,
-                                     'token_uri': credentials.token_uri,
-                                     'client_id': credentials.client_id,
-                                     'client_secret': credentials.client_secret,
-                                     'granted_scopes': credentials.granted_scopes})
-        else:
-            # TODO make this show an invalid account message to the user
-            return redirect(reverse("login"))
+class LandingView(View):
+    def get(self, request):
+        return HttpResponse("<html>landing</html>")
+

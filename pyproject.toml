@@ -23,10 +23,10 @@ dependencies = [
   "google-api-python-client"
 ]
 
-[dependendcy-groups]
+[dependency-groups]
 dev = [
-  "mypy",
   "ruff",
+  "mypy>=1.15.0",
   "python-lsp-ruff",
   "python-lsp-server>=1.12.2",
   "pylsp-rope",
