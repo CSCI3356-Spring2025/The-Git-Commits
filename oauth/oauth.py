@@ -20,7 +20,7 @@ def get_email(credentials) -> str:
 
 
 def get_credentials(request):
-    redirect_uri = request.build_absolute_uri(reverse('callback'))
+    redirect_uri = request.build_absolute_uri(reverse('oauth:callback'))
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
         settings.OAUTH_CLIENT_SECRET_PATH,
         scopes=None,
@@ -63,12 +63,12 @@ def handle_oauth_callback(request):
         request.session["email"] = email
         request.session["role"] = role
         request.session["token"] = credentials.token
-        return redirect(reverse("registration"))
+        return redirect(reverse("oauth:registration"))
 
     if not login(request, user, credentials.token):
-        return redirect(reverse("login"))
+        return redirect(reverse("landing:landing_page"))
 
-    return redirect(reverse("landing"))
+    return redirect(reverse("oauth:dashboard"))
 
 
 def register_user(request):
@@ -84,12 +84,13 @@ def register_user(request):
     name = request.POST.get("name", False)
     course_id = request.POST.get("course", False)
     if not (name and course_id):
+
         # This should only happen if the user tries to maliciously manufacture a request
-        return redirect(reverse("registration"))
+        return redirect(reverse("oauth:dashboard"))
 
     course = Course.objects.get(id=course_id)
     if not course:
-        return redirect(reverse("registration"))
+        return redirect(reverse("oauth:registration"))
 
     del request.session["email"]
     del request.session["role"]
@@ -98,10 +99,10 @@ def register_user(request):
     user = User.objects.create(name=name, email=email, course=course, role=role)
     user.save()
     if not login(request, user, token):
-        return redirect(reverse("login"))
+        return redirect(reverse("landing:landing_page"))
     
 
-    return redirect(reverse("landing"))
+    return redirect(reverse("oauth:dashboard"))
      
 def login(request, user, token):
     """Sets the user's session as logged in"""
@@ -136,7 +137,7 @@ class RequireLoggedInMixin:
     def get_login_url(self) -> str:
         if self.login_url:
             return self.login_url
-        return reverse("login")
+        return reverse("landing:landing_page")
 
     def dispatch(self, request, *args, **kwargs):
         if not is_logged_in(request):

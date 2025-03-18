@@ -6,7 +6,7 @@ from django.views.generic.base import TemplateView
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 from django.conf import settings
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from . import oauth
 from django.http.response import JsonResponse
@@ -17,9 +17,9 @@ from django.template.loader import get_template
 class LoginView(View):
     def get(self, request, *args, **kwargs):
         if oauth.is_logged_in(request):
-            return redirect(reverse("landing"))
+            return redirect(reverse("oauth:dashboard"))
 
-        return TemplateResponse(request, "login.html", {})
+        return TemplateResponse(request, "oauth:auth", {})
 
 class RegistrationView(View):
     def get(self, request, *args, **kwargs):
@@ -28,12 +28,12 @@ class RegistrationView(View):
             return redirect("login")
 
         context = {"courses": Course.objects.all()}
-        return TemplateResponse(request, "user_registration.html", context)
+        return TemplateResponse(request, "oauth/student_creation.html", context)
 
 class RegistrationCallbackView(View):
     # This should only receive POSTs
     def get(self, request, *args, **kwargs):
-        return redirect(reverse("registration"))
+        return redirect(reverse("oauth:dashboard"))
 
     def post(self, request, *args, **kwargs):
         return oauth.register_user(request)
@@ -42,7 +42,7 @@ class RegistrationCallbackView(View):
 class AuthView(View):
     def get(self, request, *args, **kwargs):
         """Starts the OAuth authorization flow and redirects to Google for login/authorization"""
-        redirect_uri=request.build_absolute_uri(reverse('callback'))
+        redirect_uri=request.build_absolute_uri(reverse('oauth:callback'))
         flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(settings.OAUTH_CLIENT_SECRET_PATH,
                                                                        scopes=["https://www.googleapis.com/auth/userinfo.email openid"],
                                                                        redirect_uri=redirect_uri)
@@ -58,10 +58,12 @@ class CallbackView(View):
         next_redirect = handle_oauth_callback(request)
         if next_redirect is None:
             # TODO make this show an invalid login message to the user
-            return redirect(reverse("login"))
+            return redirect(reverse("landing:landing_page"))
         return next_redirect
 
 class LandingView(oauth.RequireLoggedInMixin, View):
+    # even after going through google oauth, we aren't logged in so we never make it to dsahboard, instead 
+    # brings the user back to the landing page (before google oauth)
     def get(self, request):
-        return HttpResponse("<html>landing</html>")
+        return render(request, "oauth/dashboard.html")
 

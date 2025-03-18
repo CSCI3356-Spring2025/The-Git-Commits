@@ -7,7 +7,7 @@
 {% block content %}
   <h1 class="display-4">Enter info (placeholder)</h1>
 
-  <form action="{% url "registration_callback" %}" method="post">
+  <form action="{% url 'oauth:registration_callback' %}" method="post">
     {% csrf_token %}
     <div>
       <label for="name">Name:</label>

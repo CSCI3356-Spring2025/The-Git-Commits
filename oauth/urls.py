@@ -4,6 +4,8 @@ from django.conf.urls.static import static
 
 from . import views
 
+app_name = "oauth"
+
 urlpatterns = [
     path('auth/', views.AuthView.as_view(), name="auth"),
     path('callback/', views.CallbackView.as_view(), name="callback"),
@@ -12,6 +14,6 @@ urlpatterns = [
     path('login/', views.LoginView.as_view(), name="login"),
     path('registration/', views.RegistrationView.as_view(), name="registration"),
     path('registration_callback/', views.RegistrationCallbackView.as_view(), name="registration_callback"),
-    path('landing/', views.LandingView.as_view(), name="landing"),
+    path('dashboard/', views.LandingView.as_view(), name='dashboard')
 ]
 
