@@ -68,7 +68,7 @@ def handle_oauth_callback(request):
     if not login(request, user, credentials.token):
         return redirect(reverse("landing:landing_page"))
 
-    return redirect(reverse("oauth:dashboard"))
+    return redirect(reverse("landing:dashboard"))
 
 
 def register_user(request):
@@ -83,7 +83,7 @@ def register_user(request):
     name = request.POST.get("name", False)
     if not name:
         # This should only happen if the user tries to maliciously manufacture a request
-        return redirect(reverse("oauth:dashboard"))
+        return redirect(reverse("landing:dashboard"))
 
     del request.session["email"]
     del request.session["role"]
@@ -95,7 +95,7 @@ def register_user(request):
         return redirect(reverse("landing:landing_page"))
     
 
-    return redirect(reverse("oauth:dashboard"))
+    return redirect(reverse("landing:dashboard"))
      
 def login(request, user, token):
     """Sets the user's session as logged in"""

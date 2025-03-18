@@ -1,13 +1,11 @@
 from django.shortcuts import render
+from django.views import View
+from oauth.oauth import RequireLoggedInMixin
+from django.http.response import HttpResponse
+
 
 def landing_page(request):
     return render(request, 'landing/landing_page.html')
-
-def login_page(request):
-    return render(request, 'landing/login_page.html')
-
-def account_type(request):
-    return render(request, 'landing/account_type.html')
 
 def dashboard(request):
     context = {
@@ -15,3 +13,10 @@ def dashboard(request):
         'user_type': 'Professor',
     }
     return render(request, 'landing/dashboard.html', context)
+
+class DashboardView(RequireLoggedInMixin, View):
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        user = kwargs["user"]
+
+        context = {"user_name": user.name, "user_role": user.role}
+        return render(request, "landing/dashboard.html", context)

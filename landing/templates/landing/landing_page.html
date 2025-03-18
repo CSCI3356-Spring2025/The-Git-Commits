@@ -1,25 +1,14 @@
 <!-- landing/templates/landing/landing_page.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PeerVue - Landing Page</title>
+{% extends "base.html" %}
+
+{% block title %}
+  <title>PeerVue - Landing Page</title>
+{% endblock %}
+
+{% block head_content %}
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            border: none;
-            text-decoration: none;
-            background: none;
-            -webkit-font-smoothing: antialiased;
-        }
-        
         body {
             background-color: #ffffff;
-            font-family: "KoHo", Arial, sans-serif;
-            overflow-x: hidden;
         }
         
         .landing-page {
@@ -50,18 +39,13 @@
         }
         
         .the-git-commits {
-            color: #1b0061;
             text-align: right;
-            font-size: 20px;
-            font-weight: 400;
             position: absolute;
             top: 30px;
             right: 30px;
         }
         
         .main-content {
-            display: flex;
-            justify-content: space-between;
             margin-top: 20px;
         }
         
@@ -154,8 +138,9 @@
             right: 30px;
         }
     </style>
-</head>
-<body>
+{% endblock %}
+
+{% block content %}
     <div class="landing-page">
         <div class="the-git-commits">The Git Commits</div>
         
@@ -202,5 +187,4 @@
         
         <a href="{% url 'oauth:auth' %}" class="get-started-btn">Get Started</a>
     </div>
-</body>
-</html>
+{% endblock %}
