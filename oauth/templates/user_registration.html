@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>Registration</title>
+{% endblock %}
+
+{% block content %}
+  <h1 class="display-4">Enter info (placeholder)</h1>
+
+  <form action="{% url "registration_callback" %}" method="post">
+    {% csrf_token %}
+    <div>
+      <label for="name">Name:</label>
+      <input type="text" name="name" id="name" required />
+    </div>
+
+    <div>
+      <label for="course">Course:</label>
+      <select name="course" id="course">
+      {% for course in courses %}
+        <option value={{course.id}}>{{course.name}}</option>
+      {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <input type="submit" class="btn btn-primary" />
+    </div>
+  </form>
+{% endblock %}
+

@@ -1,0 +1,71 @@
+@import url('https://fonts.cdnfonts.com/css/koho');
+:root {
+  --accent-dark-blue: #1b0061;
+  --accent-medium-blue: #aae7f2;
+  --accent-light-blue: #dcf4f9;
+  --navbar-background: #a4daff3f;
+  --black: black;
+}
+
+h1, h2, h3, h4, h5, h6, p, button {
+  font-family: "KoHo Medium", sans-serif;
+}
+
+.navbar {
+  padding-top: 1em;
+  padding-left: 1em;
+  background: var(--navbar-background);
+}
+
+.git-commits-top-right {
+  position: relative;
+  top: -2em;
+}
+
+.rectangle-1 {
+  background: var(--accent-dark-blue);
+  border-radius: 50px;
+  width: 221.06px;
+  height: 77.86px;
+}
+
+.peer-vue {
+  color: #ffffff;
+  text-align: center;
+  font-family: "KoHo", sans-serif;
+  font-size: 45px;
+  font-weight: 400;
+  vertical-align: middle;
+
+  background: var(--accent-dark-blue);
+  border-radius: 50px;
+}
+
+.nav-bubble {
+  color: #ffffff;
+  text-align: center;
+  font-family: "KoHo", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+
+  background: var(--accent-dark-blue);
+  border-radius: 50px;
+  margin-left: 2em;
+}
+
+.the-git-commits {
+  color: var(--accent-dark-blue);
+  text-align: left;
+  font-family: "KoHo", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  position: absolute;
+  left: 1141px;
+  top: 0px;
+  width: 163px;
+  height: 24px;
+}

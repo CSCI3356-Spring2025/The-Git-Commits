@@ -1,0 +1,42 @@
+[project]
+name = "PeerVue"
+version = "0.1.0"
+description = "A peer assessment tool"
+requires-python = ">=3.12"
+maintainers = [
+  {name = "Caden Parajuli", email = "parajulc@bc.edu"},
+  {name = "Daven Pelaez", email = "pelaezd@bc.edu"},
+  {name = "Juliet McMillan", email = "mcmillju@bc.edu"},
+  {name = "Kenia Vazquez Roman", email = "vazqueke@bc.edu"},
+  {name = "Liana Winans", email = "winansl@bc.edu"},
+]
+
+dependencies = [
+  "django>=5.1.6",
+  "django-stubs[compatible-mypy]>=5.1.1",
+  "dj-database-url",
+
+  # Google OAuth
+  "google-auth",
+  "google-auth-oauthlib",
+  "google-auth-httplib2",
+  "google-api-python-client"
+]
+
+[dependency-groups]
+dev = [
+  "ruff",
+  "mypy>=1.15.0",
+  "python-lsp-ruff",
+  "python-lsp-server>=1.12.2",
+  "pylsp-rope",
+  "pylsp-mypy",
+]
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+disable_error_code = "var-annotated"
+
+[tool.django-stubs]
+# Docs: https://github.com/typeddjango/django-stubs
+# django_settings_module = "peervue.settings"
