@@ -1,4 +1,5 @@
 import google_auth_oauthlib.flow
+from typing import Optional
 from django.conf import settings
 from django.contrib.auth.backends import BaseBackend
 from django.shortcuts import redirect
@@ -6,7 +7,6 @@ from django.urls import reverse
 from googleapiclient.discovery import build
 
 from .models import User
-from oauth.models import Course
 from peervue.settings import OAUTH_CLIENT_SECRET_PATH
 from google.oauth2 import id_token
 from google_auth_httplib2 import Request
@@ -78,25 +78,18 @@ def register_user(request):
     role = request.session.get("role", False)
     token = request.session.get("token", False)
     if not (email and role and token):
-        return HttpResponse(f"email: {email}\nrole: {role}\ntoken: {token}")
-        # return redirect(reverse("login"))
+        return redirect(reverse("login"))
 
     name = request.POST.get("name", False)
-    course_id = request.POST.get("course", False)
-    if not (name and course_id):
-
+    if not name:
         # This should only happen if the user tries to maliciously manufacture a request
         return redirect(reverse("oauth:dashboard"))
-
-    course = Course.objects.get(id=course_id)
-    if not course:
-        return redirect(reverse("oauth:registration"))
 
     del request.session["email"]
     del request.session["role"]
     del request.session["token"]
 
-    user = User.objects.create(name=name, email=email, course=course, role=role)
+    user = User.objects.create(name=name, email=email, role=role)
     user.save()
     if not login(request, user, token):
         return redirect(reverse("landing:landing_page"))
@@ -128,6 +121,24 @@ def is_logged_in(request) -> bool:
 
     return True
 
+def get_logged_in_user(request) -> Optional[User]:
+    """Gets the logged in user who sent the request.
+    If the user is not logged in, returns None"""
+    if not request.session.get("logged_in", False):
+        return None
+    
+    user_pk = request.session.get("user", False)
+    if not user_pk:
+        return None
+
+    # We should make sure the user is in the database in case the user has been removed
+    try:
+        user = User.objects.get(pk=user_pk)
+    except User.DoesNotExist:
+        return None
+
+    return user
+
 class RequireLoggedInMixin:
     """Django view mixin to require that the user is logged in,
     otherwise it redirects them to the login page."""
@@ -140,7 +151,9 @@ class RequireLoggedInMixin:
         return reverse("landing:landing_page")
 
     def dispatch(self, request, *args, **kwargs):
-        if not is_logged_in(request):
+        user = get_logged_in_user(request)
+        if user is None:
             return redirect(self.get_login_url())
-        return super().dispatch(request, *args, **kwargs)
+
+        return super().dispatch(request, *args, user=user, **kwargs)
 

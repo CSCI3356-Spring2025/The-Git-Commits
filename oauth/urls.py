@@ -14,6 +14,6 @@ urlpatterns = [
     path('login/', views.LoginView.as_view(), name="login"),
     path('registration/', views.RegistrationView.as_view(), name="registration"),
     path('registration_callback/', views.RegistrationCallbackView.as_view(), name="registration_callback"),
-    path('dashboard/', views.LandingView.as_view(), name='dashboard')
+    path('dashboard/', views.DashboardView.as_view(), name='dashboard')
 ]
 
