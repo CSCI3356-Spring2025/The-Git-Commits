@@ -1,40 +1,81 @@
 <!-- landing/templates/landing/account_type.html -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PeerVue - Account Type</title>
+
     <style>
-        body {
-            background-color: #b8e2f2;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 50px;
-        }
-        .placeholder-container {
-            background-color: white;
-            border-radius: 10px;
-            padding: 30px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        .btn {
-            background-color: #1a1464;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 20px;
-        }
+      body {
+        background-color: white;
+        font-family: "KoHo-Medium", sans-serif;
+        text-align: center;
+        padding: 150px;
+        position: relative;
+      }
+      .PeerVue {
+        position: absolute;
+        left: 30px;
+        top: 10%;
+        transform: translateY(-50%);
+      }
+      .button {
+        background-color: #1b0061;
+        color: white;
+        font-size: 25px;
+        padding: 30px 60px;
+        border-radius: 60px;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .container {
+        background-color: #dcf4f9;
+        border-radius: 50px;
+        height: 400px;
+        padding: 50px;
+        border-radius: 50px;
+        max-width: 500px;
+        margin: 0 auto;
+        position: relative;
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+      }
+      .heading {
+        color: #000000;
+        text-align: center;
+        font-family: "KoHo-Medium", sans-serif;
+        font-size: 25px;
+        font-weight: 500;
+        position: relative;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn1,
+      .btn2 {
+        background-color: #a8e8f6;
+        color: black;
+        padding: 30px 40px;
+        border-radius: 25px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 20px;
+      }
+      .btn2 {
+        padding: 30px 60px;
+      }
     </style>
-</head>
-<body>
-    <div class="placeholder-container">
-        <h1>Account Type Selection</h1>
-        <p>This is a placeholder for the account type selection page</p>
-        <a href="{% url 'dashboard' %}" class="btn">Continue to Dashboard</a>
+  </head>
+  <body>
+    <div class="PeerVue">
+      <a href="{% url 'Landing' %}" class="button">PeerVue</a>
     </div>
-</body>
+    <div class="container">
+      <h1 class="heading">Access Your Account:</h1>
+      <a href="{% url 'admin' %}" class="btn1">Administrator</a>
+      <br />
+      <a href="{% url 'student' %}" class="btn2">Student</a>
+    </div>
+  </body>
 </html>
