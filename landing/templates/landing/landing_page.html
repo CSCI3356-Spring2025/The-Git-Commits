@@ -55,6 +55,8 @@
         
         .right-column {
             width: 60%;
+            margin-top: -90px;
+            margin-right: -10px;
         }
         
         .tagline {
@@ -62,6 +64,7 @@
             font-weight: 400;
             text-align: center;
             margin-bottom: 30px;
+            font-family: 'Arial', sans-serif;
         }
         
         .description-box {
@@ -72,12 +75,15 @@
             font-size: 25px;
             font-weight: 300;
             font-style: italic;
+            margin-top: 80px;
+            line-height: 1.5;
+            height: 400px;
         }
         
         .feature-box {
             background: #aae7f2;
             border-radius: 50px;
-            padding: 20px;
+            padding: 15px;
             margin-bottom: 30px;
             display: flex;
             flex-direction: column;
@@ -134,7 +140,7 @@
             font-size: 30px;
             cursor: pointer;
             position: absolute;
-            bottom: 30px;
+            bottom: 0px;
             right: 30px;
         }
     </style>
@@ -142,7 +148,7 @@
 
 {% block content %}
     <div class="landing-page">
-        <div class="the-git-commits">The Git Commits</div>
+        <!--<div class="the-git-commits">The Git Commits</div>-->
         
         <div class="peer-vue-logo">
             <div class="peer-vue">PeerVue</div>
@@ -150,7 +156,7 @@
         
         <div class="main-content">
             <div class="left-column">
-                <h2 class="tagline">The only peer assessment tool you'll need to make your team excel</h2>
+                <h2 class="tagline">The only peer assessment tool you'll need to help your team excel!</h2>
                 
                 <div class="description-box">
                     <p>PeerVue simplifies peer assessment with a clean, user-friendly interface for team evaluations. It analyzes scores, generates detailed reports, and gives administrators the tools to track performance, provide constructive feedback, and improve collaboration.</p>

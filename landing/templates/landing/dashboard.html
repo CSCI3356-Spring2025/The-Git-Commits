@@ -8,7 +8,13 @@
 {% block head_content %}
     <style>
         body {
+<<<<<<< Updated upstream:landing/templates/landing/dashboard.html
             background: #b8e2f2;
+=======
+            background: #ffffff;
+            font-family: "KoHo", Arial, sans-serif;
+            overflow-x: hidden;
+>>>>>>> Stashed changes:oauth/templates/oauth/dashboard.html
             padding: 20px;
         }
         
@@ -45,7 +51,7 @@
         }
         
         .left-column {
-            width: 45%;
+            width: 40%;
         }
         
         .right-column {
@@ -53,16 +59,17 @@
         }
         
         /* Tagline */
-        .tagline-container {
-            margin-bottom: 30px;
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
+        .welcome-container {
+            margin-bottom: 50px;
+            background: #1b0061;
+            border-radius: 25px;
+            padding: 10px;
             text-align: center;
+            margin-top: 20px;
         }
         
         .tagline {
-            color: #000000;
+            color: #ffffff;
             font-size: 35px;
             font-weight: 400;
             padding: 20px;
@@ -73,6 +80,8 @@
             background: #dcf4f9;
             border-radius: 50px;
             padding: 30px;
+            height: 400px;
+
         }
         
         .description {
@@ -81,6 +90,20 @@
             font-size: 25px;
             font-weight: 300;
             font-style: italic;
+        }
+
+
+        .description-box {
+            background: #dcf4f9;
+            border-radius: 50px;
+            padding: 37px;
+            text-align: center;
+            font-size: 25px;
+            font-weight: 300;
+            font-style: italic;
+            margin-top: 100px;
+            line-height: 1.5;
+            height: 350px;
         }
         
         /* Sections */
@@ -146,23 +169,21 @@
             <div class="nav-btn">Feedback</div>
         </div>
         
-        <div class="the-git-commits">The Git Commits</div>
+        <!--<div class="the-git-commits">The Git Commits</div>-->
     </div>
     
     <div class="dashboard">
         <div class="main-content">
             <div class="left-column">
-                <div class="tagline-container">
-                    <div class="tagline">The only peer assessment tool you'll need to help your team excel</div>
+                <div class="welcome-container">
+                    <div class="tagline">Welcome, {{user_name}} - {{user_role}}</div>
                 </div>
                 
-                <div class="description-container">
-                    <div class="description">
+                <div class="description-box">
                         PeerVue simplifies peer assessment with a clean, user-friendly interface for
                         team evaluations. It analyzes scores, generates detailed reports, and gives
                         administrators the tools to track performance, provide constructive
                         feedback, and improve collaboration.
-                    </div>
                 </div>
             </div>
             
@@ -191,7 +212,12 @@
         </div>
     </div>
 
+<<<<<<< Updated upstream:landing/templates/landing/dashboard.html
     <div class="welcome-message">
         Welcome {{ user_name }} - {{ user_role }}
     </div>
 {% endblock %}
+=======
+</body>
+</html>
+>>>>>>> Stashed changes:oauth/templates/oauth/dashboard.html
