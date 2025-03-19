@@ -1,5 +1,7 @@
 <!-- landing/templates/landing/landing_page.html -->
+
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
   <title>PeerVue - Landing Page</title>
@@ -104,14 +106,27 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            max-height: 120px;
+            margin: 10px 0 20px 0;
         }
         
         .feature-image {
-            width: 150px;
+            width: 120px;
             height: 120px;
-            border-radius: 30px;
-            margin: 0 10px;
+            border-radius: 10px;
+            margin: 0 20px;
             background-color: #ffffff;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .feature-image img {
+            width: 110%;
+            height: 110%;
+            object-fit: cover;
         }
         
         .role-label {
@@ -167,7 +182,9 @@
                 <div class="feature-box">
                     <div class="feature-title">Seamless and Secure Role Management</div>
                     <div class="feature-image-container">
-                        <div class="feature-image"></div>
+                        <div class="feature-image">
+                            <img src="{% static 'landing/images/Secure.png' %}" alt="Feature screenshot">
+                        </div>
                         <div class="role-label manager-label">Manager?</div>
                         <div class="role-label student-label">Student?</div>
                     </div>
@@ -176,16 +193,24 @@
                 <div class="feature-box">
                     <div class="feature-title">Customizable and Controlled Assessments</div>
                     <div class="feature-image-container">
-                        <div class="feature-image"></div>
-                        <div class="feature-image"></div>
+                        <div class="feature-image">
+                            <img src="{% static 'landing/images/Controlled.png' %}" alt="Feature screenshot">
+                        </div>
+                        <div class="feature-image">
+                            <img src="{% static 'landing/images/Customizable.png' %}" alt="Feature screenshot">
+                        </div>
                     </div>
                 </div>
                 
                 <div class="feature-box">
                     <div class="feature-title">Comprehensive and Anonymous Feedback System</div>
                     <div class="feature-image-container">
-                        <div class="feature-image"></div>
-                        <div class="feature-image"></div>
+                        <div class="feature-image">
+                            <img src="{% static 'landing/images/Comprehensive.png' %}" alt="Feature screenshot">
+                        </div>
+                        <div class="feature-image">
+                            <img src="{% static 'landing/images/Anonymous.png' %}" alt="Feature screenshot">
+                        </div>
                     </div>
                 </div>
             </div>
