@@ -11,7 +11,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from . import oauth
 from django.http.response import JsonResponse
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.template.loader import get_template
 from oauth.oauth import get_role
 from oauth.models import User
@@ -59,3 +59,11 @@ class CallbackView(View):
             # TODO make this show an invalid login message to the user
             return redirect(reverse("landing:landing_page"))
         return next_redirect
+
+class LogoutView(View):
+    """Handles user logout by clearing the session and redirecting to login page"""
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        # Clear all session data
+        request.session.flush()
+        # Redirect to login page
+        return redirect(reverse("oauth:auth"))
