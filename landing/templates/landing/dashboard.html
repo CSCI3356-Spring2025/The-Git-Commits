@@ -157,9 +157,9 @@
             color: #ffffff;
             font-size: 30px;
             cursor: pointer;
-            /* position: absolute; */
-            /* bottom: 0px; */
-            /* right: 30px; */
+            position: absolute;
+            bottom: 0px;
+            right: 30px;
         }
 
         .nav-buttons-r {
@@ -199,9 +199,6 @@
             <div class="nav-btn">Courses</div>
             <div class="nav-btn">Assessments</div>
             <div class="nav-btn">Feedback</div>
-        </div>
-        <div class="nav-buttons-r">
-            <a class="nav-btn-l" href="{% url 'oauth:logout' %}" >Logout</a>
         </div>
         
         <!--<div class="the-git-commits">The Git Commits</div>-->
@@ -246,5 +243,6 @@
                 </div>
             </div>
         </div>
+        <a class="logout-btn" href="{% url 'oauth:logout' %}" >Logout</a>
     </div>
 {% endblock %}
