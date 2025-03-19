@@ -1,3 +1,4 @@
+from .models import AdminEmailAddress
 import google_auth_oauthlib.flow
 from typing import Optional
 from django.conf import settings
@@ -39,9 +40,12 @@ def verify_email(email: str) -> bool:
 
 
 def get_role(email: str) -> str:
-    if email in settings.VERIFIED_ADMIN_EMAILS:
-        return "admin"
-    return "student"
+    try:
+        AdminEmailAddress.objects.get(email=email)
+    except AdminEmailAddress.DoesNotExist:
+        return "student"
+
+    return "admin"
 
 
 def handle_oauth_callback(request):

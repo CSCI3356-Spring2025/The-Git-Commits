@@ -12,7 +12,7 @@ class User(AbstractBaseUser):
     role  = models.CharField(max_length=10, choices=ROLE_CHOICES)
 
     def get_absolute_url(self) -> str:
-        return f"/user/{self.id}/"
+        return f"/user/{self.email}/"
 
     def __str__(self):
         return self.name
@@ -23,3 +23,7 @@ class User(AbstractBaseUser):
 
     class Meta:
         ordering = ["role", "name"]
+
+class AdminEmailAddress(models.Model):
+    """Used to determine whether someone is an admin when they register their account"""
+    email = models.EmailField(unique=True, primary_key=True, help_text="Email address of an admin or professor")

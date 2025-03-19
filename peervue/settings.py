@@ -136,9 +136,3 @@ if DEBUG:
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 OAUTH_CLIENT_SECRET_PATH = BASE_DIR / 'client_secret.json'
-
-# List of verified admin emails for OAuth role assignment
-VERIFIED_ADMIN_EMAILS = [
-    "admin1@example.com",
-    "admin2@example.com"
-]
