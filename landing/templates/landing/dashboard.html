@@ -149,6 +149,18 @@
             border-radius: 8px;
             font-weight: 500;
         }
+
+        .logout-btn {
+            background: #1b0061;
+            border-radius: 50px;
+            padding: 10px 30px;
+            color: #ffffff;
+            font-size: 30px;
+            cursor: pointer;
+            /* position: absolute; */
+            /* bottom: 0px; */
+            /* right: 30px; */
+        }
     </style>
 {% endblock %}
 
@@ -175,6 +187,8 @@
                 <div class="welcome-container">
                     <div class="tagline">Welcome, {{user_name}} - {{user_role}}</div>
                 </div>
+                <a class="logout-btn" href="{% url 'oauth:logout' %}" >Logout</a>
+                
                 
                 <div class="description-box">
                         PeerVue simplifies peer assessment with a clean, user-friendly interface for
