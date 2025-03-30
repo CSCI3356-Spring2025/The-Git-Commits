@@ -14,15 +14,6 @@ def dashboard(request):
     }
     return render(request, 'landing/dashboard.html', context)
 
-def student_assessment_view(request):
-    if request.method == 'POST':
-        return redirect('landing:dashboard')
-    
-    context = {
-        'assessment_title': 'Peer Assessment 1',
-        'due_date': 'Mar 20 @ 11:59PM ET'
-    }
-    return render(request, 'landing/student_assessment.html', context)
 class DashboardView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user = kwargs["user"]
@@ -39,3 +30,5 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
             'user_role': user.role
         }
         return render(request, 'landing/student_assessment.html', context)
+    def post(self, request, *args, **kwargs):
+        return redirect('landing:dashboard')

@@ -191,23 +191,24 @@
 {% endblock %}
 
 {% block content %}
-    <div class="navbar">
-        <div class="peer-vue-logo">
-            <div class="rectangle-1">
-                <div class="peer-vue">PeerVue</div>
-            </div>
+<div class="navbar">
+    <div class="peer-vue-logo">
+        <div class="rectangle-1">
+            <div class="peer-vue">PeerVue</div>
         </div>
-        
-        <div class="nav-buttons">
-            <div class="nav-btn">Courses</div>
-            <a href="{% url 'landing:student_assessment' %}" style="text-decoration: none;">
-                <div class="nav-btn">Assessments</div>
-            </a>
-            <div class="nav-btn">Feedback</div>
-        </div>
-        
-        <!--<div class="the-git-commits">The Git Commits</div>-->
     </div>
+    
+    <div class="nav-buttons">
+        <div class="nav-btn">Courses</div>
+        <a href="{% url 'landing:student_assessment' %}" style="text-decoration: none;">
+            <div class="nav-btn">Assessments</div>
+        </a>
+        <div class="nav-btn">Feedback</div>
+    </div>
+    
+    <!--<div class="the-git-commits">The Git Commits</div>-->
+</div>
+      
     
     <div class="dashboard">
         <div class="main-content">
@@ -236,9 +237,8 @@
                 <div class="section">
                     <div class="section-title">Assessments</div>
                     <div class="section-content">
-                            <br><br>
-                            <a href="{% url 'landing:student_assessment' %}" style="background: #1b0061; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; display: inline-block; font-size: 16px;">Peer Assessment 1</a>
-                        </div>
+                        <br><br>
+                        <a href="{% url 'landing:student_assessment' %}" style="background: #1b0061; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; display: inline-block; font-size: 16px;">View Sample Assessment</a>
                     </div>
                 </div>
                 
