@@ -14,6 +14,12 @@ def dashboard(request):
     }
     return render(request, 'landing/dashboard.html', context)
 
+def student_assessment_view(request):
+    context = {
+        'assessment_title': 'Peer Assessment 1',
+        'due_date': 'March 31 @ 11:59pm ET',
+    }
+    return render(request, 'landing/student_assessment.html', context)
 class DashboardView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user = kwargs["user"]

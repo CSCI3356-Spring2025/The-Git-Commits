@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  <title>PeerVue - Student Assessment</title>
+{% endblock %}
+
+{% block head_content %}
+    <style>
+        body {
+            background-color: #ffffff;
+            font-family: "KoHo", Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+        }
+
+        .student-view-scrolling {
+            position: relative;
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .questions {
+            width: 100%;
+            max-width: 1044px;
+            margin: 0 auto;
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .question-group {
+            margin-bottom: 40px;
+        }
+
+        .question-title {
+            background: #aae7f2;
+            border-radius: 50px;
+            padding: 10px 20px;
+            margin-bottom: 15px;
+            font-size: 15px;
+            font-weight: 500;
+            text-align: left;
+            display: flex;
+        }
+
+        .question-title ol {
+            margin: 0;
+            padding-left: 25px;
+        }
+
+        .likert-scale {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0 20px 0;
+            position: relative;
+            max-width: 871px;
+        }
+
+        .likert-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 20%;
+        }
+
+        .likert-circle {
+            background: #dcf4f9;
+            border: 1px solid #1b0061;
+            border-radius: 50%;
+            width: 23px;
+            height: 23px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+        }
+
+        .likert-circle.selected {
+            background: #1b0061;
+        }
+
+        .likert-label {
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .text-input {
+            background: #dcf4f9;
+            border: 1px solid #1b0061;
+            border-radius: 5px;
+            width: 100%;
+            height: 67px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .submit-button {
+            background: #aae7f2;
+            border-radius: 50px;
+            padding: 5px 20px;
+            font-size: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-block;
+            float: right;
+            margin-top: 20px;
+        }
+
+        .due-date {
+            font-size: 20px;
+            text-align: right;
+            margin: 20px 0;
+            color: #000000;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="student-view-scrolling">
+        <div class="due-date">Due {{ due_date }}</div>
+        
+        <div class="questions">
+            <!-- Question 1 -->
+            <div class="question-group">
+                <div class="question-title">
+                    <ol>
+                        <li>He/she adequately fulfills the assigned tasks</li>
+                    </ol>
+                </div>
+                <div class="likert-scale">
+                    <div class="likert-option">
+                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
+                        <div class="likert-label">Strongly Agree</div>
+                    </div>
+                    <div class="likert-option">
+                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
+                        <div class="likert-label">Agree</div>
+                    </div>
+                    <div class="likert-option">
+                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
+                        <div class="likert-label">Neutral</div>
+                    </div>
+                    <div class="likert-option">
+                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
+                        <div class="likert-label">Disagree</div>
+                    </div>
+                    <div class="likert-option">
+                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
+                        <div class="likert-label">Strongly Disagree</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question-group">
+                <div class="question-title">
+                    <ol>
+                        <li>He/she assumes the project as a team effort, providing support in project tasks</li>
+                    </ol>
+                </div>
+                <div class="likert-scale">
+                    <div class="likert-option">
+                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
+                        <div class="likert-label">Strongly Agree</div>
+                    </div>
+                    <div class="likert-option">
+                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
+                        <div class="likert-label">Agree</div>
+                    </div>
+                    <div class="likert-option">
+                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
+                        <div class="likert-label">Neutral</div>
+                    </div>
+                    <div class="likert-option">
+                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
+                        <div class="likert-label">Disagree</div>
+                    </div>
+                    <div class="likert-option">
+                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
+                        <div class="likert-label">Strongly Disagree</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="question-group">
+                <div class="question-title">
+                    <ol>
+                        <li>He/she demonstrates initiative to achieve project success</li>
+                    </ol>
+                </div>
+                <div class="likert-scale">
+                    <div class="likert-option">
+                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
+                        <div class="likert-label">Strongly Agree</div>
+                    </div>
+                    <div class="likert-option">
+                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
+                        <div class="likert-label">Agree</div>
+                    </div>
+                    <div class="likert-option">
+                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
+                        <div class="likert-label">Neutral</div>
+                    </div>
+                    <div class="likert-option">
+                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
+                        <div class="likert-label">Disagree</div>
+                    </div>
+                    <div class="likert-option">
+                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
+                        <div class="likert-label">Strongly Disagree</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question 4 and so on - Add all the questions from your Figma design -->
+            <!-- ... -->
+
+            <!-- Open-ended question 1 -->
+            <div class="question-group">
+                <div class="question-title">
+                    <ol>
+                        <li>List his/her strengths that you saw during the development of the delivery.</li>
+                    </ol>
+                </div>
+                <textarea class="text-input"></textarea>
+            </div>
+
+            <!-- Open-ended question 2 -->
+            <div class="question-group">
+                <div class="question-title">
+                    <ol>
+                        <li>List his/her weaknesses that you saw during the development of the delivery.</li>
+                    </ol>
+                </div>
+                <textarea class="text-input"></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="submit-button">Submit</div>
+        </div>
+    </div>
+{% endblock %}
