@@ -13,16 +13,19 @@ def dashboard(request):
         'user_type': 'Professor',
     }
     return render(request, 'landing/dashboard.html', context)
-
-def student_assessment_view(request):
-    context = {
-        'assessment_title': 'Peer Assessment 1',
-        'due_date': 'March 31 @ 11:59pm ET',
-    }
-    return render(request, 'landing/student_assessment.html', context)
 class DashboardView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user = kwargs["user"]
 
         context = {"user_name": user.name, "user_role": user.role}
         return render(request, "landing/dashboard.html", context)
+class StudentAssessmentView(RequireLoggedInMixin, View):
+    def get(self, request, *args, **kwargs):
+        user = kwargs["user"]
+        context = {
+            'assessment_title': 'Peer Assessment 1',
+            'due_date': 'Mar 20 @ 11:59PM ET',
+            'user_name': user.name,
+            'user_role': user.role
+        }
+        return render(request, 'landing/student_assessment.html', context)

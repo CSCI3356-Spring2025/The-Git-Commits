@@ -200,7 +200,9 @@
         
         <div class="nav-buttons">
             <div class="nav-btn">Courses</div>
-            <div class="nav-btn">Assessments</div>
+            <a href="{% url 'landing:student_assessment' %}" style="text-decoration: none;">
+                <div class="nav-btn">Assessments</div>
+            </a>
             <div class="nav-btn">Feedback</div>
         </div>
         
@@ -234,7 +236,11 @@
                 <div class="section">
                     <div class="section-title">Assessments</div>
                     <div class="section-content">
-                        <div class="section-text">You have no current assessments</div>
+                        <div class="section-text">
+                            You have no current assessments
+                            <br><br>
+                            <a href="{% url 'landing:student_assessment' %}" style="background: #1b0061; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; display: inline-block; font-size: 16px;">View Sample Assessment</a>
+                        </div>
                     </div>
                 </div>
                 
