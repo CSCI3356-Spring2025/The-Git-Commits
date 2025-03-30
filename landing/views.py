@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from oauth.oauth import RequireLoggedInMixin
 from django.http.response import HttpResponse
@@ -13,6 +13,16 @@ def dashboard(request):
         'user_type': 'Professor',
     }
     return render(request, 'landing/dashboard.html', context)
+
+def student_assessment_view(request):
+    if request.method == 'POST':
+        return redirect('landing:dashboard')
+    
+    context = {
+        'assessment_title': 'Peer Assessment 1',
+        'due_date': 'Mar 20 @ 11:59PM ET'
+    }
+    return render(request, 'landing/student_assessment.html', context)
 class DashboardView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user = kwargs["user"]

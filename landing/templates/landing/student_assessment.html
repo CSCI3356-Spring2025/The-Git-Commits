@@ -8,92 +8,150 @@
 {% block head_content %}
     <style>
         body {
-            background-color: #ffffff;
+            background-color: #b8e2f2;
+            background: #ffffff;
             font-family: "KoHo", Arial, sans-serif;
-            padding: 0;
-            margin: 0;
+            overflow-x: hidden;
+            padding: 20px;
         }
-
-        .student-view-scrolling {
+        
+        /* Copy exact navbar styles from dashboard */
+        .navbar {
+            background: rgba(164, 218, 255, 0.25);
+            border-style: solid;
+            border-color: #000000;
+            border-width: 1px;
+            width: 100%;
+            height: 143px;
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+            z-index: 100;
+        }
+        
+        .peer-vue-logo {
             position: relative;
-            width: 100%;
-            max-width: 1280px;
-            margin: 0 auto;
         }
-
-        .questions {
-            width: 100%;
-            max-width: 1044px;
-            margin: 0 auto;
-            padding-top: 50px;
-            padding-bottom: 50px;
-        }
-
-        .question-group {
-            margin-bottom: 40px;
-        }
-
-        .question-title {
-            background: #aae7f2;
+        
+        .rectangle-1 {
+            background: #1b0061;
             border-radius: 50px;
-            padding: 10px 20px;
-            margin-bottom: 15px;
-            font-size: 15px;
-            font-weight: 500;
-            text-align: left;
+            width: 221px;
+            height: 78px;
+            position: absolute;
+            left: 35px;
+            top: 24px;
             display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
-        .question-title ol {
-            margin: 0;
-            padding-left: 25px;
+        
+        .peer-vue {
+            color: #ffffff;
+            text-align: center;
+            font-size: 45px;
+            font-weight: 400;
         }
-
+        
+        .nav-buttons {
+            display: flex;
+            gap: 20px;
+            position: absolute;
+            left: 427px;
+            top: 34px;
+        }
+        
+        .nav-btn {
+            background: #1b0061;
+            border-radius: 50px;
+            width: 191px;
+            height: 57px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .team-name {
+            color: #1b0061;
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 20px;
+        }
+        
+        /* Assessment content styles */
+        .assessment-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 180px; /* Space for navbar */
+        }
+        
+        .due-date {
+            text-align: right;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+        
+        .question {
+            background-color: #d3f1fa;
+            border-radius: 20px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+        }
+        
+        .question-text {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        
         .likert-scale {
             display: flex;
             justify-content: space-between;
-            margin: 10px 0 20px 0;
-            position: relative;
-            max-width: 871px;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
         }
-
+        
         .likert-option {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 20%;
+            gap: 5px;
         }
-
-        .likert-circle {
-            background: #dcf4f9;
-            border: 1px solid #1b0061;
+        
+        .likert-option input[type="radio"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #1b0061;
             border-radius: 50%;
-            width: 23px;
-            height: 23px;
-            margin-bottom: 5px;
+            background-color: white;
             cursor: pointer;
-            box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
         }
-
-        .likert-circle.selected {
-            background: #1b0061;
+        
+        .likert-option input[type="radio"]:checked {
+            background-color: #1b0061;
+            border: 2px solid #1b0061;
+            box-shadow: inset 0 0 0 3px white;
         }
-
+        
         .likert-label {
-            font-size: 12px;
-            text-align: center;
+            font-size: 14px;
         }
-
-        .text-input {
-            background: #dcf4f9;
-            border: 1px solid #1b0061;
-            border-radius: 5px;
+        
+        textarea {
             width: 100%;
-            height: 67px;
+            min-height: 100px;
+            border: 2px solid #1b0061;
+            border-radius: 10px;
             padding: 10px;
-            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
         }
-
+        
         .submit-button {
             background: #aae7f2;
             border-radius: 50px;
@@ -101,143 +159,137 @@
             font-size: 20px;
             font-weight: 500;
             cursor: pointer;
-            display: inline-block;
-            float: right;
-            margin-top: 20px;
-        }
-
-        .due-date {
-            font-size: 20px;
-            text-align: right;
-            margin: 20px 0;
-            color: #000000;
+            display: block;
+            margin: 30px 0 30px auto;
+            border: none;
         }
     </style>
 {% endblock %}
 
 {% block content %}
-    <div class="student-view-scrolling">
+    <!-- Exact same navbar structure as dashboard -->
+    <div class="navbar">
+        <div class="peer-vue-logo">
+            <div class="rectangle-1">
+                <div class="peer-vue">PeerVue</div>
+            </div>
+        </div>
+        
+        <div class="nav-buttons">
+            <a href="#" style="text-decoration: none;">
+                <div class="nav-btn">Courses</div>
+            </a>
+            <a href="{% url 'landing:student_assessment' %}" style="text-decoration: none;">
+                <div class="nav-btn">Assessments</div>
+            </a>
+            <a href="#" style="text-decoration: none;">
+                <div class="nav-btn">Feedback</div>
+            </a>
+        </div>
+        
+        <div class="team-name">The Git Commits</div>
+    </div>
+    
+    <div class="assessment-container">
         <div class="due-date">Due {{ due_date }}</div>
         
-        <div class="questions">
+        <form method="post" action="">
+            {% csrf_token %}
+            
             <!-- Question 1 -->
-            <div class="question-group">
-                <div class="question-title">
-                    <ol>
-                        <li>He/she adequately fulfills the assigned tasks</li>
-                    </ol>
-                </div>
+            <div class="question">
+                <div class="question-text">1. He/she adequately fulfills the assigned tasks</div>
                 <div class="likert-scale">
                     <div class="likert-option">
-                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
-                        <div class="likert-label">Strongly Agree</div>
+                        <input type="radio" name="q1" value="5" id="q1-5">
+                        <label for="q1-5" class="likert-label">Strongly Agree</label>
                     </div>
                     <div class="likert-option">
-                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
-                        <div class="likert-label">Agree</div>
+                        <input type="radio" name="q1" value="4" id="q1-4">
+                        <label for="q1-4" class="likert-label">Agree</label>
                     </div>
                     <div class="likert-option">
-                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
-                        <div class="likert-label">Neutral</div>
+                        <input type="radio" name="q1" value="3" id="q1-3">
+                        <label for="q1-3" class="likert-label">Neutral</label>
                     </div>
                     <div class="likert-option">
-                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
-                        <div class="likert-label">Disagree</div>
+                        <input type="radio" name="q1" value="2" id="q1-2">
+                        <label for="q1-2" class="likert-label">Disagree</label>
                     </div>
                     <div class="likert-option">
-                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
-                        <div class="likert-label">Strongly Disagree</div>
+                        <input type="radio" name="q1" value="1" id="q1-1">
+                        <label for="q1-1" class="likert-label">Strongly Disagree</label>
                     </div>
                 </div>
             </div>
-
+            
             <!-- Question 2 -->
-            <div class="question-group">
-                <div class="question-title">
-                    <ol>
-                        <li>He/she assumes the project as a team effort, providing support in project tasks</li>
-                    </ol>
-                </div>
+            <div class="question">
+                <div class="question-text">2. He/she assumes the project as a team effort, providing support in project tasks</div>
                 <div class="likert-scale">
                     <div class="likert-option">
-                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
-                        <div class="likert-label">Strongly Agree</div>
+                        <input type="radio" name="q2" value="5" id="q2-5">
+                        <label for="q2-5" class="likert-label">Strongly Agree</label>
                     </div>
                     <div class="likert-option">
-                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
-                        <div class="likert-label">Agree</div>
+                        <input type="radio" name="q2" value="4" id="q2-4">
+                        <label for="q2-4" class="likert-label">Agree</label>
                     </div>
                     <div class="likert-option">
-                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
-                        <div class="likert-label">Neutral</div>
+                        <input type="radio" name="q2" value="3" id="q2-3">
+                        <label for="q2-3" class="likert-label">Neutral</label>
                     </div>
                     <div class="likert-option">
-                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
-                        <div class="likert-label">Disagree</div>
+                        <input type="radio" name="q2" value="2" id="q2-2">
+                        <label for="q2-2" class="likert-label">Disagree</label>
                     </div>
                     <div class="likert-option">
-                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
-                        <div class="likert-label">Strongly Disagree</div>
+                        <input type="radio" name="q2" value="1" id="q2-1">
+                        <label for="q2-1" class="likert-label">Strongly Disagree</label>
                     </div>
                 </div>
             </div>
-
+            
             <!-- Question 3 -->
-            <div class="question-group">
-                <div class="question-title">
-                    <ol>
-                        <li>He/she demonstrates initiative to achieve project success</li>
-                    </ol>
-                </div>
+            <div class="question">
+                <div class="question-text">3. He/she demonstrates initiative to achieve project success</div>
                 <div class="likert-scale">
                     <div class="likert-option">
-                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
-                        <div class="likert-label">Strongly Agree</div>
+                        <input type="radio" name="q3" value="5" id="q3-5">
+                        <label for="q3-5" class="likert-label">Strongly Agree</label>
                     </div>
                     <div class="likert-option">
-                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
-                        <div class="likert-label">Agree</div>
+                        <input type="radio" name="q3" value="4" id="q3-4">
+                        <label for="q3-4" class="likert-label">Agree</label>
                     </div>
                     <div class="likert-option">
-                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
-                        <div class="likert-label">Neutral</div>
+                        <input type="radio" name="q3" value="3" id="q3-3">
+                        <label for="q3-3" class="likert-label">Neutral</label>
                     </div>
                     <div class="likert-option">
-                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
-                        <div class="likert-label">Disagree</div>
+                        <input type="radio" name="q3" value="2" id="q3-2">
+                        <label for="q3-2" class="likert-label">Disagree</label>
                     </div>
                     <div class="likert-option">
-                        <div class="likert-circle" onclick="this.classList.toggle('selected')"></div>
-                        <div class="likert-label">Strongly Disagree</div>
+                        <input type="radio" name="q3" value="1" id="q3-1">
+                        <label for="q3-1" class="likert-label">Strongly Disagree</label>
                     </div>
                 </div>
             </div>
-
-            <!-- Question 4 and so on - Add all the questions from your Figma design -->
-            <!-- ... -->
-
-            <!-- Open-ended question 1 -->
-            <div class="question-group">
-                <div class="question-title">
-                    <ol>
-                        <li>List his/her strengths that you saw during the development of the delivery.</li>
-                    </ol>
-                </div>
-                <textarea class="text-input"></textarea>
+            
+            <!-- Strengths Question -->
+            <div class="question">
+                <div class="question-text">4. List his/her strengths that you saw during the development of the delivery.</div>
+                <textarea name="strengths"></textarea>
             </div>
-
-            <!-- Open-ended question 2 -->
-            <div class="question-group">
-                <div class="question-title">
-                    <ol>
-                        <li>List his/her weaknesses that you saw during the development of the delivery.</li>
-                    </ol>
-                </div>
-                <textarea class="text-input"></textarea>
+            
+            <!-- Weaknesses Question -->
+            <div class="question">
+                <div class="question-text">5. List his/her weaknesses that you saw during the development of the delivery.</div>
+                <textarea name="weaknesses"></textarea>
             </div>
-
-            <!-- Submit Button -->
-            <div class="submit-button">Submit</div>
-        </div>
+            
+            <button type="submit" class="submit-button">Submit</button>
+        </form>
     </div>
 {% endblock %}
