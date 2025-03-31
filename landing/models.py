@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib import admin
+import datetime
 
 class Course(models.Model):
     # Members are given by the foreign key on User, can be accessed with `courseObject.members`
@@ -16,6 +17,12 @@ class Course(models.Model):
 
     def get_team(self) -> models.QuerySet["Team"]:
         return self.teams.all()
+
+    def get_assessments(self) -> models.QuerySet["Assessment"]:
+        return self.assessments.all()
+
+    def get_current_published_assessments(self) -> models.QuerySet["Assessment"]:
+        return self.assessments.filter(due_date__gt=datetime.datetime.now(), published=True)
 
 class Team(models.Model):
     # Members are given by the foreign key on User, can be accessed with `teamObject.members`

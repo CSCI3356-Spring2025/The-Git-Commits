@@ -259,7 +259,7 @@
         <a href="#" class="nav-btn">
           <div class="nav-text">Courses</div>
         </a>
-        <a href="#" class="nav-btn">
+        <a href="{% url 'landing:student_assessment_list' %}" class="nav-btn">
           <div class="nav-text">Assessments</div>
         </a>
         <a href="#" class="nav-btn">
@@ -276,54 +276,54 @@
     <!-- <div class="due-date">{{ due_date|date:"D, F jS \a\t g:i:s A (e)" }}</div> -->
     
     <div class="assessment-container">
-      <form method="post" action="{% url 'landing:student_assessment' %}" class="clearfix">
+      <form method="post" action="{% url 'landing:student_assessment_list' %}" class="clearfix">
         {% csrf_token %}
 
         {% for question in questions %}
-        <div class="question">
-          <div class="question-text">{{question.question}}</div>
-          {% if question.question_type == "likert" %}
-            <div class="likert-scale">
-              <div class="likert-option">
-                <div class="radio-container">
-                  <input type="radio" id="q1-5" name="{{question.pk}}" value="5">
-                  <div class="radio-circle"></div>
+          <div class="question">
+            <div class="question-text">{{question.question}}</div>
+            {% if question.question_type == "likert" %}
+              <div class="likert-scale">
+                <div class="likert-option">
+                  <div class="radio-container">
+                    <input type="radio" id="q1-5" name="{{question.pk}}" value="5">
+                    <div class="radio-circle"></div>
+                  </div>
+                  <label for="q1-5">Strongly Agree</label>
                 </div>
-                <label for="q1-5">Strongly Agree</label>
-              </div>
-              <div class="likert-option">
-                <div class="radio-container">
-                  <input type="radio" id="q1-4" name="{{question.pk}}" value="4">
-                  <div class="radio-circle"></div>
+                <div class="likert-option">
+                  <div class="radio-container">
+                    <input type="radio" id="q1-4" name="{{question.pk}}" value="4">
+                    <div class="radio-circle"></div>
+                  </div>
+                  <label for="q1-4">Agree</label>
                 </div>
-                <label for="q1-4">Agree</label>
-              </div>
-              <div class="likert-option">
-                <div class="radio-container">
-                  <input type="radio" id="q1-3" name="{{question.pk}}" value="3">
-                  <div class="radio-circle"></div>
+                <div class="likert-option">
+                  <div class="radio-container">
+                    <input type="radio" id="q1-3" name="{{question.pk}}" value="3">
+                    <div class="radio-circle"></div>
+                  </div>
+                  <label for="q1-3">Neutral</label>
                 </div>
-                <label for="q1-3">Neutral</label>
-              </div>
-              <div class="likert-option">
-                <div class="radio-container">
-                  <input type="radio" id="q1-2" name="{{question.pk}}" value="2">
-                  <div class="radio-circle"></div>
+                <div class="likert-option">
+                  <div class="radio-container">
+                    <input type="radio" id="q1-2" name="{{question.pk}}" value="2">
+                    <div class="radio-circle"></div>
+                  </div>
+                  <label for="q1-2">Disagree</label>
                 </div>
-                <label for="q1-2">Disagree</label>
-              </div>
-              <div class="likert-option">
-                <div class="radio-container">
-                  <input type="radio" id="q1-1" name="{{question.pk}}" value="1">
-                  <div class="radio-circle"></div>
+                <div class="likert-option">
+                  <div class="radio-container">
+                    <input type="radio" id="q1-1" name="{{question.pk}}" value="1">
+                    <div class="radio-circle"></div>
+                  </div>
+                  <label for="q1-1">Strongly Disagree</label>
                 </div>
-                <label for="q1-1">Strongly Disagree</label>
               </div>
-            </div>
-          {% else %}
-            <textarea name="{{question.pk}}" class="text-input" placeholder="Enter response here..."></textarea>
-          {% endif %}
-        </div>
+            {% else %}
+              <textarea name="{{question.pk}}" class="text-input" placeholder="Enter response here..."></textarea>
+            {% endif %}
+          </div>
 
         {% endfor %}
         

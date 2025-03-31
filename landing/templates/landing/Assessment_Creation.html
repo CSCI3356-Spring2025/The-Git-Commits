@@ -361,96 +361,94 @@ a.logout-btn {
 
 {% block content %}
 
-<div class="navbar">
-      <div class="peer-vue-logo">
-        <div class="rectangle-1">
-          <div class="peer-vue">PeerVue</div>
-        </div>
+  <div class="navbar">
+    <div class="peer-vue-logo">
+      <div class="rectangle-1">
+        <div class="peer-vue">PeerVue</div>
       </div>
-
-      <div class="nav-buttons">
-        <div class="nav-btn">Courses</div>
-        <a
-          href="{% url 'landing:student_assessment' %}"
-          style="text-decoration: none"
-        >
-          <div class="nav-btn">Assessments</div>
-        </a>
-        <div class="nav-btn">Feedback</div>
-        <div class="logout-btn">
-          <a class="logout-btn" href="{% url 'oauth:logout' %}">Logout</a>
-        </div>
-      </div>
-
-      <!--<div class="the-git-commits">The Git Commits</div>-->
     </div>
 
-    <div class="assessment-builder">Assessment Builder</div>
-    <div class="release-date">Release Date:</div>
-    <div class="due-date">Due Date:</div>
-    <div class="rectangle">
-      <div class="question1">He/she adequately fulfills the assigned tasks</div>
-      <div class="edit-frame">
-        <div class="edit">Edit</div>
+    <div class="nav-buttons">
+      <div class="nav-btn">Courses</div>
+      <a
+        href="{% url 'landing:student_assessment' %}"
+        style="text-decoration: none"
+      >
+        <div class="nav-btn">Assessments</div>
+      </a>
+      <div class="nav-btn">Feedback</div>
+      <div class="logout-btn">
+        <a class="logout-btn" href="{% url 'oauth:logout' %}">Logout</a>
       </div>
-      <div class="remove-frame">
-        <div class="remove">Remove</div>
-      </div>
-    </div>
-    <div class="rectangle2">
-      <div class="question1">
-        He/she demonstrates initiative to achieve project success
-      </div>
-      <div class="edit-frame">
-        <div class="edit">Edit</div>
-      </div>
-      <div class="remove-frame">
-        <div class="remove">Remove</div>
-      </div>
-    </div>
-    <div class="rectangle3">
-      <div class="question1">
-        He/she is able to seek help when there are problems
-      </div>
-      <div class="edit-frame">
-        <div class="edit">Edit</div>
-      </div>
-      <div class="remove-frame">
-        <div class="remove">Remove</div>
-      </div>
-    </div>
-    <div class="rectangle4">
-      <div class="question1">
-        He/she shows a communicative attitude facilitating the teamwork
-      </div>
-      <div class="edit-frame">
-        <div class="edit">Edit</div>
-      </div>
-      <div class="remove-frame">
-        <div class="remove">Remove</div>
-      </div>
-    </div>
-    <div class="publish-btn">
-      <div class="btn"></div>
-      <div class="publish">Publish</div>
-    </div>
-    <div class="submission-btn">
-      <div class="btn2"></div>
-      <div class="view-submissions">View Submissions</div>
-    </div>
-    <div class="reminder-btn">
-      <div class="btn3"></div>
-      <div class="view-reminder">Reminders</div>
-    </div>
-    <div class="anonymous-btn">
-      <button class="btn4"></button>
-      <button class="view-anon">Anonymous</button>
-    </div>
-    <div class="add-btn">
-      <div class="btn5"></div>
-      <div class="view-anon">Add</div>
     </div>
 
-    {% endblock %}
+    <!--<div class="the-git-commits">The Git Commits</div>-->
+  </div>
 
+  <div class="assessment-builder">Assessment Builder</div>
+  <div class="release-date">Release Date:</div>
+  <div class="due-date">Due Date:</div>
+  <div class="rectangle">
+    <div class="question1">He/she adequately fulfills the assigned tasks</div>
+    <div class="edit-frame">
+      <div class="edit">Edit</div>
+    </div>
+    <div class="remove-frame">
+      <div class="remove">Remove</div>
+    </div>
+  </div>
+  <div class="rectangle2">
+    <div class="question1">
+      He/she demonstrates initiative to achieve project success
+    </div>
+    <div class="edit-frame">
+      <div class="edit">Edit</div>
+    </div>
+    <div class="remove-frame">
+      <div class="remove">Remove</div>
+    </div>
+  </div>
+  <div class="rectangle3">
+    <div class="question1">
+      He/she is able to seek help when there are problems
+    </div>
+    <div class="edit-frame">
+      <div class="edit">Edit</div>
+    </div>
+    <div class="remove-frame">
+      <div class="remove">Remove</div>
+    </div>
+  </div>
+  <div class="rectangle4">
+    <div class="question1">
+      He/she shows a communicative attitude facilitating the teamwork
+    </div>
+    <div class="edit-frame">
+      <div class="edit">Edit</div>
+    </div>
+    <div class="remove-frame">
+      <div class="remove">Remove</div>
+    </div>
+  </div>
+  <div class="publish-btn">
+    <div class="btn"></div>
+    <div class="publish">Publish</div>
+  </div>
+  <div class="submission-btn">
+    <div class="btn2"></div>
+    <div class="view-submissions">View Submissions</div>
+  </div>
+  <div class="reminder-btn">
+    <div class="btn3"></div>
+    <div class="view-reminder">Reminders</div>
+  </div>
+  <div class="anonymous-btn">
+    <button class="btn4"></button>
+    <button class="view-anon">Anonymous</button>
+  </div>
+  <div class="add-btn">
+    <div class="btn5"></div>
+    <div class="view-anon">Add</div>
+  </div>
 
+  {% endblock %}

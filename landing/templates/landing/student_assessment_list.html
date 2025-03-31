@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}
+  <title>PeerVue - Assessments</title>
+{% endblock %}
+
+{% block base_style %}
+  <style>
+    :root {
+        --accent-dark-blue: #1b0061;
+        --accent-medium-blue: #aae7f2;
+        --accent-light-blue: #dcf4f9;
+        --navbar-background: #a4daff3f;
+        --black: black;
+        --white: #f0f8ff;
+    }
+    
+    .blue-btn {
+        color: #fff;
+        background: var(--accent-dark-blue);
+        border-radius: 40px;
+    }
+    .navbar {
+        padding-top: 1em;
+        padding-left: 1em;
+        background: var(--navbar-background);
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+        border: 1px solid #000000;
+        z-index: 100;
+    }
+    
+    .git-commits-top-right {
+        position: relative;
+        top: -2em;
+    }
+    
+    .rectangle-1 {
+        background: var(--accent-dark-blue);
+        border-radius: 50px;
+        width: 221.06px;
+        height: 77.86px;
+    }
+    
+    .peer-vue {
+        color: #ffffff;
+        text-align: center;
+        font-family: "KoHo", sans-serif;
+        font-size: 45px;
+        font-weight: 400;
+        vertical-align: middle;
+    
+        background: var(--accent-dark-blue);
+        border-radius: 50px;
+    }
+    
+    .nav-bubble {
+        color: #ffffff;
+        text-align: center;
+        font-family: "KoHo", sans-serif;
+        font-size: 20px;
+        font-weight: 400;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    
+    
+        background: var(--accent-dark-blue);
+        border-radius: 50px;
+        margin-left: 2em;
+    }
+    
+    .the-git-commits {
+        color: var(--accent-dark-blue);
+        text-align: left;
+        font-family: "KoHo", sans-serif;
+        font-size: 20px;
+        font-weight: 400;
+        position: absolute;
+        left: 1141px;
+        top: 0px;
+        width: 163px;
+        height: 24px;
+    }
+    
+    .assessments {
+    }
+    
+    body {
+        /* Navbar space */
+        padding-top: 7rem;
+        background-color: var(--white);
+    }
+
+    a {
+        text-decoration: none;
+    }
+    
+  </style>
+{% endblock %}
+
+{% block content %}
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+      <div class="container-fluid">
+        <!-- <button class="btn peer-vue ms-1 px-4 me-5">PeerVue</button> -->
+        <a href="{% url 'landing:dashboard' %}" class="peer-vue ms-1 px-4 py-1 my-4 me-5">PeerVue</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="navbar-item">
+              <button class="btn nav-bubble py-3 px-4 ms-5">Courses</button>
+            </li>
+            <li class="nav-item">
+              <button class="btn nav-bubble py-3 px-4">Feedback</button>
+            </li>
+            <li class="nav-item">
+              <a class="btn nav-bubble py-3 px-4">Assessments</a>
+            </li>
+          </ul>
+          <span class="align-top git-commits-top-right">The Git Commits</span>
+        </div>
+      </div>
+    </nav>
+
+  <h2 class="mt-5 ms-5">Assessments</h2>
+  <div class="assessments container">
+      <br>
+      <br>
+    {% if assessments %}
+      {% for assessment in assessments %}
+        <a href="{% url 'landing:student_assessment' assessment.pk %}" class="assessment-link blue-btn mt-4 p-1 px-3">{{ assessment.title }}</a>
+        <br>
+        <br>
+      {% endfor %}
+    {% else %}
+        <div class="section-text">You have no current assessments to view</div>
+    {% endif %}
+  </div>
+
+{% endblock %}

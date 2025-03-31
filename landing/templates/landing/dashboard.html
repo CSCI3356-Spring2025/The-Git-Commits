@@ -1,4 +1,4 @@
-<!-- landing/templates/landing/dashboard.html -->
+<br>
 {% extends "base.html" %}
 
 {% block title %}
@@ -123,14 +123,24 @@
         .section-content {
             background: #dcf4f9;
             border-radius: 50px;
-            height: 98px;
+            min-height: 98px;
             margin: 0 auto;
             width: 90%;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        
+
+        .assessment-list {
+            background: #dcf4f9;
+            border-radius: 50px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
         .section-text {
             color: #000000;
             text-align: center;
@@ -187,6 +197,16 @@
             margin-left: 8em;
         }
 
+        .assessment-link {
+            background: #1b0061;
+            color: white;
+            padding: 8px 15px;
+            margin: 5px;
+            border-radius: 20px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
     </style>
 {% endblock %}
 
@@ -200,7 +220,7 @@
     
     <div class="nav-buttons">
         <div class="nav-btn">Courses</div>
-        <a href="{% url 'landing:student_assessment' %}" style="text-decoration: none;">
+        <a href="{% url 'landing:student_assessment_list' %}">
             <div class="nav-btn">Assessments</div>
         </a>
         <div class="nav-btn">Feedback</div>
@@ -237,8 +257,16 @@
                 <div class="section">
                     <div class="section-title">Assessments</div>
                     <div class="section-content">
-                        <br><br>
-                        <a href="{% url 'landing:student_assessment' %}" style="background: #1b0061; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; display: inline-block; font-size: 16px;">View Sample Assessment</a>
+                        <div class="assessment-list m-2">
+                            {% if assessments %}
+                                {% for assessment in assessments %}
+                                    <a href="{% url 'landing:student_assessment' assessment.pk %}" class="assessment-link m-1">{{ assessment.title }}</a>
+                                    <br>
+                                {% endfor %}
+                            {% else %}
+                                <div class="section-text">You have no current assessments to view</div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
                 

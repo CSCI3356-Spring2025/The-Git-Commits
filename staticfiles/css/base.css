@@ -1,10 +1,12 @@
 /* CSS for the base.html template */
 :root {
   --accent-dark-blue: #1b0061;
+  --accent-darker-blue: #1b0070;
   --accent-medium-blue: #aae7f2;
   --accent-light-blue: #dcf4f9;
   --navbar-background: #a4daff3f;
   --black: black;
+  --white: #f0f8ff;
 }
 
 * {
@@ -20,6 +22,11 @@
 body {
   font-family: "KoHo", Arial, sans-serif;
   overflow-x: hidden;
+}
+
+/* Remove Bootstrap link underlines */
+a {
+  text-decoration: none;
 }
 
 /* Navbar */
@@ -75,3 +82,10 @@ body {
   display: flex;
   justify-content: space-between;
 }
+
+.blue-btn {
+  color: #fff;
+  background: var(--accent-dark-blue);
+  border-radius: 40px;
+}
+

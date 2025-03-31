@@ -3,6 +3,8 @@ from django.views import View
 from oauth.oauth import RequireLoggedInMixin
 from django.http.response import HttpResponse
 from landing.models import Assessment
+from oauth.models import User
+from django.db.models.query import QuerySet
 
 
 def landing_page(request):
@@ -17,26 +19,20 @@ def dashboard(request):
 
 class DashboardView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs) -> HttpResponse:
-        user = kwargs["user"]
+        user: User = kwargs["user"]
+        if user.course:
+            assessments = user.course.get_current_published_assessments()
+        else:
+            assessments = Assessment.objects.none()
 
-        context = {"user_name": user.name, "user_role": user.role}
+        context = {
+            "user_name": user.name,
+            "user_role": user.role,
+            "assessments": assessments
+        }
         return render(request, "landing/dashboard.html", context)
 
 class StudentAssessmentView(RequireLoggedInMixin, View):
-    def get(self, request, *args, **kwargs):
-        user = kwargs["user"]
-        context = {
-            'assessment_title': 'Peer Assessment 1',
-            'due_date': 'Mar 20 @ 11:59PM ET',
-            'user_name': user.name,
-            'user_role': user.role
-        }
-        return render(request, 'landing/student_assessment.html', context)
-
-    def post(self, request, *args, **kwargs):
-        return redirect('landing:dashboard')
-
-class NewStudentAssessmentView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs):
         user = kwargs["user"]
         assessment_id = kwargs["assessment_id"]
@@ -59,3 +55,17 @@ class NewStudentAssessmentView(RequireLoggedInMixin, View):
     def post(self, request, *args, **kwargs):
         return redirect('landing:dashboard')
 
+class StudentAssessmentListView(RequireLoggedInMixin, View):
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        user: User = kwargs["user"]
+        if user.course:
+            assessments = user.course.get_current_published_assessments()
+        else:
+            assessments = Assessment.objects.none()
+
+        context = {
+            "user_name": user.name,
+            "user_role": user.role,
+            "assessments": assessments
+        }
+        return render(request, "landing/student_assessment_list.html", context)
