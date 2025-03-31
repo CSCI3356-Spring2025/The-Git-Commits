@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Course, Team
+from .models import Course, Team, AssessmentQuestion, Assessment
 from oauth.models import User
 
 class ModelTeam(admin.ModelAdmin):
@@ -13,5 +13,13 @@ class ModelCourse(admin.ModelAdmin):
     list_display = ["name", "year", "semester"]
 
 
+class AssessmentQuestionInline(admin.TabularInline):
+    model = AssessmentQuestion
+
+class ModelAssessment(admin.ModelAdmin):
+    inlines = [AssessmentQuestionInline]
+    list_display = ["title", "due_date"]
+
 admin.site.register(Course, ModelCourse)
 admin.site.register(Team, ModelTeam)
+admin.site.register(Assessment, ModelAssessment)
