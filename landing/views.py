@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.views import View
 from oauth.oauth import RequireLoggedInMixin
 from django.http.response import HttpResponse
@@ -17,7 +17,7 @@ def dashboard(request):
     }
     return render(request, 'landing/dashboard.html', context)
 
-class DashboardView(RequireLoggedInMixin, View):
+class DashboardView(RequireLoggedInMixin, View):    
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
         if user.course:
@@ -69,3 +69,20 @@ class StudentAssessmentListView(RequireLoggedInMixin, View):
             "assessments": assessments
         }
         return render(request, "landing/student_assessment_list.html", context)
+
+class TeamEditView(RequireLoggedInMixin, View):
+    def get(self, request, *argv, **kwargs) -> HttpResponse:
+
+        context = dict()
+        return render(request, "landing/team_creation.html", context)
+    
+    def post(self, request, *argv, **kwargs):
+        course = kwargs['user'].course
+        print(course.teams)
+        context = dict()
+        return render(request, 'landing/team_creation.html', context)
+    
+def add_team_redirect(request, *argv, **kwargs):
+    context = {'course': 'Software Engineering',
+               'team': 'The Git Commits'}
+    return render(request, 'landing/team_creation.html')
