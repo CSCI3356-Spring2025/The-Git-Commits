@@ -363,8 +363,8 @@ a.logout-btn {
   {% for question in assessment.get_questions %}
   <div class="rectangle">
     <div class="question">{{ question.question }}</div>
-    <div class="edit-frame">
-      <div class="edit">Edit</div>
+    <div class="edit-frame" data-bs-toggle="modal" data-bs-target="#edit-question-modal-id-{{ question.pk }}">
+      <button class="edit" data-bs-toggle="modal" data-bs-target="#edit-question-modal-id-{{ question.pk }}">Edit</button>
     </div>
     <div class="remove-frame">
       <form method="post">
@@ -401,5 +401,35 @@ a.logout-btn {
       <input type="hidden" name="add" value="question">
     </form>
   </div>
+
+   <!-- Modals -->
+  {% for question in assessment.get_questions %}
+    <div id="edit-question-modal-id-{{ question.pk }}" class="modal fade" tabindex="-1" aria-labelledby="add-team-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="modal-title">Edit Question</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <input type="hidden" name="edit" value="{{ question.pk }}">
+              <label for="question-edit-{{question.pk}}" class="form-label">Question:</label>
+              <input type="text" name="question" id="question-edit{{question.pk}}" value="{{ question.question }}" class="form-control">
+              <br>
+              <input class="form-check-input" type="checkbox" name="required" {% if question.required %}checked{% endif %}>
+              <label class="form-check-label" for="required">Required</label>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
 
   {% endblock %}

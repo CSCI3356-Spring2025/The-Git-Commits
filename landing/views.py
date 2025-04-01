@@ -93,16 +93,20 @@ class CreateAssessmentView(RequireLoggedInMixin, View):
         if user.course is None:
             return redirect(reverse("dashboard"))
 
-        # Create new assessment object and store which assessment we're working on for later requests
-        assessment = Assessment.objects.create(course = user.course, title="New Assessment", due_date=None, published=False)
-        request.session["assessment_id"] = assessment.pk
+        # Determine which assessment this is for (creating a new one if necessary)
+        assessment_id = request.session.get("assessment_id", None)
+        if assessment_id: 
+            assessment = Assessment.objects.get(pk=assessment_id)
+        else:
+            assessment = Assessment.objects.create(course = user.course, title="New Assessment", due_date=None, published=False)
+            request.session["assessment_id"] = assessment.pk
 
-        context = {}
+        context = {"assessment": assessment}
         return render(request, "landing/assessment_creation.html", context)
 
     def post(self, request, *argv, **kwargs) -> HttpResponse:
         """Buttons that have to update the page send POST requests back to update the database
-        and re-render the page. Doing it this way instead of using JS feels like a war crime,
+        and re-render the page. Doing it this way instead of using basic JS feels like a war crime,
         but the requirements make it necessary.
         """
         user: User = kwargs["user"]
@@ -118,12 +122,27 @@ class CreateAssessmentView(RequireLoggedInMixin, View):
             request.session["assessment_id"] = assessment.pk
 
         # Process the incoming action from the request data
+        # TODO: factor this out into another function
         params = request.POST
         if params.get("add", None):
             question = AssessmentQuestion.objects.create(assessment=assessment, question_type="likert", question="Test question text", required=True)
+
         elif params.get("remove", None):
             pk = params["remove"]
             AssessmentQuestion.objects.filter(pk=pk).delete()
+
+        elif params.get("edit", None):
+            pk = params["edit"]
+            question = AssessmentQuestion.objects.get(pk=pk)
+
+            required = params.get("required", None)
+            question_text = params.get("question", None)
+            if required is not None:
+                question.required = (required == "on")
+            if question_text is not None:
+                question.question = question_text
+
+            question.save()
 
         context = { "assessment": assessment }
         return render(request, "landing/assessment_creation.html", context)
