@@ -452,8 +452,8 @@ footer {
         <div class="checkbox-container">
           {% for student in available_students %}
             <div class="checkbox-item">
-              <input type="checkbox" id="student_{{ student.id }}" name="member_ids" value="{{ student.id }}">
-              <label for="student_{{ student.id }}">{{ student.name }}</label>
+              <input type="checkbox" id="student_{{ student.id }}" name="member_emails" value="{{ student.email }}">
+              <label for="student_{{ forloop.counter }}">{{ student.name }} ({{student.email}})</label>
             </div>
           {% empty %}
             <p>No available students. All students are already assigned to teams.</p>
