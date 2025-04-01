@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, reverse
 from django.views import View
 import datetime
 
-from landing.models import Course, Assessment, AssessmentQuestion
+from landing.models import Course, Assessment, AssessmentQuestion, Team
 from oauth.models import User
 from django.db.models.query import QuerySet
 from landing.courses import create_new_team, create_new_course
@@ -64,7 +64,7 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
         return render(request, 'landing/new_student_assessment.html', context)
 
     def post(self, request, *args, **kwargs):
-        return redirect('landing:dashboard')
+        return redirect('landing:student_assessment_list')
 
 class StudentAssessmentListView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs) -> HttpResponse:
@@ -80,16 +80,25 @@ class StudentAssessmentListView(RequireLoggedInMixin, View):
             "assessments": assessments
         }
         return render(request, "landing/student_assessment_list.html", context)
+    def post(self, request, *args, **kwargs):
+        #TODO: We can process the data from the form here later
+        return redirect(reverse('landing:student_assessment_list'))
 
 class CreateTeamView(RequireAdminMixin, View):
     def get(self, request, *argv, **kwargs) -> HttpResponse:
         user: User = kwargs['user']
         if user.course is None:
             return redirect(reverse("landing:dashboard"))
-            
+
+        all_students = user.course.members.filter(role='student')
+        available_students = user.course.members.filter(role='student', team__isnull=True) 
+
         context = {
             "teams": user.course.teams.all(),
-            "course_name": user.course.name
+            "course_name": user.course.name,
+            "all_students": all_students,
+            "available_students": available_students,
+            "user": user
         }
         return render(request, "landing/team_creation.html", context)
     
@@ -99,17 +108,62 @@ class CreateTeamView(RequireAdminMixin, View):
             return redirect(reverse("landing:dashboard"))
 
         team_name = request.POST.get('name')
+        member_emails = request.POST.getlist('member_emails', [])
+        
         if team_name:
             try:
                 team = create_new_team(team_name, user.course.name)
-                return redirect(reverse("landing:team_creation"))
-            except Course.DoesNotExist:
-                return render(request, 'landing/team_creation.html', 
-                            {'error': 'Course not found'})
+                
+                for email in member_emails:
+                    try:
+                        member = User.objects.get(email=email)
+                        if member.course == user.course:
+                            if member.team:
+                                member.team = None
+                                member.save()
+                            
+                            member.team = team
+                            member.save()
+                    except User.DoesNotExist:
+                        continue
 
+                all_students = user.course.members.filter(role='student')
+                available_students = user.course.members.filter(role='student', team__isnull=True)
+                
+                context = {
+                    "teams": user.course.teams.all(),
+                    "course_name": user.course.name,
+                    "all_students": all_students,
+                    "available_students": available_students,
+                    "user": user,
+                    "success_message": f"Team '{team_name}' created successfully!"
+                }
+                return render(request, 'landing/team_creation.html', context)
+                
+            except Course.DoesNotExist:
+                all_students = user.course.members.filter(role='student')
+                available_students = user.course.members.filter(role='student', team__isnull=True)
+                
+                context = {
+                    "teams": user.course.teams.all(),
+                    "course_name": user.course.name,
+                    "all_students": all_students,
+                    "available_students": available_students,
+                    "user": user,
+                    "error": "Course not found"
+                }
+                return render(request, 'landing/team_creation.html', context)
+
+        all_students = user.course.members.filter(role='student')
+        available_students = user.course.members.filter(role='student', team__isnull=True)
+        
         context = {
             "teams": user.course.teams.all(),
-            "course_name": user.course.name
+            "course_name": user.course.name,
+            "all_students": all_students,
+            "available_students": available_students,
+            "user": user,
+            "error": "Team name is required"
         }
         return render(request, 'landing/team_creation.html', context)
 

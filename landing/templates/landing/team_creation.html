@@ -427,155 +427,62 @@ footer {
     </div>
     
     <div class="team-name">
-      The Git Commits
+      {{ user.name }}
     </div>
   </div>
   
   <div class="course-container">
     <!-- Course Header -->
     <div class="course-header">
-      <h1 class="course-title">Software Engineering (Spring 2025) <a href="#" class="edit-link">edit</a></h1>
+      <h1 class="course-title">{{ course_name }} <a href="#" class="edit-link">edit</a></h1>
     </div>
     
-    <!-- Classlist Section -->
-    <div class="classlist-section">
-      <h2 class="section-title">Classlist</h2>
-      <div class="student-list">
-        <span class="student-pill">Caden P</span>
-        <span class="student-pill">Daven P</span>
-        <span class="student-pill">Juliet M</span>
-        <span class="student-pill">Kenia V</span>
-        <span class="student-pill">Liana W</span>
-        <span class="student-pill">Anthony Y</span>
-        <span class="student-pill">Christopher M</span>
-        <span class="student-pill">Joshua G</span>
-        <span class="student-pill">Landon L</span>
-        <span class="student-pill">Michael C</span>
-        <span class="student-pill">Joshua G</span>
-        <span class="student-pill">Landon L</span>
-        <span class="student-pill">Michael C</span>
-        <span class="student-pill">Joshua G</span>
-        <span class="student-pill">Landon L</span>
-        <span class="student-pill">Michael C</span>
-        <span class="student-pill">Joshua G</span>
-        <span class="student-pill">Landon L</span>
-        <span class="student-pill">Michael C</span>
-        <span class="student-pill">Joshua G</span>
-        <span class="student-pill">Landon L</span>
-        <span class="student-pill">Michael C</span>
-        <span class="add-button">+</span>
+    <!-- Create Team Form -->
+    <h2 class="section-title">Create New Team</h2>
+    <form action="{% url 'landing:team_creation' %}" method="POST">
+      {% csrf_token %}
+      
+      <div class="section-container">
+        <label for="name">Team Name</label>
+        <input type="text" id="name" name="name" class="input-field" required style="width:400px;"/>
       </div>
-    </div>
-    
-    <!-- Self-evaluations Checkbox -->
-    <div class="checkbox-container">
-      <input type="checkbox" id="self-evaluations">
-      <label for="self-evaluations" class="checkbox-label">Self-evaluations</label>
-    </div>
+      
+      <div class="form-group">
+        <h3 class="section-title">Available Students</h3>
+        <div class="checkbox-container">
+          {% for student in available_students %}
+            <div class="checkbox-item">
+              <input type="checkbox" id="student_{{ student.id }}" name="member_ids" value="{{ student.id }}">
+              <label for="student_{{ student.id }}">{{ student.name }}</label>
+            </div>
+          {% empty %}
+            <p>No available students. All students are already assigned to teams.</p>
+          {% endfor %}
+        </div>
+      </div>
+      
+      <button type="submit" class="submit-btn">Create Team</button>
+    </form>
     
     <!-- Teams Section -->
     <div class="teams-section">
-      <h2 class="section-title">Teams</h2>
+      <h2 class="section-title">Existing Teams</h2>
       
-      <!-- Team 1 -->
-      <div class="team-card">
-        <h3 class="team-card-title">The Git Commits</h3>
-        <div class="team-members">Members: Caden P, Daven P, Juliet M, Kenia V, Liana W</div>
-        <a href="#edit_team_modal" class="edit-team-btn">edit</a>
-
-        <div id="edit_team_modal" class="modal">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <header class="container">
-                <a href="" class="closebtn">×</a>
-                <h2>Edit Team</h2>
-              </header>
-              <div class="container">
-                <h2>Name</h2>
-
-                <div class="name-container">
-                  <input type="text" id="teamName" class="input-field" value="The Git Commits">
-                </div>
-                
-                <h3>Members</h3>
-                <ul class="member-list">
-                  <li class="member">Caden Parajuli (parajulc@bc.edu) <button class="remove">-</button></li>
-                  <li class="member">Daven Pelaez (pelaezd@bc.edu) <button class="remove">-</button></li>
-                  <li class="member">Juliet McMillan (mcmillju@bc.edu) <button class="remove">-</button></li>
-                  <li class="member">Kenia Vazquez Roman (vazqueke@bc.edu) <button class="remove">-</button></li>
-                  <li class="member">Liana Winans (winansl@bc.edu) <button class="remove">-</button></li>
-                </ul>
-
-              </div>
-            </div>
+      {% for team in teams %}
+        <div class="team-card">
+          <h3 class="team-card-title">{{ team.name }}</h3>
+          <div class="team-members">
+            Members: 
+            {% for member in team.get_members %}
+              {{ member.name }}{% if not forloop.last %}, {% endif %}
+            {% empty %}
+              No members assigned
+            {% endfor %}
           </div>
         </div>
-      </div>
-      
-<!-- TODO: need to be able to create this dynamically based on course/teams -->
-      <!-- Team 2 -->
-      <div class="team-card">
-        <h3 class="team-card-title">Full Stack Five</h3>
-        <div class="team-members">Members: Anthony Y, Christopher M, Joshua G, Landon L, Michael C</div>
-
-        <a href="#edit_team_modal" class="edit-team-btn">edit</a>
-
-        <div id="edit_team_modal" class="modal">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <header class="container">
-                <a href="" class="closebtn">×</a>
-                <h2>Edit Team</h2>
-              </header>
-              <div class="container">
-                <h2>Name</h2>
-
-                <div class="name-container">
-                  <input type="text" id="teamName" class="input-field" value="Full Stack Five">
-                </div>
-                
-                <h3>Members</h3>
-                <ul class="member-list">
-                  <li class="member">Anthony<button class="remove">-</button></li>
-                  <li class="member">Christopher<button class="remove">-</button></li>
-                  <li class="member">Joshua<button class="remove">-</button></li>
-                  <li class="member">Landon<button class="remove">-</button></li>
-                  <li class="member">Michael<button class="remove">-</button></li>
-                </ul>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      </div>
-
-      <!-- Add Team Button -->
-      <a href="#add_team_modal">Add Team</a>
-
-      <div id="add_team_modal" class="modal">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="container">
-              <header class="container">
-                <a href= "" class="closebtn">×</a>
-                <h2>Edit</h2>
-              </header>
-              <form action="{% url 'landing:team_creation' %}" method="POST"> 
-                {% csrf_token %}
-                <div class="section-container">
-                  <label for="name">Team Name</label>
-                  <input type="text" id="name" name="name" class="input-field" style="width:400px;"/>
-                </div>
-
-                <button type="submit" class="submit-btn"> Save </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
+      {% empty %}
+        <p>No teams have been created yet.</p>
+      {% endfor %}
     </div>
   </div>
 {% endblock %}

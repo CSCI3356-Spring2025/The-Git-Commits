@@ -1,16 +1,23 @@
 from .models import Course, Team
 from oauth.models import User
+import datetime
 
 def create_new_course(name: str, year: int) -> Course:
-    course = Course(name, year)
-    course.save()
+    current_month = datetime.datetime.now().month
+    if 1 <= current_month <= 5:
+        semester = "Spring"
+    elif 6 <= current_month <= 8:
+        semester = "Summer"
+    else:
+        semester = "Fall"
+    course = Course.objects.create(name=name, year=year, semester=semester)
     return course
 
-def create_new_team(name: str, course_name: int) -> Team:
+def create_new_team(name: str, course_name: str) -> Team:
     # TODO: we should probably have this take a course primary key instead
     # but this works for now and will be easier to hook into the webpage
     course = Course.objects.get(name=course_name)
-    team = Team(name, course=course)
+    team = Team.objects.create(name=name, course=course)
     team.save()
     return team
 
