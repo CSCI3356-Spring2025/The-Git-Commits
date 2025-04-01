@@ -1,9 +1,9 @@
-<!-- landing/templates/landing/course_page.html -->
+<!-- landing/templates/landing/team_creation.html -->
 {% extends "base.html" %}
 {% load static %}
 
 {% block title %}
-  <title>{{ context }} - PeerVue</title>
+  <title>Team Management - PeerVue</title>
 {% endblock %}
 
 {% block head_content %}
@@ -130,49 +130,6 @@
       color: #000000;
     }
     
-    .edit-link {
-      font-size: 16px;
-      color: #1b0061;
-      margin-left: 10px;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    
-    .classlist-section {
-      margin-bottom: 40px;
-    }
-    
-    .section-container {
-            background: #dcf4f9;
-            border-radius: 50px;
-            padding: 20px;
-            text-align: left;
-            max-width: 600px;
-            height: 100px;
-            margin: 20px auto;
-            font-size: 22px;
-            color: #1b0061;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-    }
-
-    .name-container {
-            background: #dcf4f9;
-            border-radius: 20px;
-            padding: 20px;
-            text-align: left;
-            width: 300px;
-            height: 60px;
-            font-size: 22px;
-            color: #1b0061;
-            font-weight: bold;
-            display: flex;
-            align-items: left;
-            justify-content: space-between;
-    }
-
     .section-title {
       font-size: 24px;
       font-weight: 500;
@@ -188,6 +145,7 @@
       border-radius: 15px;
       padding: 20px;
       min-height: 100px;
+      margin-bottom: 30px;
     }
     
     .student-pill {
@@ -196,35 +154,6 @@
       padding: 8px 16px;
       font-size: 16px;
       display: inline-block;
-    }
-    
-    .add-button {
-      background: #aae7f2;
-      border-radius: 50%;
-      width: 35px;
-      height: 35px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    
-    .checkbox-container {
-      display: flex;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-    
-    .checkbox-container input[type="checkbox"] {
-      margin-right: 10px;
-      width: 18px;
-      height: 18px;
-    }
-    
-    .checkbox-label {
-      font-size: 16px;
     }
     
     .teams-section {
@@ -248,162 +177,124 @@
       margin-bottom: 15px;
     }
     
-    .edit-team-btn {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 8px 16px;
-      font-size: 16px;
+    .submit-btn {
+      background: #1b0061;
+      border-radius: 50px;
+      padding: 12px 24px;
+      color: #ffffff;
+      font-size: 22px;
       cursor: pointer;
+      margin-top: 10px;
       display: inline-block;
+      width: auto;
     }
     
-    .add-team-btn {
+    .danger-btn {
+      background: #ff6b6b;
+      border-radius: 50px;
+      padding: 12px 24px;
+      color: #ffffff;
+      font-size: 22px;
+      cursor: pointer;
+      margin-top: 10px;
+      display: inline-block;
+      width: auto;
+    }
+
+    .section-container {
+      background: #dcf4f9;
+      border-radius: 50px;
+      padding: 20px;
+      text-align: left;
+      max-width: 600px;
+      margin: 20px auto;
+      font-size: 22px;
+      color: #1b0061;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #1b0061;
+      border-radius: 5px;
+      font-family: "KoHo", sans-serif;
+      font-size: 16px;
+      margin: 5px 0;
+    }
+    
+    .error-message {
+      color: #ff6b6b;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+    
+    .success-message {
+      color: #5cb85c;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .checkbox-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .checkbox-item {
+      display: flex;
+      align-items: center;
       background: #aae7f2;
       border-radius: 20px;
-      padding: 8px 16px;
-      font-size: 16px;
-      cursor: pointer;
-      display: inline-block;
+      padding: 5px 15px;
     }
-    .submit-btn {
-            position:relative;
-            left:800px;
-            background: #1b0061;
-            border-radius: 50px;
-            padding: 12px 12px;
-            color: #ffffff;
-            font-size: 22px;
-            cursor: pointer;
-            margin-top: 10px;
-            display: block;
-            width: 10%;
-        }
-
-    /* Add animation (Chrome, Safari, Opera) */
-@-webkit-keyframes example {
-  from {top:-100px;opacity: 0;}
-  to {top:0px;opacity:1;}
-}
-
-/* Add animation (Standard syntax) */
-@keyframes example {
-  from {top:-100px;opacity: 0;}
-  to {top:0px;opacity:1;}
-}
-
-/* The modal's background */
-.modal {
-  display: none;
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgb(0, 0, 0);
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
-.member-list {
-    list-style-type: none;
-    padding: 0;
-  }
-
-  .member {
-    background: #AEE7F5;
-    padding: 8px;
-    margin: 5px 0;
-    border-radius: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: left;
-    width: 500px;
-  }
-
-  .modal {
-  display: none;
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgb(0, 0, 0);
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
-/* Display the modal when targeted */
-.modal:target {
-  display: table;
-  position: absolute;
-}
-
-/* The modal box */
-.modal-dialog {
-  display: table-cell;
-  vertical-align: middle;
-}
-
-/* The modal's content */
-.modal-dialog .modal-content {
-  margin: auto;
-  background-color: #f3f3f3;
-  position: relative;
-  padding: 0;
-  outline: 0;
-  border: 1px #777 solid;
-  text-align: justify;
-  width: 80%;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-
-  /* Add animation */
-  -webkit-animation-name: example; /* Chrome, Safari, Opera */
-  -webkit-animation-duration: 0.5s; /* Chrome, Safari, Opera */
-  animation-name: example;
-  animation-duration: 0.5s;
-}
-
-input [type="text"] {
-    width: 100%;
-    padding: 8px;
-    margin: 5px 0;
-    border: 1px solid #2E1A63;
-    border-radius: 5px;
-  }
-
-/* The button used to close the modal */
-.closebtn {
-  text-decoration: none;
-  float: right;
-  font-size: 35px;
-  font-weight: bold;
-  color: #fff;
-}
-
-.closebtn:hover,
-.closebtn:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.container {
-  padding: 2px 16px;
-}
-
-header {
-  background-color: #1b0061;
-  font-size: 25px;
-  color: white;
-}
-
-footer {
-  background-color: #5cb85c;
-  font-size: 20px;
-  color: white;
-}
-
-
+    
+    .checkbox-item input[type="checkbox"] {
+      margin-right: 5px;
+    }
+    
+    .card {
+      background: #ffffff;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-title {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 15px;
+      color: #1b0061;
+    }
+    
+    .two-column {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .column {
+      flex: 1;
+    }
+    
+    .divider {
+      border-top: 1px solid #e0e0e0;
+      margin: 20px 0;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
   </style>
 {% endblock %}
 
@@ -434,55 +325,185 @@ footer {
   <div class="course-container">
     <!-- Course Header -->
     <div class="course-header">
-      <h1 class="course-title">{{ course_name }} <a href="#" class="edit-link">edit</a></h1>
+      <h1 class="course-title">{{ course_name }} - Team Management</h1>
     </div>
     
-    <!-- Create Team Form -->
-    <h2 class="section-title">Create New Team</h2>
-    <form action="{% url 'landing:team_creation' %}" method="POST">
-      {% csrf_token %}
-      
-      <div class="section-container">
-        <label for="name">Team Name</label>
-        <input type="text" id="name" name="name" class="input-field" required style="width:400px;"/>
+    {% if success_message %}
+      <div class="success-message">{{ success_message }}</div>
+    {% endif %}
+    
+    {% if error %}
+      <div class="error-message">{{ error }}</div>
+    {% endif %}
+    
+    <!-- Main content with two columns -->
+    <div class="two-column">
+      <!-- Left column for team operations -->
+      <div class="column">
+        {% if editing_team %}
+          <!-- Edit Team Form -->
+          <div class="card">
+            <h2 class="card-title">Edit Team: {{ editing_team.name }}</h2>
+            <form action="{% url 'landing:team_creation' %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="update_team">
+              <input type="hidden" name="team_id" value="{{ editing_team.pk }}">
+              
+              <div class="form-group">
+                <label for="team_name">Team Name:</label>
+                <input type="text" id="team_name" name="team_name" class="input-field" value="{{ editing_team.name }}" required>
+              </div>
+              
+              <div class="form-group">
+                <label>Team Members:</label>
+                <div class="checkbox-container">
+                  {% for student in all_students %}
+                    <div class="checkbox-item">
+                      <input type="checkbox" id="edit_student_{{ forloop.counter }}" name="member_emails" value="{{ student.email }}" 
+                        {% if student.team == editing_team %}checked{% endif %}>
+                      <label for="edit_student_{{ forloop.counter }}">{{ student.name }}</label>
+                    </div>
+                  {% empty %}
+                    <p>No students available in this course.</p>
+                  {% endfor %}
+                </div>
+              </div>
+              
+              <div class="action-buttons">
+                <button type="submit" class="submit-btn">Update Team</button>
+                <a href="{% url 'landing:team_creation' %}" class="danger-btn">Cancel</a>
+              </div>
+            </form>
+          </div>
+        {% else %}
+          <!-- Create Team Form -->
+          <div class="card">
+            <h2 class="card-title">Create New Team</h2>
+            <form action="{% url 'landing:team_creation' %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="create_team">
+              
+              <div class="form-group">
+                <label for="name">Team Name:</label>
+                <input type="text" id="name" name="name" class="input-field" required>
+              </div>
+              
+              <div class="form-group">
+                <label>Available Students:</label>
+                <div class="checkbox-container">
+                  {% for student in available_students %}
+                    <div class="checkbox-item">
+                      <input type="checkbox" id="student_{{ forloop.counter }}" name="member_emails" value="{{ student.email }}">
+                      <label for="student_{{ forloop.counter }}">{{ student.name }}</label>
+                    </div>
+                  {% empty %}
+                    <p>No available students. Add students or create a new course.</p>
+                  {% endfor %}
+                </div>
+              </div>
+              
+              <button type="submit" class="submit-btn">Create Team</button>
+            </form>
+          </div>
+        {% endif %}
+        
+        <!-- Add Student Form -->
+        <div class="card">
+          <h2 class="card-title">Add New Student</h2>
+          <form action="{% url 'landing:team_creation' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="add_student">
+            
+            <div class="form-group">
+              <label for="student_name">Student Name:</label>
+              <input type="text" id="student_name" name="student_name" class="input-field" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="student_email">Student Email:</label>
+              <input type="email" id="student_email" name="student_email" class="input-field" required>
+            </div>
+            
+            <button type="submit" class="submit-btn">Add Student</button>
+          </form>
+        </div>
+        
+        <!-- Create Course Form -->
+        <div class="card">
+          <h2 class="card-title">Create New Course</h2>
+          <form action="{% url 'landing:team_creation' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create_course">
+            
+            <div class="form-group">
+              <label for="course_name">Course Name:</label>
+              <input type="text" id="course_name" name="course_name" class="input-field" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="course_year">Course Year:</label>
+              <input type="number" id="course_year" name="course_year" class="input-field" min="2023" max="2030" value="2025" required>
+            </div>
+            
+            <button type="submit" class="submit-btn">Create Course</button>
+          </form>
+        </div>
       </div>
       
-      <div class="form-group">
-        <h3 class="section-title">Available Students</h3>
-        <div class="checkbox-container">
-          {% for student in available_students %}
-            <div class="checkbox-item">
-              <input type="checkbox" id="student_{{ student.id }}" name="member_emails" value="{{ student.email }}">
-              <label for="student_{{ forloop.counter }}">{{ student.name }} ({{student.email}})</label>
+      <!-- Right column for existing teams and students -->
+      <div class="column">
+        <!-- Existing Teams Section -->
+        <div class="card">
+          <h2 class="card-title">Existing Teams</h2>
+          {% for team in teams %}
+            <div class="team-card">
+              <h3 class="team-card-title">{{ team.name }}</h3>
+              <div class="team-members">
+                Members: 
+                {% for member in team.get_members %}
+                  {{ member.name }}{% if not forloop.last %}, {% endif %}
+                {% empty %}
+                  No members assigned
+                {% endfor %}
+              </div>
+              <div class="action-buttons">
+                <form action="{% url 'landing:team_creation' %}" method="GET" style="display: inline;">
+                  <input type="hidden" name="edit_team" value="{{ team.pk }}">
+                  <button type="submit" class="submit-btn">Edit Team</button>
+                </form>
+                
+                <form action="{% url 'landing:team_creation' %}" method="POST" style="display: inline;">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="delete_team">
+                  <input type="hidden" name="team_id" value="{{ team.pk }}">
+                  <button type="submit" class="danger-btn" onclick="return confirm('Are you sure you want to delete this team?');">Delete Team</button>
+                </form>
+              </div>
             </div>
           {% empty %}
-            <p>No available students. All students are already assigned to teams.</p>
+            <p>No teams have been created yet.</p>
           {% endfor %}
         </div>
-      </div>
-      
-      <button type="submit" class="submit-btn">Create Team</button>
-    </form>
-    
-    <!-- Teams Section -->
-    <div class="teams-section">
-      <h2 class="section-title">Existing Teams</h2>
-      
-      {% for team in teams %}
-        <div class="team-card">
-          <h3 class="team-card-title">{{ team.name }}</h3>
-          <div class="team-members">
-            Members: 
-            {% for member in team.get_members %}
-              {{ member.name }}{% if not forloop.last %}, {% endif %}
+        
+        <!-- All Students List -->
+        <div class="card">
+          <h2 class="card-title">All Students</h2>
+          <ul class="student-list">
+            {% for student in all_students %}
+              <li class="student-pill">
+                {{ student.name }} 
+                {% if student.team %}
+                  (Team: {{ student.team.name }})
+                {% else %}
+                  (Unassigned)
+                {% endif %}
+              </li>
             {% empty %}
-              No members assigned
+              <p>No students in this course yet.</p>
             {% endfor %}
-          </div>
+          </ul>
         </div>
-      {% empty %}
-        <p>No teams have been created yet.</p>
-      {% endfor %}
+      </div>
     </div>
   </div>
 {% endblock %}
