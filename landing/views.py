@@ -1,12 +1,13 @@
-from landing.models import Course
+from django.http.response import HttpResponse
 from django.shortcuts import render, redirect, reverse
 from django.views import View
-from oauth.oauth import RequireLoggedInMixin
-from django.http.response import HttpResponse
-from landing.models import Assessment, AssessmentQuestion
+import datetime
+
+from landing.models import Course, Assessment, AssessmentQuestion
 from oauth.models import User
 from django.db.models.query import QuerySet
 from landing.courses import create_new_team, create_new_course
+from oauth.oauth import RequireLoggedInMixin
 
 
 def landing_page(request):
@@ -23,16 +24,19 @@ class DashboardView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
         if user.course:
+            course_name = user.course.name
             assessments = user.course.get_current_published_assessments()
         else:
+            course_name = "You're not registered with a class"
             assessments = Assessment.objects.none()
 
         context = {
             "user_name": user.name,
             "user_role": user.role,
+            "course_name": course_name,
             "assessments": assessments
         }
-        return render(request, "landing/dashboard.html", context)
+        return render(request, "landing/professor_dashboard.html", context)
 
 class StudentAssessmentView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs):
@@ -157,7 +161,13 @@ class CreateAssessmentView(RequireLoggedInMixin, View):
         if assessment_id: 
             assessment = Assessment.objects.get(pk=assessment_id)
         else:
-            assessment = Assessment.objects.create(course = user.course, title="New Assessment", due_date=None, published=False)
+            assessment = Assessment.objects.create(
+                course = user.course,
+                title="New Assessment",
+                # Default to tomorrow for now
+                due_date=datetime.datetime.now() + datetime.timedelta(days=1),
+                published=False
+            )
             request.session["assessment_id"] = assessment.pk
 
         # Process the incoming action from the request data

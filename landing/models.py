@@ -22,7 +22,7 @@ class Course(models.Model):
         return self.assessments.all()
 
     def get_current_published_assessments(self) -> models.QuerySet["Assessment"]:
-        return self.assessments.filter(due_date__gt=datetime.datetime.now(), published=True)
+        return self.assessments.exclude(due_date__lt=datetime.datetime.now()).filter(published=True)
 
 class Team(models.Model):
     # Members are given by the foreign key on User, can be accessed with `teamObject.members`

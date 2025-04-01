@@ -354,7 +354,7 @@ a.logout-btn {
 
   <div class="assessment-builder">Assessment Builder</div>
   <div class="release-date">Release Date:</div>
-  {% if assessment.due_date %}
+  {% if assessment.due_date is not None %}
     <div class="due-date">Due: {{ due_date|date:"DATETIME_FORMAT" }}</div>
   {% else %}
     <div class="due-date">Due: ---</div>

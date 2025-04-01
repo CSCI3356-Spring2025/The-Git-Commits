@@ -1,4 +1,4 @@
-from models import Course, Team
+from .models import Course, Team
 from oauth.models import User
 
 def create_new_course(name: str, year: int) -> Course:

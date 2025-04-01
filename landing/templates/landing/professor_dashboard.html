@@ -133,6 +133,19 @@
           top: 10px;
         }
 
+        .add-assessment {
+          background: #dcf4f9;
+          border-radius: 50px;
+          height: 58px;
+          margin: 0 auto;
+          width: 40%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          top: 10px;
+        }
+
         .section-text {
           color: #000000;
           text-align: center;
@@ -200,7 +213,7 @@
 
       <div class="nav-buttons">
         <div class="nav-btn">Courses</div>
-        <a href="{% url 'landing:student_assessment' %}">
+        <a href="{% url 'landing:student_assessment_list' %}">
           <div class="nav-btn">Assessments</div>
         </a>
         <div class="nav-btn">Feedback</div>
@@ -232,11 +245,11 @@
           <div class="section">
             <div class="section-title">Courses</div>
             <div class="section-content">
-              <div class="section-text">Software Engineering</div>
+            <div class="section-text">{{ course_name }}</div>
             </div>
             <div class="add-class">
               <a
-                href="{% url 'landing:student_assessment' %}"
+                href="{% url 'landing:student_assessment_list' %}"
                 class="section-text"
                 >Add Course</a
               >
@@ -247,17 +260,20 @@
             <div class="section-title">Assessments</div>
             <div class="section-content">
               <a
-                href="{% url 'landing:student_assessment' %}"
+                href="{% url 'landing:student_assessment_list' %}"
                 class="section-text"
                 >View Current Assessments</a
               >
+            </div>
+            <div class="add-assessment">
+              <a href="{% url 'landing:assessment_creation' %}" class="section-text">Create Assessment</a>
             </div>
           </div>
           <div class="section">
             <div class="section-title">Feedback</div>
             <div class="section-content">
               <a
-                href="{% url 'landing:student_assessment' %}"
+                href="{% url 'landing:student_assessment_list' %}"
                 class="section-text"
                 >Review Feedback</a
               >
