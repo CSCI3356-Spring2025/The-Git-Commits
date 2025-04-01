@@ -1,0 +1,581 @@
+<!-- landing/templates/landing/course_page.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  <title>{{ context }} - PeerVue</title>
+{% endblock %}
+
+{% block head_content %}
+  <style>
+    a,
+    button,
+    input,
+    select,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border: none;
+      text-decoration: none;
+      background: none;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    menu, ol, ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: "KoHo", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #F0F8FF;
+    }
+
+    
+    /* Navbar Styles */
+    .navbar {
+      background: rgba(164, 218, 255, 0.25);
+      border-bottom: 1px solid #000000;
+      width: 100%;
+      height: 143px;
+      position: fixed;
+      left: 0;
+      top: 0;
+      box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+    
+    .nav-logo {
+      background: #1b0061;
+      border-radius: 50px;
+      width: 221px;
+      height: 78px;
+      margin-left: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .peer-vue {
+      color: #ffffff;
+      text-align: center;
+      font-family: "KoHo", sans-serif;
+      font-size: 45px;
+      font-weight: 400;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+    
+    .nav-btn {
+      background: #1b0061;
+      border-radius: 50px;
+      width: 191px;
+      height: 57px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+    
+    .nav-text {
+      color: #ffffff;
+      text-align: center;
+      font-family: "KoHo", sans-serif;
+      font-size: 20px;
+      font-weight: 400;
+    }
+    
+    .team-name {
+      color: #1b0061;
+      text-align: right;
+      font-family: "KoHo", sans-serif;
+      font-size: 20px;
+      font-weight: 400;
+      margin-right: 15px;
+    }
+    
+    /* Course Page Styles */
+    .course-container {
+      max-width: 1280px;
+      margin: 170px auto 50px;
+      padding: 0 20px;
+    }
+    
+    .course-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .course-title {
+      font-size: 32px;
+      font-weight: 500;
+      color: #000000;
+    }
+    
+    .edit-link {
+      font-size: 16px;
+      color: #1b0061;
+      margin-left: 10px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    
+    .classlist-section {
+      margin-bottom: 40px;
+    }
+    
+    .section-container {
+            background: #dcf4f9;
+            border-radius: 50px;
+            padding: 20px;
+            text-align: left;
+            max-width: 600px;
+            height: 100px;
+            margin: 20px auto;
+            font-size: 22px;
+            color: #1b0061;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+    }
+
+    .name-container {
+            background: #dcf4f9;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: left;
+            width: 300px;
+            height: 60px;
+            font-size: 22px;
+            color: #1b0061;
+            font-weight: bold;
+            display: flex;
+            align-items: left;
+            justify-content: space-between;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 500;
+      margin-bottom: 15px;
+    }
+    
+    .student-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: #e6f7fc;
+      border: 1px solid #aae7f2;
+      border-radius: 15px;
+      padding: 20px;
+      min-height: 100px;
+    }
+    
+    .student-pill {
+      background: #aae7f2;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 16px;
+      display: inline-block;
+    }
+    
+    .add-button {
+      background: #aae7f2;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .checkbox-container input[type="checkbox"] {
+      margin-right: 10px;
+      width: 18px;
+      height: 18px;
+    }
+    
+    .checkbox-label {
+      font-size: 16px;
+    }
+    
+    .teams-section {
+      margin-bottom: 40px;
+    }
+    
+    .team-card {
+      background: #aae7f2;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .team-card-title {
+      font-size: 22px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    
+    .team-members {
+      margin-bottom: 15px;
+    }
+    
+    .edit-team-btn {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 16px;
+      cursor: pointer;
+      display: inline-block;
+    }
+    
+    .add-team-btn {
+      background: #aae7f2;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 16px;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .submit-btn {
+            position:relative;
+            left:800px;
+            background: #1b0061;
+            border-radius: 50px;
+            padding: 12px 12px;
+            color: #ffffff;
+            font-size: 22px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: block;
+            width: 10%;
+        }
+
+    /* Add animation (Chrome, Safari, Opera) */
+@-webkit-keyframes example {
+  from {top:-100px;opacity: 0;}
+  to {top:0px;opacity:1;}
+}
+
+/* Add animation (Standard syntax) */
+@keyframes example {
+  from {top:-100px;opacity: 0;}
+  to {top:0px;opacity:1;}
+}
+
+/* The modal's background */
+.modal {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.member-list {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  .member {
+    background: #AEE7F5;
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: left;
+    width: 500px;
+  }
+
+  .modal {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Display the modal when targeted */
+.modal:target {
+  display: table;
+  position: absolute;
+}
+
+/* The modal box */
+.modal-dialog {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+/* The modal's content */
+.modal-dialog .modal-content {
+  margin: auto;
+  background-color: #f3f3f3;
+  position: relative;
+  padding: 0;
+  outline: 0;
+  border: 1px #777 solid;
+  text-align: justify;
+  width: 80%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+  /* Add animation */
+  -webkit-animation-name: example; /* Chrome, Safari, Opera */
+  -webkit-animation-duration: 0.5s; /* Chrome, Safari, Opera */
+  animation-name: example;
+  animation-duration: 0.5s;
+}
+
+input [type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid #2E1A63;
+    border-radius: 5px;
+  }
+
+/* The button used to close the modal */
+.closebtn {
+  text-decoration: none;
+  float: right;
+  font-size: 35px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.closebtn:hover,
+.closebtn:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.container {
+  padding: 2px 16px;
+}
+
+header {
+  background-color: #1b0061;
+  font-size: 25px;
+  color: white;
+}
+
+footer {
+  background-color: #5cb85c;
+  font-size: 20px;
+  color: white;
+}
+
+
+  </style>
+{% endblock %}
+
+{% block content %}
+  <!-- Navbar -->
+  <div class="navbar">
+    <a href="{% url 'landing:dashboard' %}" class="nav-logo">
+      <div class="peer-vue">PeerVue</div>
+    </a>
+    
+    <div class="nav-links">
+      <a href="#" class="nav-btn">
+        <div class="nav-text">Courses</div>
+      </a>
+      <a href="#" class="nav-btn">
+        <div class="nav-text">Assessments</div>
+      </a>
+      <a href="#" class="nav-btn">
+        <div class="nav-text">Feedback</div>
+      </a>
+    </div>
+    
+    <div class="team-name">
+      The Git Commits
+    </div>
+  </div>
+  
+  <div class="course-container">
+    <!-- Course Header -->
+    <div class="course-header">
+      <h1 class="course-title">Software Engineering (Spring 2025) <a href="#" class="edit-link">edit</a></h1>
+    </div>
+    
+    <!-- Classlist Section -->
+    <div class="classlist-section">
+      <h2 class="section-title">Classlist</h2>
+      <div class="student-list">
+        <span class="student-pill">Caden P</span>
+        <span class="student-pill">Daven P</span>
+        <span class="student-pill">Juliet M</span>
+        <span class="student-pill">Kenia V</span>
+        <span class="student-pill">Liana W</span>
+        <span class="student-pill">Anthony Y</span>
+        <span class="student-pill">Christopher M</span>
+        <span class="student-pill">Joshua G</span>
+        <span class="student-pill">Landon L</span>
+        <span class="student-pill">Michael C</span>
+        <span class="student-pill">Joshua G</span>
+        <span class="student-pill">Landon L</span>
+        <span class="student-pill">Michael C</span>
+        <span class="student-pill">Joshua G</span>
+        <span class="student-pill">Landon L</span>
+        <span class="student-pill">Michael C</span>
+        <span class="student-pill">Joshua G</span>
+        <span class="student-pill">Landon L</span>
+        <span class="student-pill">Michael C</span>
+        <span class="student-pill">Joshua G</span>
+        <span class="student-pill">Landon L</span>
+        <span class="student-pill">Michael C</span>
+        <span class="add-button">+</span>
+      </div>
+    </div>
+    
+    <!-- Self-evaluations Checkbox -->
+    <div class="checkbox-container">
+      <input type="checkbox" id="self-evaluations">
+      <label for="self-evaluations" class="checkbox-label">Self-evaluations</label>
+    </div>
+    
+    <!-- Teams Section -->
+    <div class="teams-section">
+      <h2 class="section-title">Teams</h2>
+      
+      <!-- Team 1 -->
+      <div class="team-card">
+        <h3 class="team-card-title">The Git Commits</h3>
+        <div class="team-members">Members: Caden P, Daven P, Juliet M, Kenia V, Liana W</div>
+        <a href="#edit_team_modal" class="edit-team-btn">edit</a>
+
+        <div id="edit_team_modal" class="modal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <header class="container">
+                <a href="" class="closebtn">×</a>
+                <h2>Edit Team</h2>
+              </header>
+              <div class="container">
+                <h2>Name</h2>
+
+                <div class="name-container">
+                  <input type="text" id="teamName" class="input-field" value="The Git Commits">
+                </div>
+                
+                <h3>Members</h3>
+                <ul class="member-list">
+                  <li class="member">Caden Parajuli (parajulc@bc.edu) <button class="remove">-</button></li>
+                  <li class="member">Daven Pelaez (pelaezd@bc.edu) <button class="remove">-</button></li>
+                  <li class="member">Juliet McMillan (mcmillju@bc.edu) <button class="remove">-</button></li>
+                  <li class="member">Kenia Vazquez Roman (vazqueke@bc.edu) <button class="remove">-</button></li>
+                  <li class="member">Liana Winans (winansl@bc.edu) <button class="remove">-</button></li>
+                </ul>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+<!-- TODO: need to be able to create this dynamically based on course/teams -->
+      <!-- Team 2 -->
+      <div class="team-card">
+        <h3 class="team-card-title">Full Stack Five</h3>
+        <div class="team-members">Members: Anthony Y, Christopher M, Joshua G, Landon L, Michael C</div>
+
+        <a href="#edit_team_modal" class="edit-team-btn">edit</a>
+
+        <div id="edit_team_modal" class="modal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <header class="container">
+                <a href="" class="closebtn">×</a>
+                <h2>Edit Team</h2>
+              </header>
+              <div class="container">
+                <h2>Name</h2>
+
+                <div class="name-container">
+                  <input type="text" id="teamName" class="input-field" value="Full Stack Five">
+                </div>
+                
+                <h3>Members</h3>
+                <ul class="member-list">
+                  <li class="member">Anthony<button class="remove">-</button></li>
+                  <li class="member">Christopher<button class="remove">-</button></li>
+                  <li class="member">Joshua<button class="remove">-</button></li>
+                  <li class="member">Landon<button class="remove">-</button></li>
+                  <li class="member">Michael<button class="remove">-</button></li>
+                </ul>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- Add Team Button -->
+      <a href="#add_team_modal">Add Team</a>
+
+      <div id="add_team_modal" class="modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="container">
+              <header class="container">
+                <a href= "" class="closebtn">×</a>
+                <h2>Edit</h2>
+              </header>
+              <form action="{% url 'landing:team_creation' %}" method="POST"> 
+                {% csrf_token %}
+                <div class="section-container">
+                  <label for="name">Team Name</label>
+                  <input type="text" id="name" name="name" class="input-field" style="width:400px;"/>
+                </div>
+
+                <button type="submit" class="submit-btn"> Save </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+{% endblock %}

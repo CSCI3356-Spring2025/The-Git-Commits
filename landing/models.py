@@ -45,7 +45,7 @@ class Team(models.Model):
 
 class Assessment(models.Model):
     title = models.CharField(max_length=150)
-    due_date = models.DateTimeField()
+    due_date = models.DateTimeField(null=True)
     course = models.ForeignKey(Course, models.CASCADE, related_name="assessments")
     published = models.BooleanField(default=False)
 
