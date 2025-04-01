@@ -6,6 +6,7 @@ from django.http.response import HttpResponse
 from landing.models import Assessment, AssessmentQuestion
 from oauth.models import User
 from django.db.models.query import QuerySet
+from landing.courses import create_new_team, create_new_course
 
 
 def landing_page(request):
@@ -71,20 +72,58 @@ class StudentAssessmentListView(RequireLoggedInMixin, View):
         }
         return render(request, "landing/student_assessment_list.html", context)
 
-class TeamEditView(RequireLoggedInMixin, View):
+class CreateTeamView(RequireLoggedInMixin, View):
     def get(self, request, *argv, **kwargs) -> HttpResponse:
-
-        context = dict()
+        user: User = kwargs['user']
+        if user.course is None:
+            return redirect(reverse("landing:dashboard"))
+            
+        context = {
+            "teams": user.course.teams.all(),
+            "course_name": user.course.name
+        }
         return render(request, "landing/team_creation.html", context)
     
     def post(self, request, *argv, **kwargs) -> HttpResponse:
-        course: Course = kwargs['user'].course
-        if course is None:
+        user: User = kwargs['user']
+        if user.course is None:
             return redirect(reverse("landing:dashboard"))
 
-        print(course.teams)
-        context = { "teams": course.teams }
+        team_name = request.POST.get('name')
+        if team_name:
+            try:
+                team = create_new_team(team_name, user.course.name)
+                return redirect(reverse("landing:team_creation"))
+            except Course.DoesNotExist:
+                return render(request, 'landing/team_creation.html', 
+                            {'error': 'Course not found'})
+
+        context = {
+            "teams": user.course.teams.all(),
+            "course_name": user.course.name
+        }
         return render(request, 'landing/team_creation.html', context)
+
+class CreateCourseView(RequireLoggedInMixin, View):
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        context = {}
+        return render(request, "landing/course_creation.html", context)
+    
+    def post(self, request, *args, **kwargs) -> HttpResponse:
+        course_name = request.POST.get('name')
+        course_year = request.POST.get('year')
+        
+        if course_name and course_year:
+            try:
+                course_year = int(course_year)
+                course = create_new_course(course_name, course_year)
+                return redirect(reverse("landing:dashboard"))
+            except ValueError:
+                return render(request, 'landing/course_creation.html',
+                            {'error': 'Invalid year'})
+        
+        return render(request, 'landing/course_creation.html',
+                     {'error': 'Course name and year required'})
 
 class CreateAssessmentView(RequireLoggedInMixin, View):
     # Right now we're assuming this will create a new assessment, not edit an existing one
