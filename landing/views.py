@@ -137,12 +137,23 @@ class CreateAssessmentView(RequireLoggedInMixin, View):
 
             required = params.get("required", None)
             question_text = params.get("question", None)
+            question_type = params.get("question_type", None)
             if required is not None:
                 question.required = (required == "on")
             if question_text is not None:
                 question.question = question_text
+            if question_type == "likert" or question_type == "free":
+                question.question_type = question_type
 
             question.save()
+
+        elif params.get("publish", None):
+            assessment.published = True
+            assessment.save()
+            del request.session["assessment_id"]
+            request.session.modified = True
+            return redirect("landing:dashboard")
+
 
         context = { "assessment": assessment }
         return render(request, "landing/assessment_creation.html", context)

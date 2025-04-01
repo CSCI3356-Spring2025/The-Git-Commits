@@ -180,7 +180,7 @@ a.logout-btn {
   top: 570px;
   
 }
-.btn {
+.btn6 {
   background: var(--accent-1, #1b0061);
   border-radius: 50px;
   width: 147px;
@@ -378,8 +378,12 @@ a.logout-btn {
   {% endfor %}
 
   <div class="publish-btn">
-    <div class="btn"></div>
-    <div class="publish">Publish</div>
+    <div class="btn6"></div>
+    <form method="post">
+      {% csrf_token %}
+      <button class="publish">Publish</button>
+      <input type="hidden" name="publish" value="question">
+    </form>
   </div>
   <div class="submission-btn">
     <div class="btn2"></div>
@@ -418,12 +422,17 @@ a.logout-btn {
               <label for="question-edit-{{question.pk}}" class="form-label">Question:</label>
               <input type="text" name="question" id="question-edit{{question.pk}}" value="{{ question.question }}" class="form-control">
               <br>
+              <select class="form-select" name="question_type" aria-label="Question Type">
+                <option disabled value="">Question Type</option>
+                <option {% if question.question_type == "likert" %}selected{% endif %} value="likert">Likert Scale</option>
+                <option {% if question.question_type == "free" %}selected{% endif %} value="free">Free Response</option>
+              </select>
+              <br>
               <input class="form-check-input" type="checkbox" name="required" {% if question.required %}checked{% endif %}>
               <label class="form-check-label" for="required">Required</label>
-
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><br>
               <button type="submit" class="btn btn-primary">Save</button>
             </div>
           </form>
