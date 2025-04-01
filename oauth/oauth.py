@@ -144,8 +144,8 @@ def get_logged_in_user(request) -> Optional[User]:
     return user
 
 class RequireLoggedInMixin:
-    """Django view mixin to require that the user is logged in,
-    otherwise it redirects them to the login page."""
+    """Django view mixin to require that the user is logged in, otherwise it
+    redirects them to the login page. It also passes a user argument to request handlers"""
 
     login_url = None
 
@@ -161,3 +161,26 @@ class RequireLoggedInMixin:
 
         return super().dispatch(request, *args, user=user, **kwargs)
 
+class RequireAdminMixin:
+    login_url = None
+    dashboard_url = None
+
+    def get_login_url(self) -> str:
+        if self.login_url:
+            return self.login_url
+        return reverse("landing:landing_page")
+
+    def get_dashboard_url(self) -> str:
+        if self.dashboard_url:
+            return self.dashboard_url
+        return reverse("landing:dashboard")
+
+    def dispatch(self, request, *args, **kwargs):
+        user = get_logged_in_user(request)
+        if user is None:
+            return redirect(self.get_login_url())
+
+        elif not user.is_admin():
+            return redirect(self.get_dashboard_url())
+
+        return super().dispatch(request, *args, user=user, **kwargs)

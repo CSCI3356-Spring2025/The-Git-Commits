@@ -7,7 +7,7 @@ from landing.models import Course, Assessment, AssessmentQuestion
 from oauth.models import User
 from django.db.models.query import QuerySet
 from landing.courses import create_new_team, create_new_course
-from oauth.oauth import RequireLoggedInMixin
+from oauth.oauth import RequireLoggedInMixin, RequireAdminMixin
 
 
 def landing_page(request):
@@ -36,7 +36,10 @@ class DashboardView(RequireLoggedInMixin, View):
             "course_name": course_name,
             "assessments": assessments
         }
-        return render(request, "landing/professor_dashboard.html", context)
+        if user.role == "admin":
+            return render(request, "landing/professor_dashboard.html", context)
+        else:
+            return render(request, "landing/student_dashboard.html", context)
 
 class StudentAssessmentView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs):
@@ -76,7 +79,7 @@ class StudentAssessmentListView(RequireLoggedInMixin, View):
         }
         return render(request, "landing/student_assessment_list.html", context)
 
-class CreateTeamView(RequireLoggedInMixin, View):
+class CreateTeamView(RequireAdminMixin, View):
     def get(self, request, *argv, **kwargs) -> HttpResponse:
         user: User = kwargs['user']
         if user.course is None:
@@ -108,7 +111,7 @@ class CreateTeamView(RequireLoggedInMixin, View):
         }
         return render(request, 'landing/team_creation.html', context)
 
-class CreateCourseView(RequireLoggedInMixin, View):
+class CreateCourseView(RequireAdminMixin, View):
     def get(self, request, *args, **kwargs) -> HttpResponse:
         context = {}
         return render(request, "landing/course_creation.html", context)
@@ -129,7 +132,7 @@ class CreateCourseView(RequireLoggedInMixin, View):
         return render(request, 'landing/course_creation.html',
                      {'error': 'Course name and year required'})
 
-class CreateAssessmentView(RequireLoggedInMixin, View):
+class CreateAssessmentView(RequireAdminMixin, View):
     # Right now we're assuming this will create a new assessment, not edit an existing one
     def get(self, request, *argv, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]

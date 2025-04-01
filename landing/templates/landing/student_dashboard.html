@@ -201,7 +201,7 @@
       <div class="nav-buttons">
         <div class="nav-btn">Courses</div>
         <a
-          href="{% url 'landing:student_assessment' %}"
+          href="{% url 'landing:student_assessment_list' %}"
           style="text-decoration: none"
         >
           <div class="nav-btn">Assessments</div>
@@ -236,16 +236,9 @@
             <div class="section-title">Courses</div>
             <div class="assessment-list">
               <a
-                href="{% url 'landing:student_assessment' %}"
+                href="{% url 'landing:student_assessment_list' %}"
                 class="section-text"
-                >Software Engineering</a
-              >
-            </div>
-            <div class="new-class">
-              <a
-                href="{% url 'landing:student_assessment' %}"
-                class="section-text"
-                >Biology</a
+                >{{ course_name }}</a
               >
             </div>
           </div>
@@ -255,9 +248,9 @@
             <div class="assessment-list">
               <br /><br />
               <a
-                href="{% url 'landing:student_assessment' %}"
+                href="{% url 'landing:student_assessment_list' %}"
                 class="section-text"
-                >Biology Assessment</a
+                >View Assessments</a
               >
             </div>
           </div>
@@ -265,7 +258,7 @@
             <div class="section-title">Feedback</div>
             <div class="assessment-list">
               <a
-                href="{% url 'landing:student_assessment' %}"
+                href="{% url 'landing:student_assessment_list' %}"
                 class="section-text"
                 >View Feedback</a
               >
