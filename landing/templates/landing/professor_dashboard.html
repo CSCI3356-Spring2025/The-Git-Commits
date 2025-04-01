@@ -245,16 +245,9 @@
           <div class="section">
             <div class="section-title">Courses</div>
             <div class="section-content">
-            <div class="section-text">{{ course_name }}</div>
+            <a href="{% url 'landing:team_creation' %}" class="section-text">{{ course_name }}</a>
             </div>
-            <div class="add-class">
-              <a
-                href="{% url 'landing:team_creation' %}"
-                class="section-text"
-                >Add Course</a
-              >
-            </div>
-          </div>
+        </div>
 
           <div class="section">
             <div class="section-title">Assessments</div>
