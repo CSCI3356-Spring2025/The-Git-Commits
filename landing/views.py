@@ -51,6 +51,8 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
             return redirect(reverse("dashboard"))
 
         # TODO: check that the user is in the course the assessment is intended for
+        if user.course != assessment.course:
+            return redirect(reverse("landing:dashboard"))
 
         context = {
             'assessment_title': assessment.title,
@@ -177,7 +179,7 @@ class CreateAssessmentView(RequireAdminMixin, View):
         # TODO: factor this out into another function
         params = request.POST
         if params.get("add", None):
-            question = AssessmentQuestion.objects.create(assessment=assessment, question_type="likert", question="Test question text", required=True)
+            question = AssessmentQuestion.objects.create(assessment=assessment, question_type="likert", question="Question text?", required=True)
 
         elif params.get("remove", None):
             pk = params["remove"]

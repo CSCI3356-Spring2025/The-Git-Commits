@@ -13,7 +13,6 @@
   font-family: "KoHo", Arial, sans-serif;
   overflow-x: hidden;
   padding: 20px;
-  padding-top: 10rem;
 }
 
 
@@ -50,11 +49,82 @@ a.logout-btn {
   cursor: pointer;
 }
 
-.question-outer {
+.assessment-builder,
+.assessment-builder * {
+  box-sizing: border-box;
+  position: absolute;
+  top: 130px;
+  right: 30px;
+}
+
+.assessment-builder {
+  color: #000000;
+  text-align: center;
+  font-family: "KoHo-Regular", sans-serif;
+  font-size: 36px;
+  font-weight: 400;
+  position: relative;
+  width: 317px;
+  height: 23px;
+}
+
+.release-date,
+.release-date * {
+  box-sizing: border-box;
+  position: relative;
+  top: 130px;
+  right: -440px;
+}
+.release-date {
+  color: #000000;
+  text-align: center;
+  font-family: "KoHo-Regular", sans-serif;
+  font-size: 36px;
+  font-weight: 400;
+  position: relative;
+  width: 231px;
+  height: 54px;
+}
+
+.due-date,
+.due-date * {
+  box-sizing: border-box;
+  position: relative;
+  top: 75px;
+  right: -840px;
+}
+.due-date {
+  color: #000000;
+  text-align: center;
+  font-family: "KoHo-Regular", sans-serif;
+  font-size: 36px;
+  font-weight: 400;
+  position: relative;
+  width: 209px;
+  height: 45px;
+}
+
+.courses {
+  color: #000000;
+  text-align: center;
+  font-family: "KoHo-Medium", sans-serif;
+  font-size: 25px;
+  font-weight: 500;
+  position: absolute;
+  left: 25px;
+  top: 13px;
+  width: 523px;
+  height: 35px;
+}
+
+.rectangle {
   background: #aae7f2;
   border-radius: 50px;
-  width: 50%;
-  /* height: 100px; */
+  width: 1200px;
+  height: 100px;
+  /* position: absolute; */
+  /* left: 100px; */
+  /* top: 250px; */
 }
 
 
@@ -64,25 +134,13 @@ a.logout-btn {
   font-family: "KoHo-Medium", sans-serif;
   font-size: 26px;
   font-weight: 500;
+  /* position: absolute; */
+  /* left: 51px; */
+  /* top: 28.01px; */
 }
 
 .edit-frame {
   background: #dcf4f9;
-  border-radius: 20px;
-  /* padding: 10px; */
-  /* display: flex; */
-  /* flex-direction: col; */
-  /* gap: 10px; */
-  align-items: center;
-  justify-content: center;
-  /* width: 85px; */
-  /* height: 35px; */
-  /* position: absolute; */
-  /* left: 859px; */
-  /* top: 35px; */
-}
-.remove-frame {
-  background: var(--color, #dcf4f9);
   border-radius: 20px;
   padding: 10px;
   display: flex;
@@ -90,8 +148,23 @@ a.logout-btn {
   gap: 10px;
   align-items: center;
   justify-content: center;
-  /* width: 86px; */
-  /* height: 33px; */
+  width: 85px;
+  height: 35px;
+  /* position: absolute; */
+  /* left: 859px; */
+  /* top: 35px; */
+}
+.remove-frame {
+  background: var(--color, #dcf4f9);
+  border-radius: 50px;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  width: 86px;
+  height: 33px;
   /* position: absolute; */
   /* left: 959px; */
   /* top: 36px; */
@@ -125,14 +198,6 @@ a.logout-btn {
   position: absolute;
   right: 18px;
   top: 0px;
-}
-
-.publish-text {
-  color: #fffcfc;
-  text-align: center;
-  font-family: "KoHo-Regular", sans-serif;
-  font-size: 32px;
-  font-weight: 400;
 }
 
 .submission-btn,
@@ -262,29 +327,6 @@ a.logout-btn {
   width: 184px;
   height: 35px;
 }
-
-.outer-dark-btn {
-  background: var(--accent-dark-blue);
-  border-radius: 50px;
-}
-
-.outer-mid-btn {
-  background: var(--accent-medium-blue);
-  border-radius: 50px;
-}
-
-.mid-btn-text {
-  color: #000000;
-  text-align: center;
-  font-family: "KoHo-Medium", sans-serif;
-  font-size: 20px;
-  font-weight: 500;
-}
-
-.question-container {
-  min-height: 10rem;
-}
-
     </style>
 {% endblock %}
 
@@ -310,56 +352,58 @@ a.logout-btn {
     <!--<div class="the-git-commits">The Git Commits</div>-->
   </div>
 
-  <h2 class="assessment-builder">Assessment Builder</h2>
+  <div class="assessment-builder">Assessment Builder</div>
+  <div class="release-date">Release Date:</div>
+  {% if assessment.due_date is not None %}
+    <div class="due-date">Due: {{ due_date|date:"DATETIME_FORMAT" }}</div>
+  {% else %}
+    <div class="due-date">Due: ---</div>
+  {% endif %}
 
-  <!-- Questions -->
-  <div class="question-container">
   {% for question in assessment.get_questions %}
-  <div class="question-outer m-4">
-    <div class="question m-2">{{ question.question }}</div>
-    <div class="container row">
-      <button class="edit-frame col m-2 ms-4 py-2" data-bs-toggle="modal" data-bs-target="#edit-question-modal-id-{{ question.pk }}">
-        <div class="edit" data-bs-toggle="modal" data-bs-target="#edit-question-modal-id-{{ question.pk }}">Edit</div>
-      </button>
-      <form method="post" class="remove-frame col m-2 p-2">
-        <button class="col">
-          {% csrf_token %}
-          <div class="remove">Remove</div>
-          <input type="hidden" name="remove" value="{{ question.pk }}">
-        </button>
+  <div class="rectangle">
+    <div class="question">{{ question.question }}</div>
+    <div class="edit-frame" data-bs-toggle="modal" data-bs-target="#edit-question-modal-id-{{ question.pk }}">
+      <button class="edit" data-bs-toggle="modal" data-bs-target="#edit-question-modal-id-{{ question.pk }}">Edit</button>
+    </div>
+    <div class="remove-frame">
+      <form method="post">
+        {% csrf_token %}
+        <button class="remove">Remove</button>
+        <!-- not sure how to identify temporary questions -->
+        <input type="hidden" name="remove" value="{{ question.pk }}">
       </form>
     </div>
   </div>
   {% endfor %}
+
+  <div class="publish-btn">
+    <div class="btn6"></div>
+    <form method="post">
+      {% csrf_token %}
+      <button class="publish">Publish</button>
+      <input type="hidden" name="publish" value="question">
+    </form>
   </div>
-
-  <!-- Control Buttons -->
-  <div class="d-inline-flex">
-    <div class="m-4">
-      <form method="post">
-        {% csrf_token %}
-        <div class="outer-dark-btn d-inline-flex">
-          <button class="p-2 publish-text">Publish</button>
-          <input type="hidden" name="publish" value="question">
-        </div>
-      </form>
-    </div>
-
-    <!-- <div class="m-4"> -->
-    <!--   <div class="outer-mid-btn d-inline-flex"> -->
-    <!--     <button class="p-2 mid-btn-text">View Submissions</button> -->
-    <!--   </div> -->
-    <!-- </div> -->
-
-    <div class="m-4">
-      <div class="outer-mid-btn d-inline-flex">
-        <form method="post">
-          {% csrf_token %}
-          <button class="p-2 mid-btn-text">Add Question</button>
-          <input type="hidden" name="add" value="question">
-        </form>
-      </div>
-    </div>
+  <div class="submission-btn">
+    <div class="btn2"></div>
+    <div class="view-submissions">View Submissions</div>
+  </div>
+  <div class="reminder-btn">
+    <div class="btn3"></div>
+    <div class="view-reminder">Reminders</div>
+  </div>
+  <div class="anonymous-btn">
+    <button class="btn4"></button>
+    <button class="view-anon">Anonymous</button>
+  </div>
+  <div class="add-btn">
+    <div class="btn5"></div>
+    <form method="post">
+      {% csrf_token %}
+      <button class="view-anon">Add</button>
+      <input type="hidden" name="add" value="question">
+    </form>
   </div>
 
    <!-- Modals -->
