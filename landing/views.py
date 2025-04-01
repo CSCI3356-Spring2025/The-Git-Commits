@@ -80,7 +80,7 @@ class TeamEditView(RequireLoggedInMixin, View):
     def post(self, request, *argv, **kwargs) -> HttpResponse:
         course: Course = kwargs['user'].course
         if course is None:
-            return redirect(reverse("dashboard"))
+            return redirect(reverse("landing:dashboard"))
 
         print(course.teams)
         context = { "teams": course.teams }
@@ -91,7 +91,7 @@ class CreateAssessmentView(RequireLoggedInMixin, View):
     def get(self, request, *argv, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
         if user.course is None:
-            return redirect(reverse("dashboard"))
+            return redirect(reverse("landing:dashboard"))
 
         # Determine which assessment this is for (creating a new one if necessary)
         assessment_id = request.session.get("assessment_id", None)
@@ -111,7 +111,7 @@ class CreateAssessmentView(RequireLoggedInMixin, View):
         """
         user: User = kwargs["user"]
         if user.course is None:
-            return redirect(reverse("dashboard"))
+            return redirect(reverse("landing:dashboard"))
 
         # Determine which assessment this is for
         assessment_id = request.session.get("assessment_id", None)
