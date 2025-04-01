@@ -1,8 +1,9 @@
+from landing.models import Course
 from django.shortcuts import render, redirect, reverse
 from django.views import View
 from oauth.oauth import RequireLoggedInMixin
 from django.http.response import HttpResponse
-from landing.models import Assessment
+from landing.models import Assessment, AssessmentQuestion
 from oauth.models import User
 from django.db.models.query import QuerySet
 
@@ -76,13 +77,61 @@ class TeamEditView(RequireLoggedInMixin, View):
         context = dict()
         return render(request, "landing/team_creation.html", context)
     
-    def post(self, request, *argv, **kwargs):
-        course = kwargs['user'].course
+    def post(self, request, *argv, **kwargs) -> HttpResponse:
+        course: Course = kwargs['user'].course
+        if course is None:
+            return redirect(reverse("dashboard"))
+
         print(course.teams)
-        context = dict()
+        context = { "teams": course.teams }
         return render(request, 'landing/team_creation.html', context)
+
+class CreateAssessmentView(RequireLoggedInMixin, View):
+    # Right now we're assuming this will create a new assessment, not edit an existing one
+    def get(self, request, *argv, **kwargs) -> HttpResponse:
+        user: User = kwargs["user"]
+        if user.course is None:
+            return redirect(reverse("dashboard"))
+
+        # Create new assessment object and store which assessment we're working on for later requests
+        assessment = Assessment.objects.create(course = user.course, title="New Assessment", due_date=None, published=False)
+        request.session["assessment_id"] = assessment.pk
+
+        context = {}
+        return render(request, "landing/assessment_creation.html", context)
+
+    def post(self, request, *argv, **kwargs) -> HttpResponse:
+        """Buttons that have to update the page send POST requests back to update the database
+        and re-render the page. Doing it this way instead of using JS feels like a war crime,
+        but the requirements make it necessary.
+        """
+        user: User = kwargs["user"]
+        if user.course is None:
+            return redirect(reverse("dashboard"))
+
+        # Determine which assessment this is for
+        assessment_id = request.session.get("assessment_id", None)
+        if assessment_id: 
+            assessment = Assessment.objects.get(pk=assessment_id)
+        else:
+            assessment = Assessment.objects.create(course = user.course, title="New Assessment", due_date=None, published=False)
+            request.session["assessment_id"] = assessment.pk
+
+        # Process the incoming action from the request data
+        params = request.POST
+        if params.get("add", None):
+            question = AssessmentQuestion.objects.create(assessment=assessment, question_type="likert", question="Test question text", required=True)
+        elif params.get("remove", None):
+            pk = params["remove"]
+            AssessmentQuestion.objects.filter(pk=pk).delete()
+
+        context = { "assessment": assessment }
+        return render(request, "landing/assessment_creation.html", context)
     
 def add_team_redirect(request, *argv, **kwargs):
     context = {'course': 'Software Engineering',
                'team': 'The Git Commits'}
+
     return render(request, 'landing/team_creation.html')
+
+

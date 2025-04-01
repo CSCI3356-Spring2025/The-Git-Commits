@@ -122,50 +122,21 @@ a.logout-btn {
   border-radius: 50px;
   width: 1200px;
   height: 100px;
-  position: absolute;
-  left: 100px;
-  top: 250px;
+  /* position: absolute; */
+  /* left: 100px; */
+  /* top: 250px; */
 }
 
-.rectangle2 {
-  background: #aae7f2;
-  border-radius: 50px;
-  width: 1200px;
-  height: 100px;
-  position: absolute;
-  left: 100px;
-  top: 360px;
-}
 
-.rectangle3 {
-  background: #aae7f2;
-  border-radius: 50px;
-  width: 1200px;
-  height: 100px;
-  position: absolute;
-  left: 100px;
-  top: 470px;
-}
-
-.rectangle4 {
-  background: #aae7f2;
-  border-radius: 50px;
-  width: 1200px;
-  height: 100px;
-  position: absolute;
-  left: 100px;
-  top: 580px;
-}
-
-.question1 {
+.question {
   color: #000000;
   text-align: center;
   font-family: "KoHo-Medium", sans-serif;
   font-size: 26px;
   font-weight: 500;
-  position: absolute;
-  left: 51px;
-  top: 28.01px;
+  /* position: absolute; */
+  /* left: 51px; */
+  /* top: 28.01px; */
 }
 
 .edit-frame {
@@ -179,9 +150,9 @@ a.logout-btn {
   justify-content: center;
   width: 85px;
   height: 35px;
-  position: absolute;
-  left: 859px;
-  top: 35px;
+  /* position: absolute; */
+  /* left: 859px; */
+  /* top: 35px; */
 }
 .remove-frame {
   background: var(--color, #dcf4f9);
@@ -194,9 +165,9 @@ a.logout-btn {
   justify-content: center;
   width: 86px;
   height: 33px;
-  position: absolute;
-  left: 959px;
-  top: 36px;
+  /* position: absolute; */
+  /* left: 959px; */
+  /* top: 36px; */
 }
 
 .publish-btn,
@@ -370,10 +341,7 @@ a.logout-btn {
 
     <div class="nav-buttons">
       <div class="nav-btn">Courses</div>
-      <a
-        href="{% url 'landing:student_assessment' %}"
-        style="text-decoration: none"
-      >
+      <a href="{% url 'landing:student_assessment_list' %}">
         <div class="nav-btn">Assessments</div>
       </a>
       <div class="nav-btn">Feedback</div>
@@ -381,55 +349,34 @@ a.logout-btn {
         <a class="logout-btn" href="{% url 'oauth:logout' %}">Logout</a>
       </div>
     </div>
-
     <!--<div class="the-git-commits">The Git Commits</div>-->
   </div>
 
   <div class="assessment-builder">Assessment Builder</div>
   <div class="release-date">Release Date:</div>
-  <div class="due-date">Due Date:</div>
+  {% if assessment.due_date %}
+    <div class="due-date">Due: {{ due_date|date:"DATETIME_FORMAT" }}</div>
+  {% else %}
+    <div class="due-date">Due: ---</div>
+  {% endif %}
+
+  {% for question in assessment.get_questions %}
   <div class="rectangle">
-    <div class="question1">He/she adequately fulfills the assigned tasks</div>
+    <div class="question">{{ question.question }}</div>
     <div class="edit-frame">
       <div class="edit">Edit</div>
     </div>
     <div class="remove-frame">
-      <div class="remove">Remove</div>
+      <form method="post">
+        {% csrf_token %}
+        <button class="remove">Remove</button>
+        <!-- not sure how to identify temporary questions -->
+        <input type="hidden" name="remove" value="{{ question.pk }}">
+      </form>
     </div>
   </div>
-  <div class="rectangle2">
-    <div class="question1">
-      He/she demonstrates initiative to achieve project success
-    </div>
-    <div class="edit-frame">
-      <div class="edit">Edit</div>
-    </div>
-    <div class="remove-frame">
-      <div class="remove">Remove</div>
-    </div>
-  </div>
-  <div class="rectangle3">
-    <div class="question1">
-      He/she is able to seek help when there are problems
-    </div>
-    <div class="edit-frame">
-      <div class="edit">Edit</div>
-    </div>
-    <div class="remove-frame">
-      <div class="remove">Remove</div>
-    </div>
-  </div>
-  <div class="rectangle4">
-    <div class="question1">
-      He/she shows a communicative attitude facilitating the teamwork
-    </div>
-    <div class="edit-frame">
-      <div class="edit">Edit</div>
-    </div>
-    <div class="remove-frame">
-      <div class="remove">Remove</div>
-    </div>
-  </div>
+  {% endfor %}
+
   <div class="publish-btn">
     <div class="btn"></div>
     <div class="publish">Publish</div>
@@ -448,7 +395,11 @@ a.logout-btn {
   </div>
   <div class="add-btn">
     <div class="btn5"></div>
-    <div class="view-anon">Add</div>
+    <form method="post">
+      {% csrf_token %}
+      <button class="view-anon">Add</button>
+      <input type="hidden" name="add" value="question">
+    </form>
   </div>
 
   {% endblock %}
