@@ -4,7 +4,7 @@
   --accent-darker-blue: #1b0070;
   --accent-medium-blue: #aae7f2;
   --accent-light-blue: #dcf4f9;
-  --navbar-background: #a4daff3f;
+  --navbar-background: rgba(164, 218, 255, 0.25);
   --black: black;
   --white: #f0f8ff;
 }
@@ -29,29 +29,6 @@ a {
   text-decoration: none;
 }
 
-/* Navbar */
-.navbar {
-  background: var(--navbar-background);
-  border: 1px solid #000000;
-  width: 100%;
-  height: 143px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 100;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  display: flex;
-  align-items: center;
-  padding: 0 35px;
-}
-        
-.peer-vue {
-  color: #ffffff;
-  text-align: center;
-  font-size: 45px;
-  font-weight: 400;
-}
-
 .nav-buttons {
   display: flex;
   gap: 20px;
@@ -67,8 +44,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  cursor: pointer;
+  text-decoration: none;
 }
         
 .the-git-commits {
@@ -89,3 +65,61 @@ a {
   border-radius: 40px;
 }
 
+/* This is the Nav Bar to use */
+.navbar {
+  background: var(--navbar-background);
+  border-bottom: 1px solid #000000;
+  width: 100%;
+  height: 143px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.peer-vue {
+  color: #ffffff;
+  text-align: center;
+  font-family: "KoHo", sans-serif;
+  font-size: 45px;
+  font-weight: 400;
+}
+      
+.nav-logo {
+  background: #1b0061;
+  border-radius: 50px;
+  width: 221px;
+  height: 78px;
+  margin-left: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+      
+.nav-links {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-text {
+  color: #ffffff;
+  text-align: center;
+  font-family: "KoHo", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.team-name {
+  color: #1b0061;
+  text-align: right;
+  font-family: "KoHo", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  margin-right: 15px;
+}
