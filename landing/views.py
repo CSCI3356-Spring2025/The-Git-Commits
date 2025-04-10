@@ -584,3 +584,15 @@ class ReviewFeedbackView(RequireLoggedInMixin, View):
         }
         
         return render(request, "landing/review_feedback.html", context)
+    
+class ViewFeedbackView(RequireLoggedInMixin, View):
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        user: User = kwargs["user"]
+        
+        context = {
+            "user_name": user.name,
+            "user_role": user.role,
+            "user_team": user.team.name if user.team else "",
+        }
+        
+        return render(request, "landing/view_feedback.html", context)

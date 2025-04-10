@@ -231,7 +231,7 @@
     <a href="{% url 'landing:student_assessment_list' %}" class="nav-btn">
       <div class="nav-text">Assessments</div>
     </a>
-    <a href="#" class="nav-btn">
+    <a href="{% url 'landing:view_feedback'%}" class="nav-btn">
       <div class="nav-text">Feedback</div>
     </a>
   </div>
@@ -267,7 +267,7 @@
             <div class="section-title">Feedback</div>
             <div class="section-content">
               <a
-                href="{% url 'landing:student_assessment_list' %}"
+                href="{% url 'landing:view_feedback' %}"
                 class="section-text"
                 >View Feedback</a
               >

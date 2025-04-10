@@ -13,4 +13,5 @@ urlpatterns = [
     path('course_creation/', views.CreateCourseView.as_view(), name='course_creation'),
     path('courses/', views.CourseListView.as_view(), name='course_list'),
     path('review_feedback/', views.ReviewFeedbackView.as_view(), name='review_feedback'),
+    path('view_feedback/', views.ViewFeedbackView.as_view(), name='view_feedback'),
 ]
