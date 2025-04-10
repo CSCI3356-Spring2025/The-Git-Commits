@@ -220,7 +220,7 @@
     
     <div class="nav-buttons">
         <div class="nav-btn">Courses</div>
-        <a href="{% url 'landing:student_assessment_list' %}">
+        <a href="{% url 'assessments:student_assessment_list' %}">
             <div class="nav-btn">Assessments</div>
         </a>
         <div class="nav-btn">Feedback</div>
@@ -260,7 +260,7 @@
                         <div class="assessment-list m-2">
                             {% if assessments %}
                                 {% for assessment in assessments %}
-                                    <a href="{% url 'landing:student_assessment' assessment.pk %}" class="assessment-link m-1">{{ assessment.title }}</a>
+                                    <a href="{% url 'assessments:student_assessment' assessment.pk %}" class="assessment-link m-1">{{ assessment.title }}</a>
                                     <br>
                                 {% endfor %}
                             {% else %}

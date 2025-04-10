@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'oauth.apps.OauthConfig',
-    'landing.apps.LandingConfig'
+    'landing.apps.LandingConfig',
+    'assessments.apps.AssessmentsConfig'
 ]
 
 MIDDLEWARE = [

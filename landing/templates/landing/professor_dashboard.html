@@ -228,10 +228,10 @@
     <a href="#" class="nav-btn">
       <div class="nav-text">Courses</div>
     </a>
-    <a href="{% url 'landing:student_assessment_list' %}" class="nav-btn">
+    <a href="{% url 'assessments:student_assessment_list' %}" class="nav-btn">
       <div class="nav-text">Assessments</div>
     </a>
-    <a href="{% url 'landing:review_feedback'%}" class="nav-btn">
+    <a href="{% url 'assessments:review_feedback'%}" class="nav-btn">
       <div class="nav-text">Feedback</div>
     </a>
   </div>
@@ -256,20 +256,20 @@
             <div class="section-title">Assessments</div>
             <div class="section-content">
               <a
-                href="{% url 'landing:student_assessment_list' %}"
+                href="{% url 'assessments:student_assessment_list' %}"
                 class="section-text"
                 >View Current Assessments</a
               >
             </div>
             <div class="add-assessment">
-              <a href="{% url 'landing:assessment_creation' %}" class="section-text">Create Assessment</a>
+              <a href="{% url 'assessments:assessment_creation' %}" class="section-text">Create Assessment</a>
             </div>
           </div>
           <div class="section">
             <div class="section-title">Feedback</div>
             <div class="section-content">
               <a
-                href="{% url 'landing:review_feedback' %}"
+                href="{% url 'assessments:review_feedback' %}"
                 class="section-text"
                 >Review Feedback</a
               >

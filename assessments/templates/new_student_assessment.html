@@ -250,10 +250,10 @@
         <a href="#" class="nav-btn">
           <div class="nav-text">Courses</div>
         </a>
-        <a href="{% url 'landing:student_assessment_list' %}" class="nav-btn">
+        <a href="{% url 'assessments:student_assessment_list' %}" class="nav-btn">
           <div class="nav-text">Assessments</div>
         </a>
-        <a href="{% url 'landing:review_feedback'%}" class="nav-btn">
+        <a href="{% url 'assessments:review_feedback'%}" class="nav-btn">
           <div class="nav-text">Feedback</div>
         </a>
       </div>
@@ -263,7 +263,7 @@
     <!-- <div class="due-date">{{ due_date|date:"D, F jS \a\t g:i:s A (e)" }}</div> -->
     
     <div class="assessment-container">
-      <form method="post" action="{% url 'landing:student_assessment_list' %}" class="clearfix">
+      <form method="post" action="{% url 'assessments:student_assessment_list' %}" class="clearfix">
         {% csrf_token %}
 
         {% for question in questions %}

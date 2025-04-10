@@ -1,4 +1,5 @@
 from django.db import models
+from django.apps import apps
 from django.contrib import admin
 import datetime
 
@@ -18,10 +19,10 @@ class Course(models.Model):
     def get_team(self) -> models.QuerySet["Team"]:
         return self.teams.all()
 
-    def get_assessments(self) -> models.QuerySet["Assessment"]:
+    def get_assessments(self) -> models.QuerySet["assessments.Assessment"]:
         return self.assessments.all()
 
-    def get_current_published_assessments(self) -> models.QuerySet["Assessment"]:
+    def get_current_published_assessments(self) -> models.QuerySet["assessments.Assessment"]:
         return self.assessments.exclude(due_date__lt=datetime.datetime.now()).filter(published=True)
 
 class Team(models.Model):
@@ -42,22 +43,3 @@ class Team(models.Model):
     class Meta:
         ordering = ["course__name", "name"]
 
-
-class Assessment(models.Model):
-    title = models.CharField(max_length=150)
-    due_date = models.DateTimeField(null=True)
-    course = models.ForeignKey(Course, models.CASCADE, related_name="assessments")
-    published = models.BooleanField(default=False)
-
-    def get_questions(self) -> models.QuerySet:
-        return self.questions.all()
-
-class AssessmentQuestion(models.Model):
-    QUESTION_TYPES = [
-        ('likert', 'Likert'),
-        ('free', 'Free Response'),
-    ]
-    assessment = models.ForeignKey(Assessment, models.CASCADE, related_name="questions")
-    question_type = models.CharField(max_length=10, choices=QUESTION_TYPES)
-    question = models.CharField(max_length=1000)
-    required = models.BooleanField(default=True)

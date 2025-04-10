@@ -15,6 +15,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('landing.urls')),
+    path('', include('assessments.urls')),
     path('oauth/', include("oauth.urls"))
 ]
 
