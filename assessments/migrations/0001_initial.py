@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('landing', '0008_remove_assessmentquestion_assessment_and_more'),
+        ('landing', '0007_alter_assessment_due_date')
     ]
 
     operations = [
