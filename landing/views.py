@@ -560,4 +560,27 @@ def add_team_redirect(request, *argv, **kwargs):
 
     return render(request, 'landing/team_creation.html')
 
+class CourseListView(RequireAdminMixin, View):
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        user: User = kwargs["user"]
 
+        context = {
+            "user_name": user.name,
+            "user_role": user.role,
+            "user_team": user.team.name if user.team else "",
+            "courses": Course.objects.all() 
+        }
+        
+        return render(request, "landing/course_list.html", context)
+    
+class ReviewFeedbackView(RequireLoggedInMixin, View):
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        user: User = kwargs["user"]
+        
+        context = {
+            "user_name": user.name,
+            "user_role": user.role,
+            "user_team": user.team.name if user.team else "",
+        }
+        
+        return render(request, "landing/review_feedback.html", context)

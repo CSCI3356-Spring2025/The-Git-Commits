@@ -199,15 +199,6 @@
           font-size: 20px;
           font-weight: 400;
         }
-        
-        .team-name {
-          color: #1b0061;
-          text-align: right;
-          font-family: "KoHo", sans-serif;
-          font-size: 20px;
-          font-weight: 400;
-          margin-right: 15px;
-        }
       
       /* Logout button at bottom right */
       .bottom-logout {
@@ -244,10 +235,6 @@
       <div class="nav-text">Feedback</div>
     </a>
   </div>
-  
-  <div class="team-name">
-    {{user_team}} 
-  </div>
 </div>
 
     <div class="dashboard">
@@ -260,7 +247,9 @@
             <div class="section">
               <div class="section-title">Courses</div>
               <div class="section-content">
-                <a href="{% url 'landing:team_creation' %}" class="section-text">{{ course_name }}</a>
+                <a href="{% url 'landing:course_list' %}"
+                class="section-text"
+                >{{course_name}}</a>
             </div>
         </div>
 
@@ -280,7 +269,7 @@
               <a
                 href="{% url 'landing:student_assessment_list' %}"
                 class="section-text"
-                >Review Feedback</a
+                >View Feedback</a
               >
             </div>
           </div>
