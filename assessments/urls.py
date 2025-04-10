@@ -9,4 +9,5 @@ urlpatterns = [
     path('assessment_creation/', views.CreateAssessmentView.as_view(), name='assessment_creation'),
     path('review_feedback/', views.ReviewFeedbackView.as_view(), name='review_feedback'),
     path('view_feedback/', views.ViewFeedbackView.as_view(), name='view_feedback'),
+    path('course/<int:course_id>/assessments/', views.CourseAssessmentsView.as_view(), name='student_assessment_list'),
 ]

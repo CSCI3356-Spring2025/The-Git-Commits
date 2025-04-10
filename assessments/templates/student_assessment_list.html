@@ -1,4 +1,3 @@
-<br>
 {% extends "base.html" %}
 
 {% block title %}
@@ -115,8 +114,14 @@
        padding: 0 20px;
      }
      
-     .assessment-list-title {
+     .assessment-list-header {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
        margin-bottom: 30px;
+     }
+     
+     .assessment-list-title {
        font-family: "KoHo", sans-serif;
        font-size: 24px;
        font-weight: 500;
@@ -139,6 +144,18 @@
      
      .assessment-link:hover {
        background: #2a0090;
+     }
+     
+     .create-btn {
+       display: inline-block;
+       background: #1b0061;
+       border-radius: 50px;
+       padding: 10px 20px;
+       font-family: "KoHo", sans-serif;
+       font-size: 16px;
+       font-weight: 400;
+       color: #ffffff;
+       text-decoration: none;
      }
 
     </style>
@@ -170,7 +187,16 @@
 </div>
 
 <div class="assessment-list-container">
-  <h2 class="assessment-list-title">Assessments</h2>
+  <div class="assessment-list-header">
+    <h2 class="assessment-list-title">Assessments</h2>
+    
+    {% if user_role == 'admin' %}
+      <a href="{% url 'landing:course_list' %}" class="create-btn">
+        Create New Assessment
+      </a>
+    {% endif %}
+  </div>
+  
   <div class="assessments-list">
     {% if assessments %}
       {% for assessment in assessments %}

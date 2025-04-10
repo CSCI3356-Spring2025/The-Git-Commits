@@ -39,7 +39,6 @@
       padding: 0;
       background: #F0F8FF;
     }
-
     
     /* Navbar Styles */
     .navbar {
@@ -67,6 +66,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      text-decoration: none;
     }
     
     .peer-vue {
@@ -101,7 +101,7 @@
       font-weight: 400;
     }
     
-    /* Course Page Styles */
+    /* Course/Team Page Styles */
     .course-container {
       max-width: 1280px;
       margin: 170px auto 50px;
@@ -109,112 +109,13 @@
     }
     
     .course-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    
-    .course-title {
-      font-size: 32px;
-      font-weight: 500;
-      color: #000000;
-    }
-    
-    .section-title {
-      font-size: 24px;
-      font-weight: 500;
-      margin-bottom: 15px;
-    }
-    
-    .student-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      background: #e6f7fc;
-      border: 1px solid #aae7f2;
-      border-radius: 15px;
-      padding: 20px;
-      min-height: 100px;
       margin-bottom: 30px;
     }
     
-    .student-pill {
-      background: #aae7f2;
-      border-radius: 20px;
-      padding: 8px 16px;
-      font-size: 16px;
-      display: inline-block;
-    }
-    
-    .teams-section {
-      margin-bottom: 40px;
-    }
-    
-    .team-card {
-      background: #aae7f2;
-      border-radius: 20px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    
-    .team-card-title {
-      font-size: 22px;
+    .course-title {
+      font-size: 24px;
       font-weight: 500;
-      margin-bottom: 10px;
-    }
-    
-    .team-members {
-      margin-bottom: 15px;
-    }
-    
-    .submit-btn {
-      background: #1b0061;
-      border-radius: 50px;
-      padding: 12px 24px;
-      color: #ffffff;
-      font-size: 22px;
-      cursor: pointer;
-      margin-top: 10px;
-      display: inline-block;
-      width: auto;
-    }
-    
-    .danger-btn {
-      background: #ff6b6b;
-      border-radius: 50px;
-      padding: 12px 24px;
-      color: #ffffff;
-      font-size: 22px;
-      cursor: pointer;
-      margin-top: 10px;
-      display: inline-block;
-      width: auto;
-    }
-
-    .section-container {
-      background: #dcf4f9;
-      border-radius: 50px;
-      padding: 20px;
-      text-align: left;
-      max-width: 600px;
-      margin: 20px auto;
-      font-size: 22px;
       color: #1b0061;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .input-field {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #1b0061;
-      border-radius: 5px;
-      font-family: "KoHo", sans-serif;
-      font-size: 16px;
-      margin: 5px 0;
     }
     
     .error-message {
@@ -229,10 +130,118 @@
       font-weight: bold;
     }
     
+    /* Card Styles */
+    .card {
+      background: #ffffff;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-title {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 15px;
+      color: #1b0061;
+    }
+    
+    /* Form Styles */
     .form-group {
       margin-bottom: 20px;
     }
     
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #1b0061;
+      border-radius: 5px;
+      font-family: "KoHo", sans-serif;
+      font-size: 16px;
+      margin: 5px 0;
+    }
+    
+    /* Button Styles */
+    .submit-btn {
+      background: #1b0061;
+      border-radius: 50px;
+      padding: 12px 24px;
+      color: #ffffff;
+      font-size: 18px;
+      cursor: pointer;
+      display: inline-block;
+      border: none;
+      text-decoration: none;
+    }
+    
+    .danger-btn {
+      background: #ff6b6b;
+      border-radius: 50px;
+      padding: 12px 24px;
+      color: #ffffff;
+      font-size: 18px;
+      cursor: pointer;
+      display: inline-block;
+      border: none;
+      text-decoration: none;
+    }
+    
+    /* Team/Student Elements */
+    .team-card {
+      background: #aae7f2;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .team-card-title {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 10px;
+      color: #1b0061;
+    }
+    
+    .team-members {
+      margin-bottom: 15px;
+    }
+    
+    .student-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: #e6f7fc;
+      border: 1px solid #aae7f2;
+      border-radius: 15px;
+      padding: 20px;
+      min-height: 100px;
+      margin-bottom: 20px;
+    }
+    
+    .student-pill {
+      background: #aae7f2;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 16px;
+      display: inline-block;
+    }
+    
+    /* Layout Elements */
+    .two-column {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .column {
+      flex: 1;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    /* Checkbox Styling */
     .checkbox-container {
       display: flex;
       flex-wrap: wrap;
@@ -250,41 +259,6 @@
     
     .checkbox-item input[type="checkbox"] {
       margin-right: 5px;
-    }
-    
-    .card {
-      background: #ffffff;
-      border-radius: 15px;
-      padding: 20px;
-      margin-bottom: 30px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-    
-    .card-title {
-      font-size: 20px;
-      font-weight: 500;
-      margin-bottom: 15px;
-      color: #1b0061;
-    }
-    
-    .two-column {
-      display: flex;
-      gap: 20px;
-    }
-    
-    .column {
-      flex: 1;
-    }
-    
-    .divider {
-      border-top: 1px solid #e0e0e0;
-      margin: 20px 0;
-    }
-    
-    .action-buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
     }
   </style>
 {% endblock %}
@@ -420,27 +394,6 @@
             <button type="submit" class="submit-btn">Add Student</button>
           </form>
         </div>
-        
-        <!-- Create Course Form -->
-        <div class="card">
-          <h2 class="card-title">Create New Course</h2>
-          <form action="{% url 'landing:team_creation' %}" method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="create_course">
-            
-            <div class="form-group">
-              <label for="course_name">Course Name:</label>
-              <input type="text" id="course_name" name="course_name" class="input-field" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="course_year">Course Year:</label>
-              <input type="number" id="course_year" name="course_year" class="input-field" min="2023" max="2030" value="2025" required>
-            </div>
-            
-            <button type="submit" class="submit-btn">Create Course</button>
-          </form>
-        </div>
       </div>
       
       <!-- Right column for existing teams and students -->
@@ -481,20 +434,20 @@
         <!-- All Students List -->
         <div class="card">
           <h2 class="card-title">All Students</h2>
-          <ul class="student-list">
+          <div class="student-list">
             {% for student in all_students %}
-              <li class="student-pill">
+              <div class="student-pill">
                 {{ student.name }} 
                 {% if student.team %}
                   (Team: {{ student.team.name }})
                 {% else %}
                   (Unassigned)
                 {% endif %}
-              </li>
+              </div>
             {% empty %}
               <p>No students in this course yet.</p>
             {% endfor %}
-          </ul>
+          </div>
         </div>
       </div>
     </div>

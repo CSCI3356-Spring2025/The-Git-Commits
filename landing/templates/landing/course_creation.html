@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  <title>Course Creation - PeerVue</title>
+{% endblock %}
+
+{% block head_content %}
+  <style>
+    a,
+    button,
+    input,
+    select,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border: none;
+      text-decoration: none;
+      background: none;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    menu, ol, ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: "KoHo", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #F0F8FF;
+    }
+
+    /* This is the Nav Bar to use */
+    .navbar {
+      background: rgba(164, 218, 255, 0.25);
+      border-bottom: 1px solid #000000;
+      width: 100%;
+      height: 143px;
+      position: fixed;
+      left: 0;
+      top: 0;
+      box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+    
+    .nav-logo {
+      background: #1b0061;
+      border-radius: 50px;
+      width: 221px;
+      height: 78px;
+      margin-left: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+    
+    .peer-vue {
+      color: #ffffff;
+      text-align: center;
+      font-family: "KoHo", sans-serif;
+      font-size: 45px;
+      font-weight: 400;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+    
+    .nav-btn {
+      background: #1b0061;
+      border-radius: 50px;
+      width: 191px;
+      height: 57px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+    
+    .nav-text {
+      color: #ffffff;
+      text-align: center;
+      font-family: "KoHo", sans-serif;
+      font-size: 20px;
+      font-weight: 400;
+    }
+
+    /* Course Creation specific styles */
+    .course-container {
+      max-width: 1000px;
+      margin: 170px auto 50px;
+      padding: 0 20px;
+    }
+    
+    .course-header {
+      margin-bottom: 30px;
+    }
+    
+    .course-title {
+      font-size: 24px;
+      font-weight: 500;
+      color: #1b0061;
+    }
+    
+    .card {
+      background: #ffffff;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-title {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 15px;
+      color: #1b0061;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #1b0061;
+      border-radius: 5px;
+      font-family: "KoHo", sans-serif;
+      font-size: 16px;
+      margin: 5px 0;
+    }
+    
+    .submit-btn {
+      background: #1b0061;
+      border-radius: 50px;
+      padding: 12px 24px;
+      color: #ffffff;
+      font-size: 18px;
+      cursor: pointer;
+      display: inline-block;
+      width: auto;
+      text-decoration: none;
+    }
+    
+    .error-message {
+      color: #ff6b6b;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+    
+    .success-message {
+      color: #5cb85c;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div class="navbar">
+    <a href="{% url 'landing:dashboard' %}" class="nav-logo">
+      <div class="peer-vue">PeerVue</div>
+    </a>
+    
+    <div class="nav-links">
+      <a href="{% url 'landing:course_list' %}" class="nav-btn">
+        <div class="nav-text">Courses</div>
+      </a>
+      <a href="{% url 'assessments:student_assessment_list' %}" class="nav-btn">
+        <div class="nav-text">Assessments</div>
+      </a>
+      {% if user_role == 'admin' %}
+        <a href="{% url 'assessments:review_feedback' %}" class="nav-btn">
+          <div class="nav-text">Feedback</div>
+        </a>
+      {% else %}
+        <a href="{% url 'assessments:view_feedback' %}" class="nav-btn">
+          <div class="nav-text">Feedback</div>
+        </a>
+      {% endif %}
+    </div>
+  </div>
+  
+  <div class="course-container">
+    <div class="course-header">
+      <h1 class="course-title">Course Management</h1>
+    </div>
+    
+    {% if success_message %}
+      <div class="success-message">{{ success_message }}</div>
+    {% endif %}
+    
+    {% if error %}
+      <div class="error-message">{{ error }}</div>
+    {% endif %}
+    
+    <div class="card">
+      <h2 class="card-title">Create New Course</h2>
+      <form action="{% url 'landing:course_creation' %}" method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group">
+          <label for="name">Course Name:</label>
+          <input type="text" id="name" name="name" class="input-field" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="year">Course Year:</label>
+          <input type="number" id="year" name="year" class="input-field" min="2023" max="2030" value="2025" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="semester">Semester:</label>
+          <select id="semester" name="semester" class="input-field" required>
+            <option value="Spring">Spring</option>
+            <option value="Summer">Summer</option>
+            <option value="Fall">Fall</option>
+            <option value="Winter">Winter</option>
+          </select>
+        </div>
+        
+        <button type="submit" class="submit-btn">Create Course</button>
+      </form>
+    </div>
+    
+    <div style="margin-top: 20px;">
+      <a href="{% url 'landing:course_list' %}" class="submit-btn">Back to Course List</a>
+    </div>
+  </div>
+{% endblock %}

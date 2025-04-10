@@ -5,376 +5,296 @@
 {% endblock %}
 
 {% block head_content %}
-
     <style>
+      a,
+      button,
+      input,
+      select,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        border: none;
+        text-decoration: none;
+        background: none;
+        -webkit-font-smoothing: antialiased;
+      }
+      
+      menu, ol, ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      
       body {
-  background: #b8e2f2;
-  background: #ffffff;
-  font-family: "KoHo", Arial, sans-serif;
-  overflow-x: hidden;
-  padding: 20px;
-  padding-top: 10rem;
-}
+        font-family: "KoHo", Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #F0F8FF;
+      }
 
+      /* This is the Nav Bar to use */
+      .navbar {
+        background: rgba(164, 218, 255, 0.25);
+        border-bottom: 1px solid #000000;
+        width: 100%;
+        height: 143px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+      }
+      
+      .nav-logo {
+        background: #1b0061;
+        border-radius: 50px;
+        width: 221px;
+        height: 78px;
+        margin-left: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+      }
+      
+      .peer-vue {
+        color: #ffffff;
+        text-align: center;
+        font-family: "KoHo", sans-serif;
+        font-size: 45px;
+        font-weight: 400;
+      }
+      
+      .nav-links {
+        display: flex;
+        gap: 30px;
+      }
+      
+      .nav-btn {
+        background: #1b0061;
+        border-radius: 50px;
+        width: 191px;
+        height: 57px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+      }
+      
+      .nav-text {
+        color: #ffffff;
+        text-align: center;
+        font-family: "KoHo", sans-serif;
+        font-size: 20px;
+        font-weight: 400;
+      }
 
-.peer-vue-logo {
-  position: relative;
-}
+      /* Assessment Creation specific styles */
+      .assessment-container {
+        max-width: 1000px;
+        margin: 170px auto 50px;
+        padding: 0 20px;
+      }
+      
+      .assessment-builder {
+        margin-bottom: 30px;
+        font-family: "KoHo", sans-serif;
+        font-size: 24px;
+        font-weight: 500;
+        color: #1b0061;
+      }
 
-.rectangle-1 {
-  background: #1b0061;
-  border-radius: 50px;
-  width: 221px;
-  height: 78px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+      .question-container {
+        min-height: 10rem;
+      }
 
-div.logout-btn {
-  position: relative;
-  top: -2px;
-  right: -200px;
-}
+      .question-outer {
+        background: #aae7f2;
+        border-radius: 50px;
+        width: 50%;
+        margin: 1rem 0;
+        padding: 1rem;
+      }
 
-a.logout-btn {
-  background: var(--accent-dark-blue);
-  border-radius: 50px;
-  width: 111px;
-  height: 57px;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  cursor: pointer;
-}
+      .question {
+        color: #000000;
+        text-align: center;
+        font-family: "KoHo-Medium", sans-serif;
+        font-size: 26px;
+        font-weight: 500;
+      }
 
-.question-outer {
-  background: #aae7f2;
-  border-radius: 50px;
-  width: 50%;
-  /* height: 100px; */
-}
+      .edit-frame {
+        background: #dcf4f9;
+        border-radius: 20px;
+        padding: 10px;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
 
+      .remove-frame {
+        background: #dcf4f9;
+        border-radius: 20px;
+        padding: 10px;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+      }
 
-.question {
-  color: #000000;
-  text-align: center;
-  font-family: "KoHo-Medium", sans-serif;
-  font-size: 26px;
-  font-weight: 500;
-}
+      .outer-dark-btn {
+        background: #1b0061;
+        border-radius: 50px;
+        padding: 10px 20px;
+      }
 
-.edit-frame {
-  background: #dcf4f9;
-  border-radius: 20px;
-  align-items: center;
-  justify-content: center;
-}
-.remove-frame {
-  background: var(--color, #dcf4f9);
-  border-radius: 20px;
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-}
+      .publish-text {
+        color: #ffffff;
+        text-align: center;
+        font-family: "KoHo-Regular", sans-serif;
+        font-size: 22px;
+        font-weight: 400;
+      }
 
-.publish-btn,
-.publish-btn * {
-  box-sizing: border-box;
-}
-.publish-btn {
-  position: relative;
-  right: 250px;
-  top: 570px;
-  
-}
-.btn6 {
-  background: var(--accent-1, #1b0061);
-  border-radius: 50px;
-  width: 147px;
-  height: 46px;
-  position: absolute;
-  right: 0px;
-  top: 0px;
-}
-.publish {
-  color: #fffcfc;
-  text-align: center;
-  font-family: "KoHo-Regular", sans-serif;
-  font-size: 32px;
-  font-weight: 400;
-  position: absolute;
-  right: 18px;
-  top: 0px;
-}
+      .outer-mid-btn {
+        background: #aae7f2;
+        border-radius: 50px;
+        padding: 10px 20px;
+      }
 
-.publish-text {
-  color: #fffcfc;
-  text-align: center;
-  font-family: "KoHo-Regular", sans-serif;
-  font-size: 32px;
-  font-weight: 400;
-}
-
-.submission-btn,
-.submission-btn* {
-  box-sizing: border-box;
-}
-.submission-btn{
-  position: relative;
-  left: 750px;
-  top: 570px;
-
-}
-.btn2 {
-  background: var(--backgroud, #aae7f2);
-  border-radius: 20px;
-  width: 200px;
-  height: 51px;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-}
-.view-submissions {
-  color: #000000;
-  text-align: center;
-  font-family: "KoHo-Medium", sans-serif;
-  font-size: 20px;
-  font-weight: 500;
-  position: absolute;
-  left: 10px;
-  top: 11px;
-  width: 184px;
-  height: 35px;
-}
-
-.reminder-btn,
-.reminder-btn* {
-  box-sizing: border-box;
-}
-.reminder-btn{
-  position: relative;
-  left: 450px;
-  top: 570px;
-
-}
-.btn3 {
-  background: var(--backgroud, #aae7f2);
-  border-radius: 20px;
-  width: 200px;
-  height: 51px;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-}
-.view-reminder {
-  color: #000000;
-  text-align: center;
-  font-family: "KoHo-Medium", sans-serif;
-  font-size: 20px;
-  font-weight: 500;
-  position: absolute;
-  left: 10px;
-  top: 11px;
-  width: 184px;
-  height: 35px;
-}
-
-.anonymous-btn,
-.anonymous-btn* {
-  box-sizing: border-box;
-}
-.anonymous-btn{
-  position: relative;
-  left: 150px;
-  top: 570px;
-
-}
-.btn4 {
-  background: var(--backgroud, #aae7f2);
-  border-radius: 20px;
-  width: 200px;
-  height: 51px;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-}
-.view-anon{
-  color: #000000;
-  text-align: center;
-  font-family: "KoHo-Medium", sans-serif;
-  font-size: 20px;
-  font-weight: 500;
-  position: absolute;
-  left: 10px;
-  top: 11px;
-  width: 184px;
-  height: 35px;
-}
-
-.add-btn,
-.add-btn* {
-  box-sizing: border-box;
-}
-.add-btn{
-  position: relative;
-  left: 1200px;
-  top: 570px;
-
-}
-.btn5 {
-  background: var(--backgroud, #aae7f2);
-  border-radius: 20px;
-  width: 200px;
-  height: 51px;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-}
-.view-add{
-  color: #000000;
-  text-align: center;
-  font-family: "KoHo-Medium", sans-serif;
-  font-size: 20px;
-  font-weight: 500;
-  position: absolute;
-  left: 10px;
-  top: 11px;
-  width: 184px;
-  height: 35px;
-}
-
-.outer-dark-btn {
-  background: var(--accent-dark-blue);
-  border-radius: 50px;
-}
-
-.outer-mid-btn {
-  background: var(--accent-medium-blue);
-  border-radius: 50px;
-}
-
-.mid-btn-text {
-  color: #000000;
-  text-align: center;
-  font-family: "KoHo-Medium", sans-serif;
-  font-size: 20px;
-  font-weight: 500;
-}
-
-.question-container {
-  min-height: 10rem;
-}
-
-</style>
+      .mid-btn-text {
+        color: #000000;
+        text-align: center;
+        font-family: "KoHo-Medium", sans-serif;
+        font-size: 20px;
+        font-weight: 500;
+      }
+    </style>
 {% endblock %}
 
 {% block content %}
 
   <div class="navbar">
-    <div class="peer-vue-logo">
-      <div class="rectangle-1">
-        <div class="peer-vue">PeerVue</div>
-      </div>
-    </div>
-
-    <div class="nav-buttons">
-      <div class="nav-btn">Courses</div>
-      <a href="{% url 'assessments:student_assessment_list' %}">
-        <div class="nav-btn">Assessments</div>
+    <a href="{% url 'landing:dashboard' %}" class="nav-logo">
+      <div class="peer-vue">PeerVue</div>
+    </a>
+    
+    <div class="nav-links">
+      <a href="{% url 'landing:course_list' %}" class="nav-btn">
+        <div class="nav-text">Courses</div>
       </a>
-      <div class="nav-btn">Feedback</div>
-      <div class="logout-btn">
-        <a class="logout-btn" href="{% url 'oauth:logout' %}">Logout</a>
-      </div>
+      <a href="{% url 'assessments:student_assessment_list' %}" class="nav-btn">
+        <div class="nav-text">Assessments</div>
+      </a>
+      {% if user_role == 'admin' %}
+        <a href="{% url 'assessments:review_feedback' %}" class="nav-btn">
+          <div class="nav-text">Feedback</div>
+        </a>
+      {% else %}
+        <a href="{% url 'assessments:view_feedback' %}" class="nav-btn">
+          <div class="nav-text">Feedback</div>
+        </a>
+      {% endif %}
     </div>
-    <!--<div class="the-git-commits">The Git Commits</div>-->
   </div>
 
-  <h2 class="assessment-builder">Assessment Builder</h2>
+  <div class="assessment-container">
+    <h2 class="assessment-builder">Assessment Builder</h2>
 
-  <!-- Questions -->
-  <div class="question-container">
-  {% for question in assessment.get_questions %}
-  <div class="question-outer m-4">
-    <div class="question m-2">{{ question.question }}</div>
-    <div class="container row">
-      <button class="edit-frame col m-2 ms-4 py-2" data-bs-toggle="modal" data-bs-target="#edit-question-modal-id-{{ question.pk }}">
-        <div class="edit" data-bs-toggle="modal" data-bs-target="#edit-question-modal-id-{{ question.pk }}">Edit</div>
-      </button>
-      <form method="post" class="remove-frame col m-2 p-2">
-        <button class="col">
-          {% csrf_token %}
-          <div class="remove">Remove</div>
-          <input type="hidden" name="remove" value="{{ question.pk }}">
+    <!-- Questions -->
+    <div class="question-container">
+    {% for question in assessment.get_questions %}
+    <div class="question-outer m-4">
+      <div class="question m-2">{{ question.question }}</div>
+      <div class="container row">
+        <button class="edit-frame col m-2 ms-4 py-2" data-bs-toggle="modal" data-bs-target="#edit-question-modal-id-{{ question.pk }}">
+          <div class="edit" data-bs-toggle="modal" data-bs-target="#edit-question-modal-id-{{ question.pk }}">Edit</div>
         </button>
-      </form>
-    </div>
-  </div>
-  {% endfor %}
-  </div>
-
-  <!-- Control Buttons -->
-  <div class="d-inline-flex">
-    <div class="m-4">
-      <form method="post">
-        {% csrf_token %}
-        <div class="outer-dark-btn d-inline-flex">
-          <button class="p-2 publish-text">Publish</button>
-          <input type="hidden" name="publish" value="question">
-        </div>
-      </form>
-    </div>
-
-    <div class="m-4">
-      <div class="outer-mid-btn d-inline-flex">
-        <form method="post">
-          {% csrf_token %}
-          <button class="p-2 mid-btn-text">Add Question</button>
-          <input type="hidden" name="add" value="question">
+        <form method="post" class="remove-frame col m-2 p-2">
+          <button class="col">
+            {% csrf_token %}
+            <input type="hidden" name="course_id" value="{{ course.id }}">
+            <div class="remove">Remove</div>
+            <input type="hidden" name="remove" value="{{ question.pk }}">
+          </button>
         </form>
       </div>
     </div>
-  </div>
+    {% endfor %}
+    </div>
 
-   <!-- Modals -->
-  {% for question in assessment.get_questions %}
-    <div id="edit-question-modal-id-{{ question.pk }}" class="modal fade" tabindex="-1" aria-labelledby="add-team-modal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="modal-title">Edit Question</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Control Buttons -->
+    <div class="d-inline-flex">
+      <div class="m-4">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="course_id" value="{{ course.id }}">
+          <div class="outer-dark-btn d-inline-flex">
+            <button class="p-2 publish-text">Publish</button>
+            <input type="hidden" name="publish" value="question">
           </div>
+        </form>
+      </div>
+
+      <div class="m-4">
+        <div class="outer-mid-btn d-inline-flex">
           <form method="post">
             {% csrf_token %}
-            <div class="modal-body">
-              <input type="hidden" name="edit" value="{{ question.pk }}">
-              <label for="question-edit-{{question.pk}}" class="form-label">Question:</label>
-              <input type="text" name="question" id="question-edit{{question.pk}}" value="{{ question.question }}" class="form-control">
-              <br>
-              <select class="form-select" name="question_type" aria-label="Question Type">
-                <option disabled value="">Question Type</option>
-                <option {% if question.question_type == "likert" %}selected{% endif %} value="likert">Likert Scale</option>
-                <option {% if question.question_type == "free" %}selected{% endif %} value="free">Free Response</option>
-              </select>
-              <br>
-              <input class="form-check-input" type="checkbox" name="required" {% if question.required %}checked{% endif %}>
-              <label class="form-check-label" for="required">Required</label>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><br>
-              <button type="submit" class="btn btn-primary">Save</button>
-            </div>
+            <input type="hidden" name="course_id" value="{{ course.id }}">
+            <button class="p-2 mid-btn-text">Add Question</button>
+            <input type="hidden" name="add" value="question">
           </form>
         </div>
       </div>
     </div>
-  {% endfor %}
 
-  {% endblock %}
+    <!-- Modals -->
+    {% for question in assessment.get_questions %}
+      <div id="edit-question-modal-id-{{ question.pk }}" class="modal fade" tabindex="-1" aria-labelledby="add-team-modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="modal-title">Edit Question</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post">
+              {% csrf_token %}
+              <input type="hidden" name="course_id" value="{{ course.id }}">
+              <div class="modal-body">
+                <input type="hidden" name="edit" value="{{ question.pk }}">
+                <label for="question-edit-{{question.pk}}" class="form-label">Question:</label>
+                <input type="text" name="question" id="question-edit{{question.pk}}" value="{{ question.question }}" class="form-control">
+                <br>
+                <select class="form-select" name="question_type" aria-label="Question Type">
+                  <option disabled value="">Question Type</option>
+                  <option {% if question.question_type == "likert" %}selected{% endif %} value="likert">Likert Scale</option>
+                  <option {% if question.question_type == "free" %}selected{% endif %} value="free">Free Response</option>
+                </select>
+                <br>
+                <input class="form-check-input" type="checkbox" name="required" {% if question.required %}checked{% endif %}>
+                <label class="form-check-label" for="required">Required</label>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><br>
+                <button type="submit" class="btn btn-primary">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+{% endblock %}
