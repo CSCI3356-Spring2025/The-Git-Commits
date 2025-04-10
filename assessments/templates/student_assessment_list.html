@@ -151,15 +151,21 @@
   </a>
   
   <div class="nav-links">
-    <a href="#" class="nav-btn">
+    <a href="{% url 'landing:course_list' %}" class="nav-btn">
       <div class="nav-text">Courses</div>
     </a>
     <a href="{% url 'assessments:student_assessment_list' %}" class="nav-btn">
       <div class="nav-text">Assessments</div>
     </a>
-    <a href="{% url 'assessments:view_feedback'%}" class="nav-btn">
+    {% if user_role == 'admin' %}
+    <a href="{% url 'assessments:review_feedback' %}" class="nav-btn">
       <div class="nav-text">Feedback</div>
     </a>
+  {% else %}
+    <a href="{% url 'assessments:view_feedback' %}" class="nav-btn">
+      <div class="nav-text">Feedback</div>
+    </a>
+  {% endif %}
   </div>
 </div>
 
