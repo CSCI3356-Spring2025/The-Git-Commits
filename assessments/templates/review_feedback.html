@@ -108,6 +108,83 @@
           font-size: 20px;
           font-weight: 400;
         }
+        .full-page {
+      width: 100vw;
+      min-height: 100vh;
+      background: white;
+      padding: 2rem;
+      box-sizing: border-box;
+    }
+
+    .feedback-section {
+      position: relative;
+      padding-top: 140px;
+    }
+
+    .header-banner {
+      background: #aae7f2;
+      border-radius: 30px;
+      width: 903px;
+      height: 64px;
+      position: absolute;
+      left: 50%;
+      top: 40px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page-title {
+      color: #000000;
+      font-family: "KoHo-Medium", sans-serif;
+      font-size: 32px;
+      font-weight: 500;
+      text-align: center;
+      margin: 0;
+    }
+
+    .feedback-card {
+      background: #dcf4f9;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-left: 15px solid #aae7f2;
+      border-radius: 5px;
+    }
+
+    .likert-score {
+      color: #000000;
+      text-align: left;
+      font-family: "KoHo-Medium", sans-serif;
+      font-size: 32px;
+      font-weight: 500;
+      margin-top: 120px;
+      margin-bottom: 1rem;
+    }
+
+    .open-ended-feedback {
+      color: #000000;
+      text-align: left;
+      font-family: "KoHo-Medium", sans-serif;
+      font-size: 28px;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .submit-button {
+      margin-top: 2rem;
+      background-color: #1b0061;
+      color: #ffffff;
+      border: none;
+      padding: 16px 32px;
+      font-size: 22px;
+      border-radius: 30px;
+      cursor: pointer;
+    }
+
+    .submit-button:hover {
+      background-color: #80c6d4;
+    }
         
     </style>
 {% endblock %}
@@ -136,4 +213,22 @@
   {% endif %}
   </div>
 </div>
+<div class="full-page feedback-section">
+    <div class="header-banner">
+      <h2 class="page-title">Software Engineering: The Git Commits Feedback</h2>
+    </div>
+
+    <div class="likert-score">Likert Score</div>
+    <div class="open-ended-feedback">Open Ended Feedback</div>
+
+    {% for feedback in feedback_list %}
+      <div class="feedback-card">{{ feedback }}</div>
+    {% empty %}
+      <div class="feedback-card">No feedback submitted yet.</div>
+    {% endfor %}
+
+    <button class="submit-button">Publish Results</button>
+  </div>
+
+   
 {% endblock %}
