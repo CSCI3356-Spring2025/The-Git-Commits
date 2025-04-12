@@ -9,6 +9,8 @@ from oauth.models import User
 from django.db.models.query import QuerySet
 from oauth.oauth import RequireLoggedInMixin, RequireAdminMixin
 
+from itertools import chain
+
 
 class StudentAssessmentView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs):
@@ -20,9 +22,11 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
             return redirect(reverse("landing:dashboard"))
 
         # TODO: check that the user is in the course the assessment is intended for
-        if user.course != assessment.course:
+        if assessment.course not in user.courses.all():
             return redirect(reverse("landing:dashboard"))
 
+        current_team = user.teams.filter(course=assessment.course).first()
+    
         context = {
             'assessment_title': assessment.title,
             'due_date': assessment.due_date,
@@ -33,15 +37,67 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
         return render(request, 'new_student_assessment.html', context)
 
     def post(self, request, *args, **kwargs):
+        user = kwargs["user"]
+        assessment_id = kwargs["assessment_id"]
+        
+        try:
+            assessment = Assessment.objects.get(pk=assessment_id)
+        except Assessment.DoesNotExist:
+            return redirect(reverse("landing:dashboard"))
+        
+        # Check that the user is in the course the assessment is intended for
+        if assessment.course not in user.courses.all():
+            return redirect(reverse("landing:dashboard"))
+        
+        current_team = user.teams.filter(course=assessment.course).first()
+        if not current_team:
+            messages.error(request, "You are not assigned to a team for this course.")
+            return redirect(reverse("landing:dashboard"))
+        
+        # Get the evaluated team member from the form
+        team_member_question = assessment.questions.filter(question_type='team_member').first()
+        if team_member_question:
+            evaluated_user_email = request.POST.get(f'question_{team_member_question.id}')
+            try:
+                evaluated_user = User.objects.get(email=evaluated_user_email)
+            except User.DoesNotExist:
+                messages.error(request, "Invalid team member selection")
+                return redirect(reverse("landing:student_assessment", kwargs={"user": user, "assessment_id": assessment_id}))
+        else:
+            evaluated_user = None
+        
+        # Create the response record with the evaluated user
+        response = StudentAssessmentResponse(
+            student=user,
+            assessment=assessment,
+            evaluated_user=evaluated_user
+        )
+        response.save()
+        
+        # Process the answers for all other questions
+        for question in assessment.get_questions():
+            # Skip storing an answer for the team member selection question
+            if question.question_type == 'team_member':
+                continue
+                
+            answer_text = request.POST.get(f'question_{question.id}')
+            answer = StudentAnswer(
+                response=response, 
+                question=question, 
+                answer_text=answer_text
+            )
+            answer.save()
+        
+        messages.success(request, f"Assessment for {evaluated_user} submitted successfully!") # need naming
         return redirect('landing:student_assessment_list')
 
 class StudentAssessmentListView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
-        if user.course:
-            assessments = user.course.get_current_published_assessments()
-        else:
-            assessments = Assessment.objects.none()
+        assessments = list(chain.from_iterable(
+            course.get_current_published_assessments()
+            for course in user.courses.all()
+        ))
 
         context = {
             "user_name": user.name,
@@ -68,13 +124,13 @@ class CreateAssessmentView(RequireAdminMixin, View):
                 if user.role != 'admin':
                     return redirect(reverse("landing:dashboard"))
             except Course.DoesNotExist:
-                if user.course is None:
+                if not user.courses.exists():
                     return redirect(reverse("landing:dashboard"))
-                course = user.course
-        elif user.course is None:
-            return redirect(reverse("landing:dashboard"))
+                course = user.courses.first()
         else:
-            course = user.course
+            if not user.courses.exists():
+                return redirect(reverse("landing:dashboard"))
+            course = user.courses.first()
 
         # Determine which assessment this is for (creating a new one if necessary)
         assessment_id = request.session.get("assessment_id", None)
@@ -113,7 +169,7 @@ class CreateAssessmentView(RequireAdminMixin, View):
             "course": course,
             "user_name": user.name,
             "user_role": user.role,
-            "user_team": user.team.name if user.team else ""
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
         }
         return render(request, "assessment_creation.html", context)
 
@@ -133,13 +189,13 @@ class CreateAssessmentView(RequireAdminMixin, View):
                 if user.role != 'admin':
                     return redirect(reverse("landing:dashboard"))
             except Course.DoesNotExist:
-                if user.course is None:
+                if not user.courses.exists():
                     return redirect(reverse("landing:dashboard"))
-                course = user.course
-        elif user.course is None:
-            return redirect(reverse("landing:dashboard"))
+                course = user.courses.first()
         else:
-            course = user.course
+            if not user.courses.exists():
+                return redirect(reverse("landing:dashboard"))
+            course = user.courses.first()
 
         # Determine which assessment this is for
         assessment_id = request.session.get("assessment_id", None)
@@ -225,7 +281,7 @@ class CreateAssessmentView(RequireAdminMixin, View):
             "course": course,
             "user_name": user.name,
             "user_role": user.role,
-            "user_team": user.team.name if user.team else ""
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
         }
         return render(request, "assessment_creation.html", context)
     
@@ -236,7 +292,8 @@ class ReviewFeedbackView(RequireLoggedInMixin, View):
         context = {
             "user_name": user.name,
             "user_role": user.role,
-            "user_team": user.team.name if user.team else "",
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
         }
         
         return render(request, "review_feedback.html", context)
@@ -248,7 +305,8 @@ class ViewFeedbackView(RequireLoggedInMixin, View):
         context = {
             "user_name": user.name,
             "user_role": user.role,
-            "user_team": user.team.name if user.team else "",
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
         }
         
         return render(request, "view_feedback.html", context)
@@ -268,7 +326,8 @@ class CourseAssessmentsView(RequireLoggedInMixin, View):
             context = {
                 "user_name": user.name,
                 "user_role": user.role,
-                "user_team": user.team.name if user.team else "",
+                "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
                 "course": course,
                 "assessments": assessments
             }

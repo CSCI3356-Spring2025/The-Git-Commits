@@ -24,9 +24,10 @@ def dashboard(request):
 class DashboardView(RequireLoggedInMixin, View):    
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
-        if user.course:
-            course_name = user.course.name
-            assessments = user.course.get_current_published_assessments()
+        if user.courses.exists():  # Check if the user is enrolled in any course
+            course = user.courses.first()  # Get the first course for now, or handle it differently if needed
+            course_name = course.name
+            assessments = course.get_current_published_assessments()
         else:
             course_name = "You're not registered with a class"
             assessments = Assessment.objects.none()
@@ -58,13 +59,13 @@ class CreateTeamView(RequireAdminMixin, View):
                 return redirect(reverse("landing:course_list"))
         else:
             # Fallback to user's default course
-            if user.course is None:
+            if not user.courses.exists():
                 return redirect(reverse("landing:dashboard"))
-            course = user.course
+            course = user.courses.first()
 
         # Get students for this specific course
         all_students = course.members.filter(role='student')
-        available_students = course.members.filter(role='student', team__isnull=True) 
+        available_students = course.members.filter(role='student', teams__isnull=True) 
 
         editing_team_id = request.GET.get('edit_team')
         editing_team = None
@@ -84,7 +85,8 @@ class CreateTeamView(RequireAdminMixin, View):
             "user": user,
             "user_name": user.name,  # Add these for navbar consistency
             "user_role": user.role,
-            "user_team": user.team.name if user.team else "",
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
             "editing_team": editing_team
         }
         return render(request, "landing/team_creation.html", context)
@@ -100,13 +102,13 @@ class CreateTeamView(RequireAdminMixin, View):
                 if user.role != 'admin':
                     return redirect(reverse("landing:dashboard"))
             except Course.DoesNotExist:
-                if user.course is None:
+                if not user.courses.exists():
                     return redirect(reverse("landing:dashboard"))
-                course = user.course
-        elif user.course is None:
-            return redirect(reverse("landing:dashboard"))
+                course = user.courses.first()
         else:
-            course = user.course
+            if not user.courses.exists():
+                return redirect(reverse("landing:dashboard"))
+            course = user.courses.first()
 
         action = request.POST.get('action', 'create_team')
         
@@ -130,7 +132,7 @@ class CreateTeamView(RequireAdminMixin, View):
         
         if not team_name:
             all_students = course.members.filter(role='student')
-            available_students = course.members.filter(role='student', team__isnull=True)
+            available_students = course.members.filter(role='student', teams__isnull=True)
             
             context = {
                 "teams": course.teams.all(),
@@ -141,7 +143,8 @@ class CreateTeamView(RequireAdminMixin, View):
                 "user": user,
                 "user_name": user.name,
                 "user_role": user.role,
-                "user_team": user.team.name if user.team else "",
+                "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
                 "error": "Team name is required"
             }
             return render(request, 'landing/team_creation.html', context)
@@ -163,7 +166,7 @@ class CreateTeamView(RequireAdminMixin, View):
                     continue
             
             all_students = course.members.filter(role='student')
-            available_students = course.members.filter(role='student', team__isnull=True)
+            available_students = course.members.filter(role='student', teams__isnull=True)
             
             context = {
                 "teams": course.teams.all(),
@@ -174,14 +177,15 @@ class CreateTeamView(RequireAdminMixin, View):
                 "user": user,
                 "user_name": user.name,
                 "user_role": user.role,
-                "user_team": user.team.name if user.team else "",
+                "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
                 "success_message": f"Team '{team_name}' created successfully!"
             }
             return render(request, 'landing/team_creation.html', context)
             
         except Course.DoesNotExist:
             all_students = course.members.filter(role='student')
-            available_students = course.members.filter(role='student', team__isnull=True)
+            available_students = course.members.filter(role='student', teams__isnull=True)
             
             context = {
                 "teams": course.teams.all(),
@@ -192,13 +196,14 @@ class CreateTeamView(RequireAdminMixin, View):
                 "user": user,
                 "user_name": user.name,
                 "user_role": user.role,
-                "user_team": user.team.name if user.team else "",
+                "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
                 "error": "Course not found"
             }
             return render(request, 'landing/team_creation.html', context)
         except Exception as e:
             all_students = course.members.filter(role='student')
-            available_students = course.members.filter(role='student', team__isnull=True)
+            available_students = course.members.filter(role='student', teams__isnull=True)
             
             context = {
                 "teams": course.teams.all(),
@@ -209,7 +214,8 @@ class CreateTeamView(RequireAdminMixin, View):
                 "user": user,
                 "user_name": user.name,
                 "user_role": user.role,
-                "user_team": user.team.name if user.team else "",
+                "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
                 "error": f"An error occurred: {str(e)}"
             }
             return render(request, 'landing/team_creation.html', context)
@@ -222,7 +228,7 @@ class CreateTeamView(RequireAdminMixin, View):
         
         if not team_id or not team_name:
             all_students = course.members.filter(role='student')
-            available_students = course.members.filter(role='student', team__isnull=True)
+            available_students = course.members.filter(role='student', teams__isnull=True)
             
             context = {
                 "teams": course.teams.all(),
@@ -233,7 +239,8 @@ class CreateTeamView(RequireAdminMixin, View):
                 "user": user,
                 "user_name": user.name,
                 "user_role": user.role,
-                "user_team": user.team.name if user.team else "",
+                "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
                 "error": "Team ID and name are required"
             }
             return render(request, 'landing/team_creation.html', context)
@@ -259,7 +266,7 @@ class CreateTeamView(RequireAdminMixin, View):
                     continue
         
             all_students = course.members.filter(role='student')
-            available_students = course.members.filter(role='student', team__isnull=True)
+            available_students = course.members.filter(role='student', teams__isnull=True)
             
             context = {
                 "teams": course.teams.all(),
@@ -270,14 +277,15 @@ class CreateTeamView(RequireAdminMixin, View):
                 "user": user,
                 "user_name": user.name,
                 "user_role": user.role,
-                "user_team": user.team.name if user.team else "",
+                "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
                 "success_message": f"Team '{team_name}' updated successfully!"
             }
             return render(request, 'landing/team_creation.html', context)
             
         except Team.DoesNotExist:
             all_students = course.members.filter(role='student')
-            available_students = course.members.filter(role='student', team__isnull=True)
+            available_students = course.members.filter(role='student', teams__isnull=True)
             
             context = {
                 "teams": course.teams.all(),
@@ -288,7 +296,8 @@ class CreateTeamView(RequireAdminMixin, View):
                 "user": user,
                 "user_name": user.name,
                 "user_role": user.role,
-                "user_team": user.team.name if user.team else "",
+                "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
                 "error": "Team not found"
             }
             return render(request, 'landing/team_creation.html', context)
@@ -299,7 +308,7 @@ class CreateTeamView(RequireAdminMixin, View):
         
         if not team_id:
             all_students = course.members.filter(role='student')
-            available_students = course.members.filter(role='student', team__isnull=True)
+            available_students = course.members.filter(role='student', teams__isnull=True)
             
             context = {
                 "teams": course.teams.all(),
@@ -310,7 +319,8 @@ class CreateTeamView(RequireAdminMixin, View):
                 "user": user,
                 "user_name": user.name,
                 "user_role": user.role,
-                "user_team": user.team.name if user.team else "",
+                "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
                 "error": "Team ID is required for deletion"
             }
             return render(request, 'landing/team_creation.html', context)
@@ -327,7 +337,7 @@ class CreateTeamView(RequireAdminMixin, View):
             team.delete()
 
             all_students = course.members.filter(role='student')
-            available_students = course.members.filter(role='student', team__isnull=True)
+            available_students = course.members.filter(role='student', teams__isnull=True)
             
             context = {
                 "teams": course.teams.all(),
@@ -338,14 +348,15 @@ class CreateTeamView(RequireAdminMixin, View):
                 "user": user,
                 "user_name": user.name,
                 "user_role": user.role,
-                "user_team": user.team.name if user.team else "",
+                "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
                 "success_message": f"Team '{team_name}' deleted successfully!"
             }
             return render(request, 'landing/team_creation.html', context)
             
         except Team.DoesNotExist:
             all_students = course.members.filter(role='student')
-            available_students = course.members.filter(role='student', team__isnull=True)
+            available_students = course.members.filter(role='student', teams__isnull=True)
             
             context = {
                 "teams": course.teams.all(),
@@ -356,7 +367,8 @@ class CreateTeamView(RequireAdminMixin, View):
                 "user": user,
                 "user_name": user.name,
                 "user_role": user.role,
-                "user_team": user.team.name if user.team else "",
+                "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
                 "error": "Team not found"
             }
             return render(request, 'landing/team_creation.html', context)
@@ -368,7 +380,7 @@ class CreateTeamView(RequireAdminMixin, View):
         
         if not student_name or not student_email:
             all_students = course.members.filter(role='student')
-            available_students = course.members.filter(role='student', team__isnull=True)
+            available_students = course.members.filter(role='student', teams__isnull=True)
             
             context = {
                 "teams": course.teams.all(),
@@ -379,7 +391,8 @@ class CreateTeamView(RequireAdminMixin, View):
                 "user": user,
                 "user_name": user.name,
                 "user_role": user.role,
-                "user_team": user.team.name if user.team else "",
+                "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
                 "error": "Student name and email are required"
             }
             return render(request, 'landing/team_creation.html', context)
@@ -404,7 +417,7 @@ class CreateTeamView(RequireAdminMixin, View):
                 success_message = f"Student '{student_name}' created and added to course!"
             
             all_students = course.members.filter(role='student')
-            available_students = course.members.filter(role='student', team__isnull=True)
+            available_students = course.members.filter(role='student', teams__isnull=True)
             
             context = {
                 "teams": course.teams.all(),
@@ -415,14 +428,15 @@ class CreateTeamView(RequireAdminMixin, View):
                 "user": user,
                 "user_name": user.name,
                 "user_role": user.role,
-                "user_team": user.team.name if user.team else "",
+                "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
                 "success_message": success_message
             }
             return render(request, 'landing/team_creation.html', context)
             
         except Exception as e:
             all_students = course.members.filter(role='student')
-            available_students = course.members.filter(role='student', team__isnull=True)
+            available_students = course.members.filter(role='student', teams__isnull=True)
             
             context = {
                 "teams": course.teams.all(),
@@ -433,7 +447,8 @@ class CreateTeamView(RequireAdminMixin, View):
                 "user": user,
                 "user_name": user.name,
                 "user_role": user.role,
-                "user_team": user.team.name if user.team else "",
+                "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
                 "error": f"An error occurred: {str(e)}"
             }
             return render(request, 'landing/team_creation.html', context)
@@ -444,7 +459,7 @@ class CreateCourseView(RequireAdminMixin, View):
         context = {
             'user_name': user.name,
             'user_role': user.role,
-            'user_team': user.team.name if user.team else "",
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
         }
         return render(request, "landing/course_creation.html", context)
     
@@ -454,12 +469,11 @@ class CreateCourseView(RequireAdminMixin, View):
         course_year = request.POST.get('year')
         course_semester = request.POST.get('semester')
         
-        if course_name and course_year and course_semester:
+        if course_name:
             try:
-                course_year = int(course_year)
-                course = create_new_course(course_name, course_year, course_semester)
-                
-                user.course = course 
+                course = create_new_course(course_name)
+                course.members.add(user)
+                user.courses.add(course)
                 user.save()
  
                 return redirect(reverse("landing:course_list") + "?success=course_created")
@@ -467,7 +481,7 @@ class CreateCourseView(RequireAdminMixin, View):
                 context = {
                     'user_name': user.name,
                     'user_role': user.role,
-                    'user_team': user.team.name if user.team else "",
+                    "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
                     'error': 'Invalid year'
                 }
                 return render(request, 'landing/course_creation.html', context)
@@ -475,10 +489,10 @@ class CreateCourseView(RequireAdminMixin, View):
         context = {
             'user_name': user.name,
             'user_role': user.role,
-            'user_team': user.team.name if user.team else "",
-            'error': 'Course name, year and semester are required'
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
         }
         return render(request, 'landing/course_creation.html', context)
+    
 class CourseListView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
@@ -491,7 +505,8 @@ class CourseListView(RequireLoggedInMixin, View):
         context = {
             "user_name": user.name,
             "user_role": user.role,
-            "user_team": user.team.name if user.team else "",
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
             "courses": courses
         }
         

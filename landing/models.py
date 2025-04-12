@@ -1,11 +1,10 @@
 from django.db import models
 from django.apps import apps
 from django.contrib import admin
+from django.contrib.auth.models import User
 import datetime
 
 class Course(models.Model):
-    # Members are given by the foreign key on User, can be accessed with `courseObject.members`
-    # Teams are given by the foreign key on User, can be accessed with `courseObject.teams`
     name = models.CharField(max_length=150, unique=True)
     year = models.IntegerField()
     semester = models.CharField(max_length=40)
@@ -16,7 +15,7 @@ class Course(models.Model):
     def get_members(self) -> models.QuerySet:
         return self.members.all()
 
-    def get_team(self) -> models.QuerySet["Team"]:
+    def get_teams(self) -> models.QuerySet["Team"]:
         return self.teams.all()
 
     def get_assessments(self) -> models.QuerySet["assessments.Assessment"]:

@@ -122,9 +122,23 @@
       border: 1px solid #1b0061;
       box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     }
-    
-    .radio-container input[type="radio"]:checked + .radio-circle {
+
+    .radio-circle::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10px; /* smaller size of the dot when checked */
+      height: 10px;
       background: #1b0061;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .radio-container input[type="radio"]:checked + .radio-circle::after {
+      opacity: 1;
     }
     
     /* Text area styles */
@@ -228,6 +242,17 @@
                   <label for="q1-1">Strongly Disagree</label>
                 </div>
               </div>
+              {% elif question.question_type == "team_member" %}
+              <select name="{{question.pk}}" class="team-member-select" required>
+                <option value="">-- Select team member --</option>
+                {% if current_team %}
+                  {% for member in current_team.members.all %}
+                    <option value="{{ member.email }}">{{ member.name }}</option>
+                  {% endfor %}
+                {% else %}
+                  <option value="" disabled>No team members available</option>
+                {% endif %}
+              </select>  
             {% else %}
               <textarea name="{{question.pk}}" class="text-input" placeholder="Enter response here..."></textarea>
             {% endif %}

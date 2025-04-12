@@ -2,8 +2,9 @@ from .models import Course, Team
 from oauth.models import User
 import datetime
 
-def create_new_course(name: str, year: int) -> Course:
+def create_new_course(name: str) -> Course:
     current_month = datetime.datetime.now().month
+    year = datetime.datetime.now().year
     if 1 <= current_month <= 5:
         semester = "Spring"
     elif 6 <= current_month <= 8:
@@ -25,8 +26,7 @@ def add_student_to_course(student_email: str, course_name: str) -> bool:
     try:
         student = User.objects.get(email=student_email)
         course = Course.objects.get(name=course_name)
-        student.course = course
-        student.save()
+        course.members.add(student)
         return True
     except (User.DoesNotExist, Course.DoesNotExist):
         return False
@@ -35,8 +35,7 @@ def add_student_to_team(student_email: str, team_name: str) -> bool:
     try:
         student = User.objects.get(email=student_email)
         team = Team.objects.get(name=team_name)
-        student.team = team
-        student.save()
+        team.members.add(student)
         return True
     except (User.DoesNotExist, Team.DoesNotExist):
         return False
@@ -44,8 +43,8 @@ def add_student_to_team(student_email: str, team_name: str) -> bool:
 def remove_student_from_course(student_email: str) -> bool:
     try:
         student = User.objects.get(email=student_email)
-        student.course = None
-        student.save()
+        course = Course.objects.get(name=course_name)
+        course.members.remove(student)
         return True
     except User.DoesNotExist:
         return False
@@ -53,8 +52,8 @@ def remove_student_from_course(student_email: str) -> bool:
 def remove_student_from_team(student_email: str) -> bool:
     try:
         student = User.objects.get(email=student_email)
-        student.team = None
-        student.save()
+        team = Team.objects.get(name=course_name)
+        team.members.remove(student)
         return True
     except User.DoesNotExist:
         return False
@@ -62,11 +61,6 @@ def remove_student_from_team(student_email: str) -> bool:
 def remove_course(course_name: str) -> bool:
     try:
         course = Course.objects.get(name=course_name)
-        # First remove all students from the course
-        for student in course.members.all():
-            student.course = None
-            student.save()
-        # Delete the course (this will cascade delete teams due to the CASCADE setting)
         course.delete()
         return True
     except Course.DoesNotExist:
@@ -75,11 +69,6 @@ def remove_course(course_name: str) -> bool:
 def remove_team(team_name: str) -> bool:
     try:
         team = Team.objects.get(name=team_name)
-        # First remove all students from the team
-        for student in team.members.all():
-            student.team = None
-            student.save()
-        # Delete the team
         team.delete()
         return True
     except Team.DoesNotExist:

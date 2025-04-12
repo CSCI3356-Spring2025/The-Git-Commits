@@ -22,9 +22,9 @@ class User(models.Model):
     name = models.CharField(max_length=120)
     role  = models.CharField(max_length=10, choices=ROLE_CHOICES)
 
-    course = models.ForeignKey(Course, models.SET_NULL, related_name="members", null=True)
-    team = models.ForeignKey(Team, models.SET_NULL, related_name="members", null=True)
-
+    courses = models.ManyToManyField('landing.Course', related_name="members", blank=True)
+    teams = models.ManyToManyField('landing.Team', related_name="members", blank=True)
+    
     def get_absolute_url(self) -> str:
         return f"/user/{self.email}/"
 
@@ -36,10 +36,11 @@ class User(models.Model):
 
     @admin.display(description="Course")
     def course_name(self) -> str:
-        if self.course:
-            return self.course.name
+        courses = self.courses.all()  # Fetch all courses the user is enrolled in
+        if courses.exists():
+            return ", ".join([course.name for course in courses])  # Join course names as a string
         else:
-            return "No course"
+            return "No courses"
 
     class Meta:
         ordering = ["role", "name"]

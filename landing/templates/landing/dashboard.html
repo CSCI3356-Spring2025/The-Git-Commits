@@ -234,7 +234,7 @@
         <div class="main-content">
             <div class="left-column">
                 <div class="welcome-container">
-                    <div class="tagline">Welcome, {{user_name}} - {{user_role}}</div>
+                    <div class="tagline">Welcome, {{user_name}} - {{user.get_role_display }}</div>
                 </div>
                 
                 
@@ -264,7 +264,7 @@
                                     <br>
                                 {% endfor %}
                             {% else %}
-                                <div class="section-text">You have no current assessments to view</div>
+                                <div class="section-text">You have no current assessments to view.</div>
                             {% endif %}
                         </div>
                     </div>
@@ -273,7 +273,7 @@
                 <div class="section">
                     <div class="section-title">Feedback</div>
                     <div class="section-content">
-                        <div class="section-text">You have no feedback to view</div>
+                        <div class="section-text">You have no feedback to view.</div>
                     </div>
                 </div>
             </div>
