@@ -155,13 +155,12 @@ class CreateTeamView(RequireAdminMixin, View):
             for email in member_emails:
                 try:
                     member = User.objects.get(email=email)
-                    if member.course == course:
+                    if course in member.courses.all():
                         if member.team:
                             member.team = None
                             member.save()
         
-                        member.team = team
-                        member.save()
+                        member.teams.add(team)
                 except User.DoesNotExist:
                     continue
             
@@ -251,17 +250,15 @@ class CreateTeamView(RequireAdminMixin, View):
             team.name = team_name
             team.save()
             
-            current_members = User.objects.filter(team=team)
+            current_members = team.members.all()
             for member in current_members:
-                member.team = None
-                member.save()
+                team.members.clear()
             
             for email in member_emails:
                 try:
                     member = User.objects.get(email=email)
-                    if member.course == course:
-                        member.team = team
-                        member.save()
+                    if course in member.courses.all():
+                        team.members.clear()
                 except User.DoesNotExist:
                     continue
         
@@ -331,8 +328,7 @@ class CreateTeamView(RequireAdminMixin, View):
 
             current_members = User.objects.filter(team=team)
             for member in current_members:
-                member.team = None
-                member.save()
+                team.members.clear()
             
             team.delete()
 
@@ -412,8 +408,8 @@ class CreateTeamView(RequireAdminMixin, View):
                     name=student_name,
                     email=student_email,
                     role='student',
-                    course=course
                 )
+                new_student.courses.add(course)
                 success_message = f"Student '{student_name}' created and added to course!"
             
             all_students = course.members.filter(role='student')
