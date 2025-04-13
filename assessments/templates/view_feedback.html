@@ -46,8 +46,98 @@
         margin: 0 auto;
         padding-top: 120px; /* Space for navbar */
       }
+
+      .full-page {
+      width: 100vw;
+      min-height: 100vh;
+      background: white;
+      padding: 2rem;
+      box-sizing: border-box;
+    }
+
+    .feedback-section {
+      position: relative;
+      padding-top: 140px;
+    }
+
+    .header-banner {
+      background: #aae7f2;
+      border-radius: 30px;
+      width: 903px;
+      height: 64px;
+      position: absolute;
+      left: 50%;
+      top: 40px;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page-title {
+      color: #000000;
+      font-family: "KoHo-Medium", sans-serif;
+      font-size: 32px;
+      font-weight: 500;
+      text-align: center;
+      margin: 0;
+    }
+
+    .feedback-card {
+      background: #dcf4f9;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-left: 15px solid #aae7f2;
+      border-radius: 5px;
+    }
+
+    .likert-score {
+      color: #000000;
+      text-align: left;
+      font-family: "KoHo-Medium", sans-serif;
+      font-size: 32px;
+      font-weight: 500;
+      margin-top: 120px;
+      margin-bottom: 1rem;
+    }
+
+    .open-ended-feedback {
+      color: #000000;
+      text-align: left;
+      font-family: "KoHo-Medium", sans-serif;
+      font-size: 28px;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .note-message {
+      font-size: 18px;
+      font-style: italic;
+      color: #333;
+      margin-bottom: 2rem;
+    }
     </style>
 {% endblock %}
 
 {% block content %}
+<div class="full-page feedback-section">
+    <div class="header-banner">
+      <h2 class="page-title">Your Feedback Summary</h2>
+    </div>
+
+    {% if show_likert %}
+      <div class="likert-score">Your Likert Score: {{ likert_score }}</div>
+    {% endif %}
+    {% if show_feedback %}
+      <div class="open-ended-feedback">Your Feedback</div>
+
+      {% for feedback in feedback_list %}
+        <div class="feedback-card">{{ feedback }}</div>
+      {% empty %}
+        <div class="feedback-card">Unavailable</div>
+      {% endfor %}
+    {% else %}
+      <div class="feedback-card">The instructor has not yet made feedback available.</div>
+    {% endif %}
+  </div>
 {% endblock %}
