@@ -241,7 +241,7 @@
                   {% for student in all_students %}
                     <div class="checkbox-item">
                       <input type="checkbox" id="edit_student_{{ forloop.counter }}" name="member_emails" value="{{ student.email }}" 
-                        {% if student.team == editing_team %}checked{% endif %}>
+                      {% if editing_team in student.teams.all %}checked{% endif %}>
                       <label for="edit_student_{{ forloop.counter }}">{{ student.name }}</label>
                     </div>
                   {% empty %}
@@ -320,7 +320,7 @@
               <h3 class="team-card-title">{{ team.name }}</h3>
               <div class="team-members">
                 Members: 
-                {% for member in team.get_members %}
+                {% for member in team.members.all %}
                   {{ member.name }}{% if not forloop.last %}, {% endif %}
                 {% empty %}
                   No members assigned
@@ -352,8 +352,8 @@
             {% for student in all_students %}
               <div class="student-pill">
                 {{ student.name }} 
-                {% if student.team %}
-                  (Team: {{ student.team.name }})
+                {% if student.teams.exists %}
+                  ({{ student.teams.all|join:", " }})
                 {% else %}
                   (Unassigned)
                 {% endif %}

@@ -25,7 +25,7 @@ class Course(models.Model):
         return self.assessments.exclude(due_date__lt=datetime.datetime.now()).filter(published=True)
 
 class Team(models.Model):
-    # Members are given by the foreign key on User, can be accessed with `teamObject.members`
+    # Members can be accessed with `team.members.all()`
     name = models.CharField(max_length=150, unique=True)
     course = models.ForeignKey(Course, models.CASCADE, related_name="teams")
 
