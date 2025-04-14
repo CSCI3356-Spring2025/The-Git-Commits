@@ -19,5 +19,5 @@ urlpatterns = [
     path('student/courses/<int:course_id>/assessments/', views.StudentAssessmentsView.as_view(), name='student_assessments'),
     path('student/courses/<int:course_id>/assessments/<int:assessment_id>/feedback/', views.StudentFeedbackView.as_view(), name='student_feedback'),
     
-    path('course/<int:course_id>/assessments/', views.CourseAssessmentsView.as_view(), name='student_assessment_list'),
+    path('course/<int:course_id>/assessments/', views.CourseAssessmentsView.as_view(), name='student_course_assessment_list'),
 ]

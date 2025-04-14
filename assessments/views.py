@@ -28,11 +28,10 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
         except Assessment.DoesNotExist:
             return redirect(reverse("landing:dashboard"))
 
-        # TODO: check that the user is in the course the assessment is intended for
         if assessment.course not in user.courses.all():
             return redirect(reverse("landing:dashboard"))
 
-        # This assumes a single team per course
+        # This assumes student is on a single team per course
         current_team = user.teams.filter(course=assessment.course).first()
     
         context = {
@@ -309,25 +308,25 @@ class CourseAssessmentsView(RequireLoggedInMixin, View):
         
         try:
             course = Course.objects.get(pk=course_id)
-            if course not in user.courses.all() and user.role != 'admin':
-                return redirect(reverse("landing:dashboard"))
-                
-            assessments = course.get_current_published_assessments()
-            
-            context = {
-                "user_name": user.name,
-                "user_role": user.role,
-                "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
-
-                "course": course,
-                "assessments": assessments
-            }
-            
-            return render(request, "assessments/student_assessment_list.html", context)
-            
         except Course.DoesNotExist:
             return redirect(reverse("landing:dashboard"))
+
+        # I don't think admins should be able to view courses they're not in
+        if course not in user.courses.all(): # and user.role != 'admin':
+            return redirect(reverse("landing:dashboard"))
+            
+        assessments = course.get_current_published_assessments()
         
+        context = {
+            "user_name": user.name,
+            "user_role": user.role,
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
+            "course": course,
+            "assessments": assessments
+        }
+        
+        return render(request, "student_assessment_list.html", context)
 
 class ProfessorCoursesView(RequireLoggedInMixin, View):
     """First page: List all courses taught by the professor"""

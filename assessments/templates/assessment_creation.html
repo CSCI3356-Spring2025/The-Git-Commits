@@ -128,6 +128,11 @@
       .inline {
         display: inline-block;
       }
+
+      .edit-assessment-button {
+        vertical-align: top;
+      }
+
     </style>
 {% endblock %}
 
@@ -137,31 +142,40 @@
     <div class="assessment-title container">
       <div class="">
         <div class="assessment-builder inline">{{ assessment.title }}</div>
-        <div class="due-date inline">Due: {{ assessment.due_date|date:"DATETIME_FORMAT" }}</div>
+        {% if assessment.due_date %}
+          <div class="due-date inline">(Due: {{ assessment.due_date|date:"DATETIME_FORMAT" }})</div>
+        {% else %}
+          <div class="due-date inline">(No due date)</div>
+        {% endif %}
         <button class="edit-assessment-button inline" data-bs-toggle="modal" data-bs-target="#edit-assessment-modal">edit</button>
       </div>
     </div>
 
     <!-- Questions -->
     <div class="question-container">
-    {% for question in assessment.get_questions %}
-    <div class="question-outer m-4">
-      <div class="question m-2">{{ question.question }}</div>
-      <div class="container row">
-        <button class="edit-frame col m-2 ms-4 py-2" data-bs-toggle="modal" data-bs-target="#edit-question-modal-id-{{ question.pk }}">
-          <div class="edit" data-bs-toggle="modal" data-bs-target="#edit-question-modal-id-{{ question.pk }}">Edit</div>
-        </button>
-        <form method="post" class="remove-frame col m-2 p-2">
-          <button class="col">
-            {% csrf_token %}
-            <input type="hidden" name="course_id" value="{{ course.id }}">
-            <div class="remove">Remove</div>
-            <input type="hidden" name="remove" value="{{ question.pk }}">
-          </button>
-        </form>
+      <div class="question-outer m-4">
+        <div class="question m-2">Who are you evaluating?</div>
+        <div class="container row">
+        </div>
       </div>
-    </div>
-    {% endfor %}
+      {% for question in assessment.get_questions %}
+        <div class="question-outer m-4">
+          <div class="question m-2">{{ question.question }}</div>
+          <div class="container row">
+            <button class="edit-frame col m-2 ms-4 py-2" data-bs-toggle="modal" data-bs-target="#edit-question-modal-id-{{ question.pk }}">
+              <div class="edit" data-bs-toggle="modal" data-bs-target="#edit-question-modal-id-{{ question.pk }}">Edit</div>
+            </button>
+            <form method="post" class="remove-frame col m-2 p-2">
+              <button class="col">
+                {% csrf_token %}
+                <input type="hidden" name="course_id" value="{{ course.id }}">
+                <div class="remove">Remove</div>
+                <input type="hidden" name="remove" value="{{ question.pk }}">
+              </button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
     </div>
 
     <!-- Control Buttons -->

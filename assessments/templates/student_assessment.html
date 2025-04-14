@@ -1,4 +1,3 @@
-<!-- landing/templates/landing/student_assessment.html -->
 {% extends "base.html" %}
 {% load static %}
 {% load l10n %}
@@ -195,23 +194,25 @@
 {% block content %}
   <div class="student-assessment">
     <div class="due-date">Due: {{ due_date|date:"DATETIME_FORMAT" }}</div>
-    <!-- <div class="due-date">{{ due_date|date:"D, F jS \a\t g:i:s A (e)" }}</div> -->
     
     <div class="assessment-container">
       <form method="post" action="{% url 'assessments:student_assessment_list' %}" class="clearfix">
         {% csrf_token %}
-        <select name="team_member_evaluated" class="team-member-select" required>
-          <option value="">-- Select team member --</option>
-          {% if current_team %}
-            {% for member in current_team.members.all %}
-              {% if member.email != user.email or assessment.allow_self_assessment %}
-                <option value="{{ member.email }}">{{ member.name }}</option>
-              {% endif %}
-            {% endfor %}
-          {% else %}
-            <option value="" disabled>No team members available</option>
-          {% endif %}
-        </select>  
+        <div class="question">
+          <div class="question-text">Who are you evaluating?</div>
+          <select name="team_member_evaluated" class="team-member-select" required>
+            <option value="">-- Select team member --</option>
+            {% if current_team %}
+              {% for member in current_team.members.all %}
+                {% if member.pk != user.pk or assessment.allow_self_assessment %}
+                  <option value="{{ member.email }}">{{ member.name }}</option>
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              <option value="" disabled>No team members available</option>
+            {% endif %}
+          </select>  
+        </div>
         {% for question in questions %}
           <div class="question">
             <div class="question-text">{{question.question}}</div>
@@ -257,7 +258,6 @@
               <textarea name="{{question.pk}}" class="text-input" placeholder="Enter response here..."></textarea>
             {% endif %}
           </div>
-
         {% endfor %}
         
         <!-- Submit button -->
@@ -266,3 +266,4 @@
     </div>
   </div>
 {% endblock %}
+
