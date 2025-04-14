@@ -1,3 +1,4 @@
+from django.http.request import QueryDict
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect, reverse
 from django.views import View
@@ -15,6 +16,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from .models import StudentAssessmentResponse
 from .feedback import get_feedback_summary, alphabetize_free_responses, average_likert_responses
+from django.http.request import HttpRequest
 
 
 class StudentAssessmentView(RequireLoggedInMixin, View):
@@ -39,7 +41,7 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
             'user_name': user.name,
             'user_role': user.role
         }
-        return render(request, 'new_student_assessment.html', context)
+        return render(request, 'student_assessment.html', context)
 
     def post(self, request, *args, **kwargs):
         user = kwargs["user"]
@@ -60,16 +62,12 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
             return redirect(reverse("landing:dashboard"))
         
         # Get the evaluated team member from the form
-        team_member_question = assessment.questions.filter(question_type='team_member').first()
-        if team_member_question:
-            evaluated_user_email = request.POST.get(f'question_{team_member_question.id}')
-            try:
-                evaluated_user = User.objects.get(email=evaluated_user_email)
-            except User.DoesNotExist:
-                messages.error(request, "Invalid team member selection")
-                return redirect(reverse("landing:student_assessment", kwargs={"user": user, "assessment_id": assessment_id}))
-        else:
-            evaluated_user = None
+        evaluated_user_email = request.POST.get("team_member_evaluated")
+        try:
+            evaluated_user = User.objects.get(email=evaluated_user_email)
+        except User.DoesNotExist:
+            messages.error(request, "Invalid team member selection")
+            return redirect(reverse("landing:student_assessment", kwargs={"user": user, "assessment_id": assessment_id}))
         
         # Create the response record with the evaluated user
         response = StudentAssessmentResponse(
@@ -125,33 +123,22 @@ class CreateAssessmentView(RequireAdminMixin, View):
         if course_id:
             try:
                 course = Course.objects.get(pk=course_id)
-                # Verify admin has access to this course
-                if user.role != 'admin':
-                    return redirect(reverse("landing:dashboard"))
             except Course.DoesNotExist:
-                if not user.courses.exists():
+                first_course = user.courses.first()
+                if first_course is None:
                     return redirect(reverse("landing:dashboard"))
-                course = user.courses.first()
+                course = first_course
         else:
-            if not user.courses.exists():
+            first_course = user.courses.first()
+            if first_course is None:
                 return redirect(reverse("landing:dashboard"))
-            course = user.courses.first()
+            course = first_course
 
         # Determine which assessment this is for (creating a new one if necessary)
         assessment_id = request.session.get("assessment_id", None)
         if assessment_id:
             try:
-                assessment = Assessment.objects.get(pk=assessment_id)
-                # Make sure the assessment belongs to the selected course
-                if assessment.course != course:
-                    # If we've switched courses, create a new assessment
-                    assessment = Assessment.objects.create(
-                        course=course, 
-                        title="New Assessment", 
-                        due_date=None, 
-                        published=False
-                    )
-                    request.session["assessment_id"] = assessment.pk
+                assessment = Assessment.objects.get(pk=assessment_id, course=course)
             except Assessment.DoesNotExist:
                 assessment = Assessment.objects.create(
                     course=course, 
@@ -180,8 +167,8 @@ class CreateAssessmentView(RequireAdminMixin, View):
 
     def post(self, request, *argv, **kwargs) -> HttpResponse:
         """Buttons that have to update the page send POST requests back to update the database
-        and re-render the page. Doing it this way instead of using basic JS feels like a war crime,
-        but the requirements make it necessary.
+        and re-render the page. Doing it this way instead of using basic JS (fetch or AJAX)
+        feels like a war crime, but the requirements make it necessary.
         """
         user: User = kwargs["user"]
         course_id = request.POST.get('course_id')
@@ -206,16 +193,7 @@ class CreateAssessmentView(RequireAdminMixin, View):
         assessment_id = request.session.get("assessment_id", None)
         if assessment_id: 
             try:
-                assessment = Assessment.objects.get(pk=assessment_id)
-                # Make sure the assessment belongs to the selected course
-                if assessment.course != course:
-                    assessment = Assessment.objects.create(
-                        course=course,
-                        title="New Assessment",
-                        due_date=datetime.datetime.now() + datetime.timedelta(days=1),
-                        published=False
-                    )
-                    request.session["assessment_id"] = assessment.pk
+                assessment = Assessment.objects.get(pk=assessment_id, course=course)
             except Assessment.DoesNotExist:
                 assessment = Assessment.objects.create(
                     course=course,
@@ -237,64 +215,89 @@ class CreateAssessmentView(RequireAdminMixin, View):
         # Process the incoming action from the request data
         params = request.POST
         if params.get("add", None):
-            # Get the count of existing questions for this assessment to determine the next order value
-            next_order = assessment.questions.count()
-            # Create the new question with the order value
-            question = AssessmentQuestion.objects.create(
-                assessment=assessment, 
-                question_type="likert", 
-                question="Question text?", 
-                required=True,
-                order=next_order  # Set the order value here
-            )
-
+            self.handle_add(assessment)
         elif params.get("remove", None):
-            pk = params["remove"]
-            AssessmentQuestion.objects.filter(pk=pk).delete()
-            
-            # After removing a question, reorder the remaining questions to ensure sequential ordering
-            # This prevents gaps in the order sequence
-            for i, question in enumerate(assessment.questions.all().order_by('order')):
-                question.order = i
-                question.save()
-
+            self.handle_remove(assessment, params["remove"])
         elif params.get("edit", None):
-            pk = params["edit"]
-            question = AssessmentQuestion.objects.get(pk=pk)
-
-            required = params.get("required", None)
-            question_text = params.get("question", None)
-            question_type = params.get("question_type", None)
-            if required is not None:
-                question.required = (required == "on")
-            if question_text is not None:
-                question.question = question_text
-            if question_type == "likert" or question_type == "free":
-                question.question_type = question_type
-
-            question.save()
-
+            self.handle_edit(params)
+        elif params.get("edit_assessment", None):
+            self.handle_edit_assessment(assessment, params)
         elif params.get("publish", None):
-            assessment.published = True
-            assessment.save()
-            del request.session["assessment_id"]
-            request.session.modified = True
-            return redirect("landing:dashboard")
+            return self.handle_publish(request, assessment)
 
         context = { 
             "assessment": assessment,
             "course": course,
             "user_name": user.name,
             "user_role": user.role,
+            # Why are we doing this thing below? It doesn't seem to get used at all
             "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
         }
         return render(request, "assessment_creation.html", context)
+
+    def handle_add(self, assessment: Assessment) -> None:
+        # Get the count of existing questions for this assessment to determine the next order value
+        next_order = assessment.questions.count()
+        # Create the new question with the order value
+        question = AssessmentQuestion.objects.create(
+            assessment=assessment, 
+            question_type="likert", 
+            question="Question text?", 
+            required=True,
+            order=next_order
+        )
+
+    def handle_remove(self, assessment: Assessment, pk: str):
+        AssessmentQuestion.objects.filter(pk=pk).delete()
+        
+        # After removing a question, reorder the remaining questions to ensure sequential ordering
+        for i, question in enumerate(assessment.questions.all().order_by('order')):
+            question.order = i
+            question.save()
+
+    def handle_edit(self, params: QueryDict):
+        pk = str(params["edit"])
+        question = AssessmentQuestion.objects.get(pk=pk)
+
+        required = params.get("required", None)
+        question_text = params.get("question", None)
+        question_type = params.get("question_type", None)
+        if required is not None:
+            question.required = (required == "on")
+        if question_text is not None:
+            question.question = question_text
+        if question_type == "likert" or question_type == "free":
+            question.question_type = question_type
+
+        question.save()
+
+    def handle_edit_assessment(self, assessment: Assessment, params: QueryDict):
+        title = params.get("assessment_title_edit", None)
+        due_date = params.get("due_date", None)
+        print(due_date)
+
+        if title is not None:
+            assessment.title = title
+        if due_date is not None:
+            try:
+                assessment.due_date = datetime.datetime.strptime(due_date, "%Y-%m-%dT%H:%M")
+            except ValueError:
+                print("Could not parse time")
+                pass
+        assessment.save()
+
+
+    def handle_publish(self, request: HttpRequest, assessment: Assessment) -> HttpResponse:
+        assessment.published = True
+        assessment.save()
+        del request.session["assessment_id"]
+        request.session.modified = True
+        return redirect("landing:dashboard")
     
 
 class CourseAssessmentsView(RequireLoggedInMixin, View):
-    def get(self, request, *args, **kwargs) -> HttpResponse:
+    def get(self, request, *args, course_id="", **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
-        course_id = kwargs.get("course_id")
         
         try:
             course = Course.objects.get(pk=course_id)
