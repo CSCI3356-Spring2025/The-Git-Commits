@@ -32,6 +32,7 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
         if assessment.course not in user.courses.all():
             return redirect(reverse("landing:dashboard"))
 
+        # This assumes a single team per course
         current_team = user.teams.filter(course=assessment.course).first()
     
         context = {
@@ -39,7 +40,8 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
             'due_date': assessment.due_date,
             'questions': assessment.get_questions(),
             'user_name': user.name,
-            'user_role': user.role
+            'user_role': user.role,
+            'current_team': current_team,
         }
         return render(request, 'student_assessment.html', context)
 
@@ -471,7 +473,8 @@ class StudentAssessmentsView(RequireLoggedInMixin, View):
         context = {
             "user_name": user.name,
             "user_role": user.role,
-            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+            "teams": user.teams,
+            # "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
             "course": course,
             "assessments": assessments,
         }
