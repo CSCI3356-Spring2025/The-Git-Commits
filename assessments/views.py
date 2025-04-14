@@ -17,7 +17,6 @@ from .models import StudentAssessmentResponse
 from .feedback import get_feedback_summary, alphabetize_free_responses, average_likert_responses
 
 
-
 class StudentAssessmentView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs):
         user = kwargs["user"]

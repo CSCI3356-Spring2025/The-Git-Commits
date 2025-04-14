@@ -395,9 +395,8 @@ class CreateTeamView(RequireAdminMixin, View):
             existing_student = User.objects.filter(email=student_email).first()
             
             if existing_student:
-                if existing_student.course != course:
-                    existing_student.course = course
-                    existing_student.save()
+                if course not in existing_student.courses.all():
+                    existing_student.courses.add(course)
                     success_message = f"Student '{student_name}' added to course!"
                 else:
                     success_message = f"Student '{student_name}' is already in this course."
