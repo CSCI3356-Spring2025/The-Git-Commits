@@ -105,27 +105,42 @@
         font-family: "KoHo-Regular", sans-serif;
         font-size: 22px;
         font-weight: 400;
+        background: #1b0061;
+        border-radius: 50px;
       }
 
-      .outer-mid-btn {
-        background: #aae7f2;
-        border-radius: 50px;
-        padding: 10px 20px;
-      }
+      /* .outer-mid-btn { */
+      /*   background: #aae7f2; */
+      /*   border-radius: 50px; */
+      /*   padding: 10px 20px; */
+      /* } */
 
       .mid-btn-text {
         color: #000000;
         text-align: center;
+        background: #aae7f2;
+        border-radius: 50px;
         font-family: "KoHo-Medium", sans-serif;
         font-size: 20px;
         font-weight: 500;
+      }
+
+      .inline {
+        display: inline-block;
       }
     </style>
 {% endblock %}
 
 {% block content %}
   <div class="assessment-container">
-    <h2 class="assessment-builder">Assessment Builder</h2>
+
+    <div class="assessment-title container">
+      <div class="">
+        <div class="assessment-builder inline">{{ assessment.title }}</div>
+        <div class="due-date inline">Due: {{ assessment.due_date|date:"DATETIME_FORMAT" }}</div>
+        <button class="edit-assessment-button inline" data-bs-toggle="modal" data-bs-target="#edit-assessment-modal">edit</button>
+      </div>
+    </div>
 
     <!-- Questions -->
     <div class="question-container">
@@ -155,28 +170,52 @@
         <form method="post">
           {% csrf_token %}
           <input type="hidden" name="course_id" value="{{ course.id }}">
-          <div class="outer-dark-btn d-inline-flex">
-            <button class="p-2 publish-text">Publish</button>
-            <input type="hidden" name="publish" value="question">
-          </div>
+          <button class="py-3 px-4 publish-text">Publish</button>
+          <input type="hidden" name="publish" value="question">
         </form>
       </div>
 
       <div class="m-4">
-        <div class="outer-mid-btn d-inline-flex">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="course_id" value="{{ course.id }}">
+          <button class="py-3 px-4 mid-btn-text">Add Question</button>
+          <input type="hidden" name="add" value="question">
+        </form>
+      </div>
+    </div>
+
+    <!-- Edit Assessment Modal -->
+    <div id="edit-assessment-modal" class="modal fade" tabindex="-1" aria-labelledby="edit-assessment-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="modal-title">Edit Question</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
           <form method="post">
             {% csrf_token %}
             <input type="hidden" name="course_id" value="{{ course.id }}">
-            <button class="p-2 mid-btn-text">Add Question</button>
-            <input type="hidden" name="add" value="question">
+            <div class="modal-body">
+              <input type="hidden" name="edit_assessment" value="{{ assessment.title }}">
+              <label for="assessment_title_edit" class="form-label">Title:</label>
+              <input type="text" name="assessment_title_edit" id="assessment_title_edit" value="{{ assessment.title }}" class="form-control">
+              <br>
+              <label for="due_date" class="form-label">Title:</label>
+              <input type="datetime-local" name="due_date" id="due_date" value="{{ assessment.due_date|date:'Y-m-d\TH:i' }}" class="form-control">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><br>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
           </form>
         </div>
       </div>
     </div>
 
-    <!-- Modals -->
+    <!-- Edit Question Modals -->
     {% for question in assessment.get_questions %}
-      <div id="edit-question-modal-id-{{ question.pk }}" class="modal fade" tabindex="-1" aria-labelledby="add-team-modal">
+      <div id="edit-question-modal-id-{{ question.pk }}" class="modal fade" tabindex="-1" aria-labelledby="edit-question-modal">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
