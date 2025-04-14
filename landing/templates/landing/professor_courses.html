@@ -39,28 +39,6 @@
         background: #F0F8FF;
       }
 
-        .dashboard {
-          position: relative;
-          width: 100%;
-          max-width: 1280px;
-          margin: 0 auto;
-          padding-top: 120px; /* Space for navbar */
-        }
-
-
-    .full-page {
-      width: 100vw;
-      min-height: 100vh;
-      background: white;
-      padding: 2rem;
-      box-sizing: border-box;
-    }
-
-    .feedback-section {
-      position: relative;
-      padding-top: 140px;
-    }
-
     .header-banner {
       background: #aae7f2;
       border-radius: 30px;
@@ -75,13 +53,26 @@
       justify-content: center;
     }
 
+    .full-page {
+      width: 100vw;
+      min-height: 100vh;
+      background: white;
+      padding: 2rem;
+      box-sizing: border-box;
+    }
+
+    .feedback-section {
+      position: relative;
+      margin-top: 7rem;
+    }
+
     .page-title {
       color: #000000;
       font-family: "KoHo-Medium", sans-serif;
       font-size: 32px;
       font-weight: 500;
       text-align: center;
-      margin: 0;
+      margin: 1rem;
     }
 
     .feedback-card {
@@ -132,7 +123,7 @@
 {% block content %}
   <div class="full-page feedback-section">
     <div class="header-banner">
-      <h2 class="page-title">Software Engineering: The Git Commits Feedback</h2>
+      <h2 class="page-title">{Course - Team} Feedback</h2>
     </div>
 
     <div class="likert-score">Likert Score</div>
