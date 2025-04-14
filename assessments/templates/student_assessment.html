@@ -203,8 +203,13 @@
         <select name="team_member_evaluated" class="team-member-select" required>
           <option value="">-- Select team member --</option>
           {% if current_team %}
+            {% if assessment.allow_self_assessment %}
+            <option value="{{ student.email }}">{{ student.name }} (Self)</option>
+            {% endif %}
             {% for member in current_team.members.all %}
-              <option value="{{ member.email }}">{{ member.name }}</option>
+              {% if member.email != student.email %}
+                <option value="{{ member.email }}">{{ member.name }}</option>
+              {% endif %}
             {% endfor %}
           {% else %}
             <option value="" disabled>No team members available</option>

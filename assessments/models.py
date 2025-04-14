@@ -9,7 +9,8 @@ class Assessment(models.Model):
     due_date = models.DateTimeField(null=True)
     course = models.ForeignKey("landing.Course", models.CASCADE, related_name="assessments")
     published = models.BooleanField(default=False)
-
+    allow_self_assessment = models.BooleanField(default=False)
+    
     def get_questions(self) -> models.QuerySet:
         return self.questions.all()
     

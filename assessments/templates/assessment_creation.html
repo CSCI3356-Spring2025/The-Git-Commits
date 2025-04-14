@@ -203,6 +203,11 @@
               <br>
               <label for="due_date" class="form-label">Title:</label>
               <input type="datetime-local" name="due_date" id="due_date" value="{{ assessment.due_date|date:'Y-m-d\TH:i' }}" class="form-control">
+              <br>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="allow_self_assessment" id="allow_self_assessment" {% if assessment.allow_self_assessment %}checked{% endif %}>
+                <label class="form-check-label" for="allow_self_assessment">Allow students to perform self-assessment</label>
+              </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><br>

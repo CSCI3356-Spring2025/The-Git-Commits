@@ -276,6 +276,8 @@ class CreateAssessmentView(RequireAdminMixin, View):
         due_date = params.get("due_date", None)
         print(due_date)
 
+        allow_self_assessment = params.get("allow_self_assessment", None)
+        
         if title is not None:
             assessment.title = title
         if due_date is not None:
@@ -284,6 +286,9 @@ class CreateAssessmentView(RequireAdminMixin, View):
             except ValueError:
                 print("Could not parse time")
                 pass
+        
+        assessment.allow_self_assessment = allow_self_assessment == "on"
+        
         assessment.save()
 
 
