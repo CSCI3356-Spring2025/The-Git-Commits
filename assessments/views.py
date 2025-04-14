@@ -285,31 +285,6 @@ class CreateAssessmentView(RequireAdminMixin, View):
         }
         return render(request, "assessment_creation.html", context)
     
-class ReviewFeedbackView(RequireLoggedInMixin, View):
-    def get(self, request, *args, **kwargs) -> HttpResponse:
-        user: User = kwargs["user"]
-        
-        context = {
-            "user_name": user.name,
-            "user_role": user.role,
-            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
-
-        }
-        
-        return render(request, "review_feedback.html", context)
-    
-class ViewFeedbackView(RequireLoggedInMixin, View):
-    def get(self, request, *args, **kwargs) -> HttpResponse:
-        user: User = kwargs["user"]
-        
-        context = {
-            "user_name": user.name,
-            "user_role": user.role,
-            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
-
-        }
-        
-        return render(request, "view_feedback.html", context)
 
 class CourseAssessmentsView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs) -> HttpResponse:
@@ -336,3 +311,30 @@ class CourseAssessmentsView(RequireLoggedInMixin, View):
             
         except Course.DoesNotExist:
             return redirect(reverse("landing:dashboard"))
+        
+        
+class ReviewFeedbackView(RequireLoggedInMixin, View):
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        user: User = kwargs["user"]
+        
+        context = {
+            "user_name": user.name,
+            "user_role": user.role,
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
+        }
+        
+        return render(request, "review_feedback.html", context)
+    
+class ViewFeedbackView(RequireLoggedInMixin, View):
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        user: User = kwargs["user"]
+        
+        context = {
+            "user_name": user.name,
+            "user_role": user.role,
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
+        }
+        
+        return render(request, "view_feedback.html", context)
