@@ -32,11 +32,11 @@
             <div class="nav-text">Assessments</div>
           </a>
           {% if user_role == 'admin' %}
-            <a href="{% url 'assessments:review_feedback' %}" class="nav-btn">
+            <a href="{% url 'assessments:professor_courses' %}" class="nav-btn">
               <div class="nav-text">Feedback</div>
             </a>
           {% else %}
-            <a href="{% url 'assessments:view_feedback' %}" class="nav-btn">
+            <a href="{% url 'assessments:student_courses' %}" class="nav-btn">
               <div class="nav-text">Feedback</div>
             </a>
           {% endif %}
