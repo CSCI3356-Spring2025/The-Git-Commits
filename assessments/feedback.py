@@ -72,18 +72,16 @@ def average_likert_responses(evaluated_user, assessment=None):
 
 def get_feedback_summary(evaluated_user, assessment=None):
     response_count = get_all_responses_for_evaluated_user(evaluated_user, assessment).count()
-    
-    free_responses = alphabetize_free_responses(evaluated_user, assessment)
-    
     likert_averages = average_likert_responses(evaluated_user, assessment)
+    free_responses = alphabetize_free_responses(evaluated_user, assessment)
     
     # combine into a summary dictionary
     summary = {
         'evaluated_user': evaluated_user,
         'assessment': assessment,
         'response_count': response_count,
-        'free_responses': free_responses,
-        'likert_averages': likert_averages
+        'likert_averages': likert_averages,
+        'free_responses': free_responses
     }
     
     return summary

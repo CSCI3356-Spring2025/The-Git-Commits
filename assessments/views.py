@@ -11,6 +11,12 @@ from oauth.oauth import RequireLoggedInMixin, RequireAdminMixin
 
 from itertools import chain
 
+from django.shortcuts import render, redirect, get_object_or_404
+
+from .models import StudentAssessmentResponse
+from .feedback import get_feedback_summary, alphabetize_free_responses, average_likert_responses
+
+
 
 class StudentAssessmentView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs):
@@ -312,29 +318,180 @@ class CourseAssessmentsView(RequireLoggedInMixin, View):
         except Course.DoesNotExist:
             return redirect(reverse("landing:dashboard"))
         
-        
-class ReviewFeedbackView(RequireLoggedInMixin, View):
+
+class ProfessorCoursesView(RequireLoggedInMixin, View):
+    """First page: List all courses taught by the professor"""
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
+        
+        # Only admins should access this view
+        if user.role != 'admin':
+            return redirect('dashboard')
+        
+        # Get courses that have this professor as admin
+        courses = Course.objects.filter(members=user)
         
         context = {
             "user_name": user.name,
             "user_role": user.role,
             "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
-
+            "courses": courses,
         }
         
-        return render(request, "review_feedback.html", context)
-    
-class ViewFeedbackView(RequireLoggedInMixin, View):
+        return render(request, "landing/professor_courses.html", context)
+
+class ProfessorAssessmentsView(RequireLoggedInMixin, View):
+    """Second page: List all assessments for a specific course"""
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
+        course_id = kwargs.get('course_id')
+        
+        if user.role != 'admin':
+            return redirect('dashboard')
+        
+        course = get_object_or_404(Course, id=course_id, members=user)
+        
+        assessments = Assessment.objects.filter(course=course)
         
         context = {
             "user_name": user.name,
             "user_role": user.role,
             "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
-
+            "course": course,
+            "assessments": assessments,
         }
         
-        return render(request, "view_feedback.html", context)
+        return render(request, "landing/professor_assessments.html", context)
+
+class ProfessorTeamsView(RequireLoggedInMixin, View):
+    """Third page: List all teams for a specific course and assessment"""
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        user: User = kwargs["user"]
+        course_id = kwargs.get('course_id')
+        assessment_id = kwargs.get('assessment_id')
+        
+        if user.role != 'admin':
+            return redirect('dashboard')
+        
+        course = get_object_or_404(Course, id=course_id, members=user)
+        assessment = get_object_or_404(Assessment, id=assessment_id, course=course)
+        
+        teams = Team.objects.filter(course=course)
+        
+        context = {
+            "user_name": user.name,
+            "user_role": user.role,
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+            "course": course,
+            "assessment": assessment,
+            "teams": teams,
+        }
+        
+        return render(request, "landing/professor_teams.html", context)
+
+class ProfessorTeamFeedbackView(RequireLoggedInMixin, View):
+    """Fourth page: Display raw feedback from team members for a specific assessment"""
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        user: User = kwargs["user"]
+        course_id = kwargs.get('course_id')
+        assessment_id = kwargs.get('assessment_id')
+        team_id = kwargs.get('team_id')
+        
+        if user.role != 'admin':
+            return redirect('dashboard')
+        
+        course = get_object_or_404(Course, id=course_id, members=user)
+        assessment = get_object_or_404(Assessment, id=assessment_id, course=course)
+        team = get_object_or_404(Team, id=team_id, course=course)
+        
+        team_members = team.members.all()
+        
+        responses = StudentAssessmentResponse.objects.filter(
+            assessment=assessment,
+            student__in=team_members
+        ).select_related('student', 'evaluated_user')
+        
+        context = {
+            "user_name": user.name,
+            "user_role": user.role,
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+            "course": course,
+            "assessment": assessment,
+            "team": team,
+            "responses": responses,
+        }
+        
+        return render(request, "landing/professor_team_feedback.html", context)
+
+class StudentCoursesView(RequireLoggedInMixin, View):
+    """First page: List all courses the student is enrolled in"""
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        user: User = kwargs["user"]
+        
+        # Only students should access this view
+        if user.role != 'student':
+            return redirect('dashboard')
+        
+        # Get courses that have this student as a member
+        courses = user.courses.all()
+        
+        context = {
+            "user_name": user.name,
+            "user_role": user.role,
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+            "courses": courses,
+        }
+        
+        return render(request, "landing/student_courses.html", context)
+
+class StudentAssessmentsView(RequireLoggedInMixin, View):
+    """Second page: List all assessments for a specific course where the student was evaluated"""
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        user: User = kwargs["user"]
+        course_id = kwargs.get('course_id')
+        
+        if user.role != 'student':
+            return redirect('dashboard')
+        
+        course = get_object_or_404(Course, id=course_id, members=user)
+        
+        assessments = Assessment.objects.filter(
+            course=course,
+            studentassessmentresponse__evaluated_user=user
+        ).distinct()
+        
+        context = {
+            "user_name": user.name,
+            "user_role": user.role,
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+            "course": course,
+            "assessments": assessments,
+        }
+        
+        return render(request, "landing/student_assessments.html", context)
+
+class StudentFeedbackView(RequireLoggedInMixin, View):
+    """Third page: Display processed feedback for a specific assessment"""
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        user: User = kwargs["user"]
+        course_id = kwargs.get('course_id')
+        assessment_id = kwargs.get('assessment_id')
+        
+        if user.role != 'student':
+            return redirect('dashboard')
+        
+        course = get_object_or_404(Course, id=course_id, members=user)
+        assessment = get_object_or_404(Assessment, id=assessment_id, course=course)
+        
+        feedback_summary = get_feedback_summary(evaluated_user=user, assessment=assessment)
+        
+        context = {
+            "user_name": user.name,
+            "user_role": user.role,
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+            "course": course,
+            "assessment": assessment,
+            "feedback": feedback_summary,
+        }
+        
+        return render(request, "landing/student_feedback.html", context)
