@@ -199,6 +199,7 @@
     
     <div class="assessment-container">
       <form method="post" action="{% url 'assessments:student_assessment_list' %}" class="clearfix">
+<<<<<<< HEAD
         {% csrf_token %}
         <select name="team_member_evaluated" class="team-member-select" required>
           <option value="">-- Select team member --</option>
@@ -215,6 +216,8 @@
             <option value="" disabled>No team members available</option>
           {% endif %}
         </select>  
+=======
+>>>>>>> ef3542f (feedback template edits)
         {% for question in questions %}
           <div class="question">
             <div class="question-text">{{question.question}}</div>
@@ -256,12 +259,22 @@
                   <label for="q1-1">Strongly Disagree</label>
                 </div>
               </div>
-            {% else %}
-              <textarea name="{{question.pk}}" class="text-input" placeholder="Enter response here..."></textarea>
-            {% endif %}
-          </div>
-
-        {% endfor %}
+             {% elif question.question_type == "team_member" %}
+              <select name="{{question.pk}}" class="team-member-select" required>
+                <option value="">-- Select team member --</option>
+                {% if current_team %}
+                  {% for member in current_team.members.all %}
+                    <option value="{{ member.email }}">{{ member.name }}</option>
+                  {% endfor %}
+                {% else %}
+                <option value="" disabled>No team members available</option>
+                {% endif %}
+              </select>  
+             {% else %}
+               <textarea name="{{question.pk}}" class="text-input" placeholder="Enter response here..."></textarea>
+             {% endif %}
+           </div>
+         {% endfor %}
         
         <!-- Submit button -->
         <button type="submit" class="submit-btn">Submit</button>

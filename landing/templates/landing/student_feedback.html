@@ -129,18 +129,41 @@
       <h2 class="page-title">Your Feedback Summary</h2>
     </div>
 
-    {% if show_likert %}
-      <div class="likert-score">Your Likert Score: {{ likert_score }}</div>
-    {% endif %}
-    {% if show_feedback %}
-      <div class="open-ended-feedback">Your Feedback</div>
+    <div class="response-count">
+      Responses Collected: {{ feedback.response_count }}
+    </div>
 
-      {% for feedback in feedback_list %}
-        <div class="feedback-card">{{ feedback }}</div>
-      {% empty %}
-        <div class="feedback-card">Unavailable</div>
-      {% endfor %}
+    {% if feedback.likert_averages %}
+      <div class="likert-section">
+        <h3>Average Likert Scores</h3>
+        {% for question, score in feedback.likert_averages.items %}
+          <div class="likert-item">
+            <div class="question">{{ question }}</div>
+            <div class="score">{{ score|floatformat:1 }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    
+    {% if feedback.free_responses %}
+      <div class="open-ended-feedback">
+        <h3>Written Feedback</h3>
+        {% for category, responses in feedback.free_responses.items %}
+          <div class="feedback-category">
+            <h4>{{ category }}</h4>
+            {% for response in responses %}
+              <div class="feedback-card">{{ response }}</div>
+            {% empty %}
+              <div class="feedback-card">No responses for this category.</div>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
     {% else %}
+      <div class="feedback-card">No written feedback is available.</div>
+    {% endif %}
+    
+    {% if not feedback.likert_averages and not feedback.free_responses %}
       <div class="feedback-card">The instructor has not yet made feedback available.</div>
     {% endif %}
   </div>

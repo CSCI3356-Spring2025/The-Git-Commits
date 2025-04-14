@@ -18,10 +18,26 @@ class Assessment(models.Model):
         is_new = not self.pk
         super().save(*args, **kwargs)
 
+        if is_new:
+                # After saving a new assessment, automatically add the team member selection question
+                team_question = AssessmentQuestion(
+                    assessment=self,
+                    question_type='team_member',
+                    question='Who are you evaluating?',
+                    required=True,
+                    order=0  # Make 1st question
+                )
+                team_question.save()
+                
+                for question in self.questions.exclude(pk=team_question.pk):
+                    question.order += 1                
+                    question.save()
+
 class AssessmentQuestion(models.Model):
     QUESTION_TYPES = [
         ('likert', 'Likert'),
         ('free', 'Free Response'),
+        ('team_member', 'Team Member Selection')
     ]
     assessment = models.ForeignKey(Assessment, models.CASCADE, related_name="questions")
     question_type = models.CharField(max_length=20, choices=QUESTION_TYPES)

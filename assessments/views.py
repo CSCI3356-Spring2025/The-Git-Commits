@@ -231,6 +231,7 @@ class CreateAssessmentView(RequireAdminMixin, View):
             "user_name": user.name,
             "user_role": user.role,
             # Why are we doing this thing below? It doesn't seem to get used at all
+            # it does, on the team builder page if a student is on > 1 team
             "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
         }
         return render(request, "assessment_creation.html", context)
