@@ -3,7 +3,7 @@
 {% load l10n %}
 
 {% block title %}
-  <title>{{ assessment_title }} - PeerVue</title>
+  <br>{{ assessment_title }} - PeerVue</br>
 {% endblock %}
 
 {% block head_content %}
@@ -167,15 +167,22 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
+
+    .edit-btn {
+      background: var(--accent-dark-blue);
+      color: var(--white);
+      border-radius: 50px;
+      font-family: "KoHo", sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      float: right;
+    }
     
     .submit-btn:hover {
       background: #8ad5e2;
     }
     
     .due-date {
-      position: absolute;
-      top: 160px;
-      right: 20px;
       font-family: "KoHo", sans-serif;
       font-size: 20px;
       font-weight: 400;
@@ -188,14 +195,48 @@
       clear: both;
       display: table;
     }
+
+    .assessment-title {
+      margin-bottom: 30px;
+      font-family: "KoHo", sans-serif;
+      font-size: 24px;
+      font-weight: 500;
+      color: #1b0061;
+    }
+
+    .inline {
+      display: inline-block;
+    }
+
+    .form-single-button {
+      display: flex;
+      align-items: right;
+    }
   </style>
 {% endblock %}
 
 {% block content %}
   <div class="student-assessment">
-    <div class="due-date">Due: {{ due_date|date:"DATETIME_FORMAT" }}</div>
-    
     <div class="assessment-container">
+      <div class="outer-assessment-title container">
+          <div class="assessment-title inline">{{ assessment.title }}</div>
+          {% if assessment.due_date %}
+            <div class="due-date inline">(Due: {{ assessment.due_date|date:"DATETIME_FORMAT" }})</div>
+          {% else %}
+            <div class="due-date inline">(No due date)</div>
+          {% endif %}
+          <!-- Edit button for admins -->
+          {% if user_role == "admin" %}
+            <br>
+            <div class="form-single-button">
+              <form method="post" action="{% url 'assessments:assessment_creation' %}" class="form-single-button">
+                {% csrf_token %}
+                <input type="hidden" name="begin_assessment_edit" value="{{ assessment.pk }}">
+                <button class="edit-btn p-2 mb-5">Edit Assessment</button>
+              </form>
+            </div>
+          {% endif %}
+      </div>
       <form method="post" action="{% url 'assessments:student_assessment_list' %}" class="clearfix">
         {% csrf_token %}
         <div class="question">
@@ -205,7 +246,7 @@
             {% if current_team %}
               {% for member in current_team.members.all %}
                 {% if member.pk != user.pk or assessment.allow_self_assessment %}
-                  <option value="{{ member.email }}">{{ member.name }}</option>
+                  </form>{{ member.name }}</option>
                 {% endif %}
               {% endfor %}
             {% else %}

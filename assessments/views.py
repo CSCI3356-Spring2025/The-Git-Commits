@@ -38,6 +38,7 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
             'assessment_title': assessment.title,
             'due_date': assessment.due_date,
             'questions': assessment.get_questions(),
+            'assessment': assessment,
             'user_name': user.name,
             'user_role': user.role,
             'current_team': current_team,
@@ -115,7 +116,6 @@ class StudentAssessmentListView(RequireLoggedInMixin, View):
 
 
 class CreateAssessmentView(RequireAdminMixin, View):
-    # Right now we're assuming this will create a new assessment, not edit an existing one
     def get(self, request, *argv, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
         course_id = request.GET.get('course_id')
@@ -162,7 +162,6 @@ class CreateAssessmentView(RequireAdminMixin, View):
             "course": course,
             "user_name": user.name,
             "user_role": user.role,
-            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
         }
         return render(request, "assessment_creation.html", context)
 
@@ -173,22 +172,27 @@ class CreateAssessmentView(RequireAdminMixin, View):
         """
         user: User = kwargs["user"]
         course_id = request.POST.get('course_id')
+
+        # This param is set if we are editing an existing assessment
+        assessment_id = request.POST.get("begin_assessment_edit", None)
+        if assessment_id:
+            print("editing")
+            request.session["assessment_id"] = assessment_id
         
         # If course_id is provided, use that specific course
         if course_id:
             try:
                 course = Course.objects.get(pk=course_id)
-                # Verify admin has access to this course
-                if user.role != 'admin':
-                    return redirect(reverse("landing:dashboard"))
             except Course.DoesNotExist:
-                if not user.courses.exists():
+                first_course = user.courses.first()
+                if not first_course:
                     return redirect(reverse("landing:dashboard"))
-                course = user.courses.first()
+                course = first_course
         else:
-            if not user.courses.exists():
+            first_course = user.courses.first()
+            if not first_course:
                 return redirect(reverse("landing:dashboard"))
-            course = user.courses.first()
+            course = first_course
 
         # Determine which assessment this is for
         assessment_id = request.session.get("assessment_id", None)
@@ -231,9 +235,7 @@ class CreateAssessmentView(RequireAdminMixin, View):
             "course": course,
             "user_name": user.name,
             "user_role": user.role,
-            # Why are we doing this thing below? It doesn't seem to get used at all
-            # it does, on the team builder page if a student is on > 1 team
-            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+            # We don't need "user_team" for this view
         }
         return render(request, "assessment_creation.html", context)
 
@@ -320,8 +322,7 @@ class CourseAssessmentsView(RequireLoggedInMixin, View):
         context = {
             "user_name": user.name,
             "user_role": user.role,
-            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
-
+            # We don't need "user_team" for this view
             "course": course,
             "assessments": assessments
         }
@@ -343,7 +344,7 @@ class ProfessorCoursesView(RequireLoggedInMixin, View):
         context = {
             "user_name": user.name,
             "user_role": user.role,
-            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+            # We don't need "user_team" for this view
             "courses": courses,
         }
         
@@ -365,7 +366,7 @@ class ProfessorAssessmentsView(RequireLoggedInMixin, View):
         context = {
             "user_name": user.name,
             "user_role": user.role,
-            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+            # We don't need "user_team" for this view
             "course": course,
             "assessments": assessments,
         }
@@ -390,7 +391,7 @@ class ProfessorTeamsView(RequireLoggedInMixin, View):
         context = {
             "user_name": user.name,
             "user_role": user.role,
-            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+            # We don't need "user_team" for this view
             "course": course,
             "assessment": assessment,
             "teams": teams,
@@ -423,7 +424,7 @@ class ProfessorTeamFeedbackView(RequireLoggedInMixin, View):
         context = {
             "user_name": user.name,
             "user_role": user.role,
-            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+            # We don't need "user_team" for this view
             "course": course,
             "assessment": assessment,
             "team": team,
@@ -447,7 +448,7 @@ class StudentCoursesView(RequireLoggedInMixin, View):
         context = {
             "user_name": user.name,
             "user_role": user.role,
-            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+            # We don't need "user_team" for this view
             "courses": courses,
         }
         
@@ -473,7 +474,7 @@ class StudentAssessmentsView(RequireLoggedInMixin, View):
             "user_name": user.name,
             "user_role": user.role,
             "teams": user.teams,
-            # "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+            # We don't need "user_team" for this view
             "course": course,
             "assessments": assessments,
         }
@@ -498,10 +499,10 @@ class StudentFeedbackView(RequireLoggedInMixin, View):
         context = {
             "user_name": user.name,
             "user_role": user.role,
-            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
             "course": course,
             "assessment": assessment,
             "feedback": feedback_summary,
+            # We don't need "user_team" for this view
         }
         
         return render(request, "landing/student_feedback.html", context)
