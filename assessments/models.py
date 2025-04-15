@@ -15,7 +15,13 @@ class Assessment(models.Model):
         return self.questions.all()
     
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+        return super().save(*args, **kwargs)
+    
+    def is_current(self) -> bool:
+        if not (self.due_date and self.publish_date):
+            return False
+        time_now = datetime.datetime.now()
+        return (time_now <= self.due_date) and (time_now >= self.publish_datef)
 
 class AssessmentQuestion(models.Model):
     QUESTION_TYPES = [
