@@ -185,8 +185,10 @@
      </div>
    </div>
    <div class="publish">
-    <button type="submit" class="submit-button">
-      <a href="{% url 'landing:professor_feedback_courses' %}" >Publish Feedback</a></button>
+    <form method="POST">
+      {% csrf_token %}
+      <button type="submit" class="submit-button">Publish Feedback</button>
+    </form>
   </div>
  </div>
  {% endblock %}

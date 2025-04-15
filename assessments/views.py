@@ -3,6 +3,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import render, redirect, reverse
 from django.views import View
 import datetime
+from django.utils import timezone
 
 from landing.models import Course, Team
 from assessments.models import Assessment, AssessmentQuestion
@@ -437,24 +438,24 @@ class ProfessorIndividualFeedbackView(RequireLoggedInMixin, View):
         
         responses = StudentAssessmentResponse.objects.filter(
             assessment=assessment,
-            student__in=team_members
+            evaluated_user__in=team_members
         ).select_related('student', 'evaluated_user')
         
         context = {
             "user_name": user.name,
             "user_role": user.role,
-            # We don't need "user_team" for this view
             "course": course,
             "assessment": assessment,
             "team": team,
             "responses": responses,
-            "team_members": team_members,  # Add this line
+            "team_members": team_members,
             "course_id": course_id,   
             "assessment_id": assessment_id,
             "team_id": team_id,
         }
         
         return render(request, "assessments/professor_feedback_individual.html", context)
+
 class ProfessorFeedbackFinalView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
@@ -479,21 +480,43 @@ class ProfessorFeedbackFinalView(RequireLoggedInMixin, View):
             evaluated_user=evaluated_user
         ).select_related('student', 'evaluated_user')
 
+        # Get feedback summary for the evaluated user
+        feedback_summary = get_feedback_summary(evaluated_user=evaluated_user, assessment=assessment)
+
         context = {
             "user_name": user.name,
             "user_role": user.role,
-            # We don't need "user_team" for this view
             "course": course,
             "assessment": assessment,
             "team": team,
+            "member": evaluated_user,
             "responses": responses,
-            "team_members": team_members,  # Add this line
+            "team_members": team_members,
             "course_id": course_id,   
             "assessment_id": assessment_id,
             "team_id": team_id,
+            "feedback": feedback_summary,
         }
 
         return render(request, "assessments/professor_feedback_final.html", context)
+
+    def post(self, request, *args, **kwargs) -> HttpResponse:
+        user: User = kwargs["user"]
+        course_id = kwargs.get('course_id')
+        assessment_id = kwargs.get('assessment_id')
+        team_id = kwargs.get('team_id')
+        member_id = kwargs.get('member_id')
+        
+        if user.role != 'admin':
+            return redirect('dashboard')
+        
+        # Get the assessment and set the publish date to now
+        assessment = get_object_or_404(Assessment, id=assessment_id, course__members=user)
+        assessment.publish_date = timezone.now()
+        assessment.save()
+        
+        messages.success(request, f"Feedback for {assessment.title} has been published successfully!")
+        return redirect('landing:professor_feedback_courses')
 
 
 

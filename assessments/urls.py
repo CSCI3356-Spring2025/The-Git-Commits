@@ -18,5 +18,4 @@ urlpatterns = [
     path('professor/courses/<int:course_id>/assessments/<int:assessment_id>/teams/<int:team_id>/feedback/', views.ProfessorIndividualFeedbackView.as_view(), name='professor_team_feedback'),
     path('student/courses/', views.StudentCoursesView.as_view(), name='student_courses'),
     path('student/courses/<int:course_id>/assessments/', views.StudentAssessmentsView.as_view(), name='student_assessments'),
-    path('student/courses/<int:course_id>/assessments/<int:assessment_id>/feedback/', views.StudentFeedbackView.as_view(), name='student_feedback'),
 """

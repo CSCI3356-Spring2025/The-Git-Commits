@@ -237,7 +237,7 @@
             </div>
           {% endif %}
       </div>
-      <form method="post" action="{% url 'assessments:student_assessment_list' %}" class="clearfix">
+      <form method="post" action="{% url 'assessments:student_assessment' assessment.pk %}" class="clearfix">
         {% csrf_token %}
         <div class="question">
           <div class="question-text">Who are you evaluating?</div>
@@ -246,7 +246,7 @@
             {% if current_team %}
               {% for member in current_team.members.all %}
                 {% if member.pk != user.pk or assessment.allow_self_assessment %}
-                  <option>{{ member.name }}</option>
+                  <option value="{{ member.email }}">{{ member.name }}</option>
                 {% endif %}
               {% endfor %}
             {% else %}
@@ -261,42 +261,42 @@
               <div class="likert-scale">
                 <div class="likert-option">
                   <div class="radio-container">
-                    <input type="radio" id="q1-5" name="{{question.pk}}" value="5">
+                    <input type="radio" id="q1-5" name="question_{{question.pk}}" value="5">
                     <div class="radio-circle"></div>
                   </div>
                   <label for="q1-5">Strongly Agree</label>
                 </div>
                 <div class="likert-option">
                   <div class="radio-container">
-                    <input type="radio" id="q1-4" name="{{question.pk}}" value="4">
+                    <input type="radio" id="q1-4" name="question_{{question.pk}}" value="4">
                     <div class="radio-circle"></div>
                   </div>
                   <label for="q1-4">Agree</label>
                 </div>
                 <div class="likert-option">
                   <div class="radio-container">
-                    <input type="radio" id="q1-3" name="{{question.pk}}" value="3">
+                    <input type="radio" id="q1-3" name="question_{{question.pk}}" value="3">
                     <div class="radio-circle"></div>
                   </div>
                   <label for="q1-3">Neutral</label>
                 </div>
                 <div class="likert-option">
                   <div class="radio-container">
-                    <input type="radio" id="q1-2" name="{{question.pk}}" value="2">
+                    <input type="radio" id="q1-2" name="question_{{question.pk}}" value="2">
                     <div class="radio-circle"></div>
                   </div>
                   <label for="q1-2">Disagree</label>
                 </div>
                 <div class="likert-option">
                   <div class="radio-container">
-                    <input type="radio" id="q1-1" name="{{question.pk}}" value="1">
+                    <input type="radio" id="q1-1" name="question_{{question.pk}}" value="1">
                     <div class="radio-circle"></div>
                   </div>
                   <label for="q1-1">Strongly Disagree</label>
                 </div>
               </div>
             {% else %}
-              <textarea name="{{question.pk}}" class="text-input" placeholder="Enter response here..."></textarea>
+              <textarea name="question_{{question.pk}}" class="text-input" placeholder="Enter response here..."></textarea>
             {% endif %}
           </div>
         {% endfor %}
