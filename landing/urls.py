@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from assessments.views import ProfessorFeedbackCoursesView, StudentCourseListView, ProfessorFeedbackAssessmentsView, ProfessorFeedbackTeamsView, ProfessorIndividualFeedbackView, StudentAssessmentView, StudentFeedbackView
+from assessments.views import ProfessorFeedbackCoursesView, StudentCourseListView, ProfessorFeedbackAssessmentsView, ProfessorFeedbackTeamsView, ProfessorIndividualFeedbackView, StudentAssessmentView, StudentFeedbackView, ProfessorFeedbackFinalView
 
 app_name = "landing"
 
@@ -15,6 +15,7 @@ urlpatterns = [
     path('professor/feedback/<int:course_id>/', ProfessorFeedbackAssessmentsView.as_view(), name='professor_feedback_assessments'),
     path('professor/feedback/<int:course_id>/<int:assessment_id>/', ProfessorFeedbackTeamsView.as_view(), name='professor_feedback_teams'),
     path('professor/feedback/<int:course_id>/<int:assessment_id>/<int:team_id>/', ProfessorIndividualFeedbackView.as_view(), name='professor_feedback_individual'),
+    path('professor/feedback/<int:course_id>/<int:assessment_id>/<int:team_id>/<str:member_id>/', ProfessorFeedbackFinalView.as_view(), name='professor_feedback_final'),
     #in 'professor_feedback_individual' we still need to create a link from a person's name to the corresponding feedback 
     # - currently any team is shown to have no members 
     # - and every user's team and course field contains everyone's courses and teams, not just the individual user's

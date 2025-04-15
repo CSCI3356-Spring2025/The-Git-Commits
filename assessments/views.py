@@ -454,6 +454,48 @@ class ProfessorIndividualFeedbackView(RequireLoggedInMixin, View):
         }
         
         return render(request, "assessments/professor_feedback_individual.html", context)
+class ProfessorFeedbackFinalView(RequireLoggedInMixin, View):
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        user: User = kwargs["user"]
+        course_id = kwargs.get('course_id')
+        assessment_id = kwargs.get('assessment_id')
+        team_id = kwargs.get('team_id')
+        member_id = kwargs.get('member_id')
+        
+        evaluated_user = User.objects.get(pk=member_id)
+
+        if user.role != 'admin':
+            return redirect('dashboard')
+        
+        course = get_object_or_404(Course, id=course_id, members=user)
+        assessment = get_object_or_404(Assessment, id=assessment_id, course=course)
+        team = get_object_or_404(Team, id=team_id, course=course)
+
+        team_members = team.members.all()
+        
+        responses = StudentAssessmentResponse.objects.filter(
+            assessment=assessment,
+            evaluated_user=evaluated_user
+        ).select_related('student', 'evaluated_user')
+
+        context = {
+            "user_name": user.name,
+            "user_role": user.role,
+            # We don't need "user_team" for this view
+            "course": course,
+            "assessment": assessment,
+            "team": team,
+            "responses": responses,
+            "team_members": team_members,  # Add this line
+            "course_id": course_id,   
+            "assessment_id": assessment_id,
+            "team_id": team_id,
+        }
+
+        return render(request, "assessments/professor_feedback_final.html", context)
+
+
+
 
 class StudentCourseListView(RequireLoggedInMixin, View):
     """Combined view for displaying courses and their assessments for a student"""
