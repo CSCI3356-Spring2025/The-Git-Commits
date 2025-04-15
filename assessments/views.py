@@ -433,8 +433,8 @@ class ProfessorTeamFeedbackView(RequireLoggedInMixin, View):
         
         return render(request, "landing/professor_team_feedback.html", context)
 
-class StudentCoursesView(RequireLoggedInMixin, View):
-    """First page: List all courses the student is enrolled in"""
+class StudentCourseListView(RequireLoggedInMixin, View):
+    """Combined view for displaying courses and their assessments for a student"""
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
         
@@ -442,44 +442,24 @@ class StudentCoursesView(RequireLoggedInMixin, View):
         if user.role != 'student':
             return redirect('dashboard')
         
-        # Get courses that have this student as a member
-        courses = user.courses.all()
+        # Get courses that have this student as a member and prefetch related assessments
+        courses = Course.objects.filter(members=user).prefetch_related('assessments')
+        
+        # For each course, get assessments where the student was evaluated
+        for course in courses:
+            course.feedback_assessments = Assessment.objects.filter(
+                course=course,
+                studentassessmentresponse__evaluated_user=user
+            ).distinct()
         
         context = {
             "user_name": user.name,
             "user_role": user.role,
-            # We don't need "user_team" for this view
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
             "courses": courses,
         }
         
         return render(request, "landing/student_courses.html", context)
-
-class StudentAssessmentsView(RequireLoggedInMixin, View):
-    """Second page: List all assessments for a specific course where the student was evaluated"""
-    def get(self, request, *args, **kwargs) -> HttpResponse:
-        user: User = kwargs["user"]
-        course_id = kwargs.get('course_id')
-        
-        if user.role != 'student':
-            return redirect('dashboard')
-        
-        course = get_object_or_404(Course, id=course_id, members=user)
-        
-        assessments = Assessment.objects.filter(
-            course=course,
-            studentassessmentresponse__evaluated_user=user
-        ).distinct()
-        
-        context = {
-            "user_name": user.name,
-            "user_role": user.role,
-            "teams": user.teams,
-            # We don't need "user_team" for this view
-            "course": course,
-            "assessments": assessments,
-        }
-        
-        return render(request, "landing/student_assessments.html", context)
 
 class StudentFeedbackView(RequireLoggedInMixin, View):
     """Third page: Display processed feedback for a specific assessment"""
