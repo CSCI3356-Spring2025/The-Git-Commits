@@ -150,20 +150,17 @@
   <h2 class="course-list-title">{{course.name}} {{assessment.title}} - Team List</h2>
   
   <div class="course-list">
-    {% if team_members %}
-      {% for member in team_members %}
-        <div class="course-item">
-          <div class="course-header">
-            <a href="{% url 'landing:professor_feedback_individual' course_id=course_id assessment_id=assessment_id team_id=team_id}" class="course-name">{{member}}</a>
-            </div>
-          </div>
-
-      {% endfor %}
-    {% else %}
+    {% for member in team_members %}
+      <div class="course-item">
+        <div class="course-header">
+          <a href="{% url 'landing:professor_feedback_individual' course_id=course_id assessment_id=assessment_id team_id=team_id}" class="course-name">{{member}}</a>
+        </div>
+      </div>
+    {% empty %}
       <div class="no-courses">
         No members enrolled in this team.
       </div>
-    {% endif %}
+    {% endfor %}
   </div>
 
   {% if success_message %}

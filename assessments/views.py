@@ -447,6 +447,10 @@ class ProfessorIndividualFeedbackView(RequireLoggedInMixin, View):
             "assessment": assessment,
             "team": team,
             "responses": responses,
+            "team_members": team_members,  # Add this line
+            "course_id": course_id,        # These might be needed for your URLs
+            "assessment_id": assessment_id,
+            "team_id": team_id,
         }
         
         return render(request, "assessments/professor_feedback_individual.html", context)
