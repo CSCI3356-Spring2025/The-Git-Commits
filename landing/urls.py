@@ -16,7 +16,7 @@ urlpatterns = [
 
     path('professor/courses/<int:course_id>/assessments/', ProfessorAssessmentsView.as_view(), name='professor_assessments'),
     path('professor/courses/<int:course_id>/assessments/<int:assessment_id>/teams/', ProfessorTeamsView.as_view(), name='professor_teams'),
-    path('professor/courses/<int:course_id>/assessments/<int:assessment_id>/teams/<int:team_id>/feedback/', ProfessorTeamFeedbackView.as_view(), name='professor_team_feedback'),
+    path('professor/courses/<int:course_id>/assessments/<int:assessment_id>/teams/<int:team_id>/students/<int:student_id>/feedback/', ProfessorTeamFeedbackView.as_view(), name='professor_team_feedback'),
     path('student/courses/<int:course_id>/assessments/', StudentAssessmentsView.as_view(), name='student_assessments'),
     path('student/courses/<int:course_id>/assessments/<int:assessment_id>/feedback/', StudentFeedbackView.as_view(), name='student_feedback'),
 ]

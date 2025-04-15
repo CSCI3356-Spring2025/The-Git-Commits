@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-  <title>Course List</title>
+  <title>Team List</title>
 {% endblock %}
 
 {% block head_content %}
@@ -139,4 +139,47 @@
       }
 
     </style>
+{% endblock %}
+
+{% block content %}
+
+<div class="team-list-container">
+  <a href="{% url 'assessments:professor_courses' %}" class="back-link">← Back to Courses</a>
+  
+  <h2 class="team-list-title">{{ course.name }}</h2>
+  <h3 class="assessment-subtitle">{{ assessment.title }}</h3>
+  
+  <div class="team-list">
+    {% if teams %}
+      {% for team in teams %}
+        <div class="team-item">
+          <div class="team-header">
+            <div>
+              <div class="team-name">{{ team.name }}</div>
+              <div class="team-meta">{{ team.members.count }} Members</div>
+            </div>
+          </div>
+          
+          <div class="student-section">
+            <h3>Students</h3>
+            <div class="student-list">
+                {% if team.members.exists %}
+                {% for student in team.members.all %}
+                  <a href="{% url 'assessments:professor_team_feedback' course_id=course.id assessment_id=assessment.id team_id=team.id student_id=student.id %}" class="student-link">
+                    {{ student.name }}
+                  </a>
+                {% endfor %}
+              {% else %}
+                <div class="no-students">No students in this team</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="no-teams">No teams available for this course.</div>
+    {% endif %}
+  </div>
+</div>
+
 {% endblock %}
