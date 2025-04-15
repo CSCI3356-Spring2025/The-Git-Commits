@@ -11,6 +11,7 @@ class Assessment(models.Model):
     publish_date = models.DateTimeField(null=True)
     course = models.ForeignKey("landing.Course", models.CASCADE, related_name="assessments")
     allow_self_assessment = models.BooleanField(default=False)
+    responses_published = models.BooleanField(default=False)
 
     publish_email_sent = models.BooleanField(default=False)
     due_soon_email_sent = models.BooleanField(default=False)
@@ -20,6 +21,12 @@ class Assessment(models.Model):
     
     def save(self, *args, **kwargs):
         return super().save(*args, **kwargs)
+
+    def is_published(self) -> bool:
+        if not (self.due_date and self.publish_date):
+            return False
+        time_now = timezone.now()
+        return time_now >= self.publish_date
     
     def is_current(self) -> bool:
         if not (self.due_date and self.publish_date):

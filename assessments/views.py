@@ -515,7 +515,7 @@ class ProfessorFeedbackFinalView(RequireLoggedInMixin, View):
         
         # Get the assessment and set the publish date to now
         assessment = get_object_or_404(Assessment, id=assessment_id, course__members=user)
-        assessment.publish_date = timezone.now()
+        assessment.responses_published = True
         assessment.save()
         
         messages.success(request, f"Feedback for {assessment.title} has been published successfully!")
@@ -565,9 +565,11 @@ class StudentFeedbackView(RequireLoggedInMixin, View):
         
         course = get_object_or_404(Course, id=course_id, members=user)
         assessment = get_object_or_404(Assessment, id=assessment_id, course=course)
+
+        is_published = assessment.is_published()
         
         # Check if the assessment has been published
-        if not assessment.publish_date:
+        if not assessment.responses_published:
             messages.warning(request, "This feedback has not been published yet by the instructor.")
             return redirect('landing:student_courses')
         
@@ -579,6 +581,7 @@ class StudentFeedbackView(RequireLoggedInMixin, View):
             "course": course,
             "assessment": assessment,
             "feedback": feedback_summary,
+            "is_published": is_published,
             # We don't need "user_team" for this view
         }
         
