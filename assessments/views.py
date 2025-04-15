@@ -43,7 +43,7 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
             'user_role': user.role,
             'current_team': current_team,
         }
-        return render(request, 'student_assessment.html', context)
+        return render(request, 'assessments/student_assessment.html', context)
 
     def post(self, request, *args, **kwargs):
         user = kwargs["user"]
@@ -109,7 +109,8 @@ class StudentAssessmentListView(RequireLoggedInMixin, View):
             "user_role": user.role,
             "assessments": assessments
         }
-        return render(request, "student_assessment_list.html", context)
+        return render(request, "assessments/student_assessment_list.html", context)
+    
     def post(self, request, *args, **kwargs):
         #TODO: We can process the data from the form here later
         return redirect(reverse('assessments:student_assessment_list'))
@@ -335,7 +336,7 @@ class CourseAssessmentsView(RequireLoggedInMixin, View):
         
         return render(request, "student_assessment_list.html", context)
 
-class ProfessorCoursesView(RequireLoggedInMixin, View):
+class ProfessorFeedbackCoursesView(RequireLoggedInMixin, View):
     """First page: List all courses taught by the professor"""
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
@@ -354,9 +355,9 @@ class ProfessorCoursesView(RequireLoggedInMixin, View):
             "courses": courses,
         }
         
-        return render(request, "landing/professor_courses.html", context)
+        return render(request, "assessments/professor_feedback_courses.html", context)
 
-class ProfessorAssessmentsView(RequireLoggedInMixin, View):
+class ProfessorFeedbackAssessmentsView(RequireLoggedInMixin, View):
     """Second page: List all assessments for a specific course"""
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
@@ -370,6 +371,7 @@ class ProfessorAssessmentsView(RequireLoggedInMixin, View):
         assessments = Assessment.objects.filter(course=course)
         
         context = {
+            "course_id": course_id,
             "user_name": user.name,
             "user_role": user.role,
             # We don't need "user_team" for this view
@@ -377,9 +379,9 @@ class ProfessorAssessmentsView(RequireLoggedInMixin, View):
             "assessments": assessments,
         }
         
-        return render(request, "landing/professor_assessments.html", context)
+        return render(request, "assessments/professor_feedback_assessments.html", context)
 
-class ProfessorTeamsView(RequireLoggedInMixin, View):
+class ProfessorFeedbackTeamsView(RequireLoggedInMixin, View):
     """Third page: List all teams for a specific course and assessment"""
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
@@ -395,6 +397,8 @@ class ProfessorTeamsView(RequireLoggedInMixin, View):
         teams = Team.objects.filter(course=course)
         
         context = {
+            "course_id": course_id,
+            "assessment_id": assessment_id,
             "user_name": user.name,
             "user_role": user.role,
             # We don't need "user_team" for this view
@@ -403,9 +407,9 @@ class ProfessorTeamsView(RequireLoggedInMixin, View):
             "teams": teams,
         }
         
-        return render(request, "landing/professor_teams.html", context)
+        return render(request, "assessments/professor_feedback_teams.html", context)
 
-class ProfessorTeamFeedbackView(RequireLoggedInMixin, View):
+class ProfessorIndividualFeedbackView(RequireLoggedInMixin, View):
     """Fourth page: Display raw feedback from team members for a specific assessment"""
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
@@ -437,7 +441,7 @@ class ProfessorTeamFeedbackView(RequireLoggedInMixin, View):
             "responses": responses,
         }
         
-        return render(request, "landing/professor_team_feedback.html", context)
+        return render(request, "assessments/professor_feedback_individual.html", context)
 
 class StudentCourseListView(RequireLoggedInMixin, View):
     """Combined view for displaying courses and their assessments for a student"""

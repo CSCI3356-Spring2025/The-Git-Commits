@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from assessments.views import ProfessorCoursesView, StudentCourseListView, ProfessorAssessmentsView, ProfessorTeamsView, ProfessorTeamFeedbackView, StudentFeedbackView
+from assessments.views import ProfessorFeedbackCoursesView, StudentCourseListView, ProfessorFeedbackAssessmentsView, ProfessorFeedbackTeamsView, ProfessorIndividualFeedbackView, StudentAssessmentView, StudentFeedbackView
 
 app_name = "landing"
 
@@ -11,13 +11,12 @@ urlpatterns = [
     path('course_creation/', views.CreateCourseView.as_view(), name='course_creation'),
     path('courses/', views.CourseListView.as_view(), name='course_list'),
 
-    path('professor/courses/', ProfessorCoursesView.as_view(), name='professor_courses'),
-    # path('professor/courses/<int:course_id>/assessments/', ProfessorAssessmentsView.as_view(), name='professor_assessments'),
-    path('professor/courses/<int:course_id>/assessments/<int:assessment_id>/teams/', ProfessorTeamsView.as_view(), name='professor_teams'),
-    path('professor/courses/<int:course_id>/assessments/<int:assessment_id>/teams/<int:team_id>/students/<int:student_id>/feedback/', ProfessorTeamFeedbackView.as_view(), name='professor_team_feedback'),
-
-    #path('student/courses/', StudentCoursesView.as_view(), name='student_courses'),
-    #path('student/courses/<int:course_id>/assessments/', StudentAssessmentsView.as_view(), name='student_assessments'),
+    path('professor/feedback/', ProfessorFeedbackCoursesView.as_view(), name='professor_feedback_courses'),
+    path('professor/feedback/<int:course_id>/', ProfessorFeedbackAssessmentsView.as_view(), name='professor_feedback_assessments'),
+    path('professor/feedback/<int:course_id>/<int:assessment_id>/', ProfessorFeedbackTeamsView.as_view(), name='professor_feedback_teams'),
+    path('professor/feedback/<int:course_id>/<int:assessment_id>/<int:team_id>/feedback/', ProfessorIndividualFeedbackView.as_view(), name='professor_feedback_individual'),
+    
     path('student/courses/', StudentCourseListView.as_view(), name='student_courses'),
+    path('student/courses/<int:course_id>/assessments/', StudentAssessmentView.as_view(), name='student_assessments'),
     path('student/courses/<int:course_id>/assessments/<int:assessment_id>/feedback/', StudentFeedbackView.as_view(), name='student_feedback'),
 ]

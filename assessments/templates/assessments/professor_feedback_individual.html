@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}
+  <title>Course List</title>
+{% endblock %}
+
+{% block head_content %}
+    <style>
+      a,
+      button,
+      input,
+      select,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        border: none;
+        text-decoration: none;
+        background: none;
+        -webkit-font-smoothing: antialiased;
+      }
+      
+      menu, ol, ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      
+      body {
+        font-family: "KoHo", Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #F0F8FF;
+      }
+
+      .course-list-container {
+        max-width: 1000px;
+        margin: 170px auto 50px;
+        padding: 0 20px;
+      }
+      
+      .course-list-title {
+        margin-bottom: 30px;
+        font-family: "KoHo", sans-serif;
+        font-size: 24px;
+        font-weight: 500;
+        color: #1b0061;
+      }
+      
+      .course-item {
+        background: #aae7f2;
+        border-radius: 50px;
+        padding: 20px;
+        margin-bottom: 20px;
+        position: relative;
+      }
+      
+      .course-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+      
+      .course-name {
+        color: #000000;
+        text-align: left;
+        font-size: 22px;
+        font-weight: 500;
+      }
+      
+      .course-year {
+        color: #1b0061;
+        font-size: 18px;
+      }
+      
+      .course-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: flex-end;
+      }
+      
+      .create-assessment-btn {
+        background: #1b0061;
+        border-radius: 50px;
+        padding: 10px 20px;
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 16px;
+        margin-top: 10px;
+        display: inline-block;
+      }
+      
+      .assessment-list {
+        background: #dcf4f9;
+        border-radius: 25px;
+        padding: 15px;
+        margin-top: 10px;
+      }
+      
+      .assessment-link {
+        display: inline-block;
+        background: #1b0061;
+        border-radius: 50px;
+        padding: 8px 20px;
+        margin-bottom: 10px;
+        margin-right: 10px;
+        font-family: "KoHo", sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+        color: #ffffff;
+        text-decoration: none;
+        transition: background-color 0.3s;
+      }
+      
+      .assessment-link:hover {
+        background: #2a0090;
+      }
+      
+      .no-assessments {
+        font-style: italic;
+        color: #555;
+        text-align: center;
+        padding: 10px;
+      }
+      
+      .no-courses {
+        background: #dcf4f9;
+        border-radius: 50px;
+        padding: 20px;
+        text-align: center;
+        font-size: 18px;
+        color: #1b0061;
+      }
+      .team-members {
+      margin-bottom: 15px;
+    }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+
+<div class="course-list-container">
+  <h2 class="course-list-title">{{course.name}} {{assessment.title}} - Team List</h2>
+  
+  <div class="course-list">
+    {% if team_members %}
+      {% for member in team_members %}
+        <div class="course-item">
+          <div class="course-header">
+            <a href="{% url 'landing:professor_feedback_individual' course_id=course_id assessment_id=assessment_id team_id=team_id}" class="course-name">{{member}}</a>
+            </div>
+          </div>
+
+      {% endfor %}
+    {% else %}
+      <div class="no-courses">
+        No members enrolled in this team.
+      </div>
+    {% endif %}
+  </div>
+
+  {% if success_message %}
+  <div class="success-message">{{ success_message }}</div>
+{% endif %}
+
+{% endblock %}
