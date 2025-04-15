@@ -533,11 +533,12 @@ class StudentCourseListView(RequireLoggedInMixin, View):
         # Get courses that have this student as a member and prefetch related assessments
         courses = Course.objects.filter(members=user).prefetch_related('assessments')
         
-        # For each course, get assessments where the student was evaluated
+        # For each course, get assessments where the student was evaluated and has been published
         for course in courses:
             course.feedback_assessments = Assessment.objects.filter(
                 course=course,
-                studentassessmentresponse__evaluated_user=user
+                studentassessmentresponse__evaluated_user=user,
+                publish_date__isnull=False  # Only include assessments that have been published
             ).distinct()
         
         context = {
@@ -561,6 +562,11 @@ class StudentFeedbackView(RequireLoggedInMixin, View):
         
         course = get_object_or_404(Course, id=course_id, members=user)
         assessment = get_object_or_404(Assessment, id=assessment_id, course=course)
+        
+        # Check if the assessment has been published
+        if not assessment.publish_date:
+            messages.warning(request, "This feedback has not been published yet by the instructor.")
+            return redirect('landing:student_courses')
         
         feedback_summary = get_feedback_summary(evaluated_user=user, assessment=assessment)
         

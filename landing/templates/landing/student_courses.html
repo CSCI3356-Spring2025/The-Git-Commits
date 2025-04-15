@@ -146,9 +146,11 @@
               {% with current_assessments=course.get_current_published_assessments %}
                 {% if current_assessments %}
                 {% for assessment in current_assessments %}
+                    {% if assessment.publish_date %}
                     <a href="{% url 'landing:student_feedback' course.id assessment.id %}" class="assessment-link">
                         {{ assessment.title }}
                     </a>
+                    {% endif %}
                 {% endfor %}
 
                 {% else %}
