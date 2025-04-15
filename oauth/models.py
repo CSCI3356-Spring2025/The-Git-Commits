@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.base_user import AbstractBaseUser
 from django.db.models.fields.related import ForeignKey
 from django.db.models.deletion import CASCADE
 from landing.models import Course, Team

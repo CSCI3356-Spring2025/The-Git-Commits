@@ -10,6 +10,9 @@ class Assessment(models.Model):
     publish_date = models.DateTimeField(null=True)
     course = models.ForeignKey("landing.Course", models.CASCADE, related_name="assessments")
     allow_self_assessment = models.BooleanField(default=False)
+
+    publish_email_sent = models.BooleanField(default=False)
+    due_soon_email_sent = models.BooleanField(default=False)
     
     def get_questions(self) -> models.QuerySet:
         return self.questions.all()
@@ -27,6 +30,10 @@ class AssessmentQuestion(models.Model):
     QUESTION_TYPES = [
         ('likert', 'Likert'),
         ('free', 'Free Response'),
+
+        # I really don't think we should have this. There must be exactly one in every assessment, so
+        # storing it like other questions is just another thing that can break, and must be
+        # handled completely differently from the other questions, creating unnecessary edge cases
         ('team_member', 'Team Member Selection')
     ]
     assessment = models.ForeignKey(Assessment, models.CASCADE, related_name="questions")

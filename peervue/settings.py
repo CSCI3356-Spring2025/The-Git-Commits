@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'oauth.apps.OauthConfig',
     'landing.apps.LandingConfig',
-    'assessments.apps.AssessmentsConfig'
+    'assessments.apps.AssessmentsConfig',
+    'emailing.apps.EmailingConfig'
 ]
 
 MIDDLEWARE = [
@@ -138,4 +139,13 @@ if DEBUG:
 
 OAUTH_CLIENT_SECRET_PATH = BASE_DIR / 'client_secret.json'
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL
+# For running without actually sending emails, use this:
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "noreply.peervue@gmail.com"
+EMAIL_HOST_PASSWORD = "asqltyrdphcmdylk"
+DEFAULT_FROM_EMAIL = "noreply.peervue@gmail.com"
