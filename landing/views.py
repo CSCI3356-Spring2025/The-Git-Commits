@@ -156,11 +156,12 @@ class CreateTeamView(RequireAdminMixin, View):
                 try:
                     member = User.objects.get(email=email)
                     if course in member.courses.all():
-                        if member.team:
-                            member.team = None
-                            member.save()
-        
-                        member.teams.add(team)
+                        course_teams = Team.objects.filter(course=course)
+                        for team in course_teams:
+                            if member in team.members.all():
+                                team.members.remove(member)
+
+                        team.members.add(member)
                 except User.DoesNotExist:
                     continue
             
