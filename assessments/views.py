@@ -28,6 +28,10 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
         except Assessment.DoesNotExist:
             return redirect(reverse("landing:dashboard"))
 
+        # Non-admins should only be able to see published, current assessments
+        if not user.is_admin() and not assessment.is_current():
+            return redirect(reverse("landing:dashboard"))
+
         if assessment.course not in user.courses.all():
             return redirect(reverse("landing:dashboard"))
 
@@ -52,6 +56,10 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
         try:
             assessment = Assessment.objects.get(pk=assessment_id)
         except Assessment.DoesNotExist:
+            return redirect(reverse("landing:dashboard"))
+
+        # Non-admins should only be able to see published, current assessments
+        if not user.is_admin() and not assessment.is_current():
             return redirect(reverse("landing:dashboard"))
         
         # Check that the user is in the course the assessment is intended for
