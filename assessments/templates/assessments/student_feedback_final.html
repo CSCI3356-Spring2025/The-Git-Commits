@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+ 
+ {% block title %}
+   <title>View-Feedback</title>
+ {% endblock %}
+ 
+ {% block head_content %}
+     <style>
+       a,
+       button,
+       input,
+       select,
+       h1,
+       h2,
+       h3,
+       h4,
+       h5,
+       * {
+         box-sizing: border-box;
+         margin: 0;
+         padding: 0;
+         border: none;
+         text-decoration: none;
+         background: none;
+         -webkit-font-smoothing: antialiased;
+       }
+       
+       menu, ol, ul {
+         list-style-type: none;
+         margin: 0;
+         padding: 0;
+       }
+       
+       body {
+         font-family: "KoHo", Arial, sans-serif;
+         margin: 0;
+         padding: 0;
+         background: #F0F8FF;
+       }
+ 
+         .dashboard {
+           position: relative;
+           width: 100%;
+           max-width: 1280px;
+           margin: 0 auto;
+           padding-top: 120px; /* Space for navbar */
+         }
+ 
+ 
+     .full-page {
+       width: 100vw;
+       min-height: 100vh;
+       background: white;
+       padding: 2rem;
+       box-sizing: border-box;
+     }
+ 
+     .feedback-section {
+       position: relative;
+       padding-top: 300px;
+     }
+ 
+     .header-banner {
+       background: #aae7f2;
+       border-radius: 20px;
+       width: 850px;
+       height: 64px;
+       position: absolute;
+       left: 50%;
+       top: 40px;
+       transform: translateX(-50%);
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       margin: 130px auto 30px;
+       padding: 0 20px;
+     }
+ 
+     .page-title {
+       color: #000000;
+       font-family: "KoHo-Medium", sans-serif;
+       font-size: 32px;
+       font-weight: 500;
+       text-align: center;
+       margin: 0;
+     }
+ 
+     .feedback-card {
+       background: #dcf4f9;
+       padding: 1rem;
+       margin-bottom: 1rem;
+       border-left: 15px solid #aae7f2;
+       border-radius: 5px;
+     }
+ 
+     .likert-score {
+       color: #000000;
+       text-align: left;
+       font-family: "KoHo-Medium", sans-serif;
+       font-size: 32px;
+       font-weight: 500;
+       margin-top: 120px;
+       margin-bottom: 1rem;
+     }
+ 
+     .open-ended-feedback {
+       color: #000000;
+       text-align: left;
+       font-family: "KoHo-Medium", sans-serif;
+       font-size: 28px;
+       font-weight: 500;
+       margin-bottom: 1rem;
+     }
+ 
+     .submit-button {
+       margin-top: 2rem;
+       background-color: #1b0061;
+       color: #ffffff;
+       border: none;
+       padding: 16px 32px;
+       font-size: 22px;
+       border-radius: 30px;
+       cursor: pointer;
+     }
+ 
+     .submit-button:hover {
+       background-color: #80c6d4;
+     }
+
+
+      .likert-section, .free-response-section {
+        background: #e0f3f7;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border-radius: 10px;
+        border-left: 25px solid #aae7f2;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+         
+     </style>
+ {% endblock %}
+ 
+ {% block content %}
+ <div class="full-page feedback-section">
+   <div class="header-banner">
+     <h2 class="page-title">{{ assessment.title }} - Student Feedback Summary</h2>
+     <h3 class="team-info">{{ team.name }}</h3>
+     <h3 class="member-header">{{ member.name }}</h3>
+   </div>
+ 
+   <div class="member-feedback-section">
+     <div class="likert-section">
+       <h4>Rating Summary</h4>
+       {% if feedback.likert_averages %}
+         {% for question, score in feedback.likert_averages.items %}
+           <div class="likert-item">
+             <div class="question">{{ question }}</div>
+             <div class="score">{{ score|floatformat:1 }}/5</div>
+           </div>
+         {% endfor %}
+       {% else %}
+         <p>No rating data available.</p>
+       {% endif %}
+     </div>
+ 
+     <div class="free-response-section">
+       <h4>Feedback Comments</h4>
+       {% if feedback.free_responses %}
+         {% for category, responses in feedback.free_responses.items %}
+           <div class="response-category">
+             <h5>{{ category }}</h5>
+             <ul class="response-list">
+               {% for response in responses %}
+                 <li class="response-item">{{ response }}</li>
+               {% endfor %}
+             </ul>
+           </div>
+         {% endfor %}
+       {% else %}
+         <p>No written feedback provided.</p>
+       {% endif %}
+     </div>
+ 
+     <div class="response-meta">
+       Total responses about this person: {{ feedback.response_count }}
+     </div>
+   </div>
+ </div>
+ {% endblock %}
+ 
