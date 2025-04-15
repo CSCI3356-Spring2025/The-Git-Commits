@@ -448,7 +448,7 @@ class ProfessorIndividualFeedbackView(RequireLoggedInMixin, View):
             "team": team,
             "responses": responses,
             "team_members": team_members,  # Add this line
-            "course_id": course_id,        # These might be needed for your URLs
+            "course_id": course_id,   
             "assessment_id": assessment_id,
             "team_id": team_id,
         }
