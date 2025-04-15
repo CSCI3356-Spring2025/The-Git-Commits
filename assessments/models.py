@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.conf import settings
 import datetime
 from oauth.models import User
+from django.utils import timezone
 
 class Assessment(models.Model):
     title = models.CharField(max_length=150)
@@ -23,8 +24,8 @@ class Assessment(models.Model):
     def is_current(self) -> bool:
         if not (self.due_date and self.publish_date):
             return False
-        time_now = datetime.datetime.now()
-        return (time_now <= self.due_date) and (time_now >= self.publish_datef)
+        time_now = timezone.now()
+        return (time_now <= self.due_date) and (time_now >= self.publish_date)
 
 class AssessmentQuestion(models.Model):
     QUESTION_TYPES = [
