@@ -14,7 +14,7 @@ from itertools import chain
 
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .models import StudentAssessmentResponse
+from .models import StudentAssessmentResponse, StudentAnswer
 from .feedback import get_feedback_summary, alphabetize_free_responses, average_likert_responses
 from django.http.request import HttpRequest
 
