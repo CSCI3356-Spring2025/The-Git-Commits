@@ -17,6 +17,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import StudentAssessmentResponse, StudentAnswer
 from .feedback import get_feedback_summary, alphabetize_free_responses, average_likert_responses
 from django.http.request import HttpRequest
+from django.contrib import messages
 
 
 class StudentAssessmentView(RequireLoggedInMixin, View):
@@ -102,7 +103,7 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
             answer.save()
         
         messages.success(request, f"Assessment for {evaluated_user} submitted successfully!") # need naming
-        return redirect('landing:student_assessment_list')
+        return redirect('assessments:student_assessment_list')
 
 class StudentAssessmentListView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs) -> HttpResponse:

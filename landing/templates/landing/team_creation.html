@@ -229,6 +229,7 @@
               {% csrf_token %}
               <input type="hidden" name="action" value="update_team">
               <input type="hidden" name="team_id" value="{{ editing_team.pk }}">
+              <input type="hidden" name="course_id" value="{{ course.id }}">
               
               <div class="form-group">
                 <label for="team_name">Team Name:</label>
@@ -263,6 +264,7 @@
             <form action="{% url 'landing:team_creation' %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="action" value="create_team">
+              <input type="hidden" name="course_id" value="{{ course.id }}">
               
               <div class="form-group">
                 <label for="name">Team Name:</label>
@@ -294,6 +296,7 @@
           <form action="{% url 'landing:team_creation' %}" method="POST">
             {% csrf_token %}
             <input type="hidden" name="action" value="add_student">
+            <input type="hidden" name="course_id" value="{{ course.id }}">
             
             <div class="form-group">
               <label for="student_name">Student Name:</label>
