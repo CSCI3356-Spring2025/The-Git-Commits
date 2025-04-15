@@ -246,7 +246,7 @@
             {% if current_team %}
               {% for member in current_team.members.all %}
                 {% if member.pk != user.pk or assessment.allow_self_assessment %}
-                  </form>{{ member.name }}</option>
+                  <option>{{ member.name }}</option>
                 {% endif %}
               {% endfor %}
             {% else %}

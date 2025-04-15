@@ -57,7 +57,7 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
         # Check that the user is in the course the assessment is intended for
         if assessment.course not in user.courses.all():
             return redirect(reverse("landing:dashboard"))
-        
+
         current_team = user.teams.filter(course=assessment.course).first()
         if not current_team:
             messages.error(request, "You are not assigned to a team for this course.")
