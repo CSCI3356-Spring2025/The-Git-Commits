@@ -1,4 +1,3 @@
-<br>
 {% extends "base.html" %}
 
 {% block title %}
@@ -48,123 +47,178 @@
       }
 
       .full-page {
-      width: 100vw;
-      min-height: 100vh;
-      background: white;
-      padding: 2rem;
-      box-sizing: border-box;
-    }
+        width: 100vw;
+        min-height: 100vh;
+        background: white;
+        padding: 2rem;
+        box-sizing: border-box;
+      }
 
-    .feedback-section {
-      position: relative;
-      padding-top: 140px;
-    }
+      .feedback-section {
+        position: relative;
+        padding-top: 300px;
+      }
 
-    .header-banner {
-      background: #aae7f2;
-      border-radius: 30px;
-      width: 903px;
-      height: 64px;
-      position: absolute;
-      left: 50%;
-      top: 140px;
-      transform: translateX(-50%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+      .header-banner {
+        background: #aae7f2;
+        border-radius: 20px;
+        width: 850px;
+        height: 64px;
+        position: absolute;
+        left: 50%;
+        top: 40px;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 130px auto 30px;
+        padding: 0 20px;
+      }
 
-    .page-title {
-      color: #000000;
-      font-family: "KoHo-Medium", sans-serif;
-      font-size: 32px;
-      font-weight: 500;
-      text-align: center;
-      margin: 0;
-    }
+      .page-title {
+        color: #000000;
+        font-family: "KoHo-Medium", sans-serif;
+        font-size: 32px;
+        font-weight: 500;
+        text-align: center;
+        margin: 0;
+      }
 
-    .feedback-card {
-      background: #dcf4f9;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      border-left: 15px solid #aae7f2;
-      border-radius: 5px;
-      position: absolute;
-      top: 400px;
-    }
+      .feedback-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
 
-    .likert-score {
-      color: #000000;
-      text-align: left;
-      font-family: "KoHo-Medium", sans-serif;
-      font-size: 32px;
-      font-weight: 500;
-      margin-top: 120px;
-      margin-bottom: 1rem;
-    }
+      .section-title {
+        color: #1b0061;
+        font-size: 24px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #aae7f2;
+      }
 
-    .open-ended-feedback {
-      color: #000000;
-      text-align: left;
-      font-family: "KoHo-Medium", sans-serif;
-      font-size: 28px;
-      font-weight: 500;
-      margin-bottom: 3rem;
-      position: absolute;
-      top: 350px;
-    }
+      .likert-section, .free-response-section {
+        margin-bottom: 40px;
+      }
 
-    .note-message {
-      font-size: 18px;
-      font-style: italic;
-      color: #333;
-      margin-bottom: 2rem;
-    }
+      .likert-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .likert-item:last-child {
+        border-bottom: none;
+      }
+
+      .question {
+        font-weight: 500;
+        color: #333;
+        flex: 1;
+      }
+
+      .score {
+        font-weight: 600;
+        color: #1b0061;
+        margin-left: 20px;
+      }
+
+      .response-category {
+        margin-bottom: 30px;
+      }
+
+      .response-category h5 {
+        color: #1b0061;
+        margin-bottom: 15px;
+        font-size: 20px;
+      }
+
+      .response-list {
+        padding-left: 0;
+      }
+
+      .response-item {
+        margin-bottom: 15px;
+        line-height: 1.6;
+        color: #333;
+        position: relative;
+        padding-left: 20px;
+      }
+
+      .response-item:before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: #aae7f2;
+        font-size: 18px;
+      }
+
+      .response-meta {
+        text-align: center;
+        font-style: italic;
+        color: #555;
+        margin-top: 30px;
+        padding: 15px;
+        background: #f5f5f5;
+        border-radius: 5px;
+      }
+
+      .no-data-message {
+        text-align: center;
+        color: #555;
+        font-style: italic;
+        padding: 20px;
+        background: #f5f5f5;
+        border-radius: 5px;
+      }
     </style>
 {% endblock %}
 
 {% block content %}
 <div class="full-page feedback-section">
-    <div class="header-banner">
-      <h2 class="page-title">Your Feedback Summary</h2>
-    </div>
+  <div class="header-banner">
+    <h2 class="page-title">{{ assessment.title }} - Your Feedback Summary</h2>
+  </div>
 
-    <div class="response-count">
-      Responses Collected: {{ feedback.response_count }}
-    </div>
-
-    {% if feedback.likert_averages %}
-      <div class="likert-section">
-        <h3>Average Likert Scores</h3>
+  <div class="feedback-container">
+    <div class="likert-section">
+      <h3 class="section-title">Rating Summary</h3>
+      {% if feedback.likert_averages %}
         {% for question, score in feedback.likert_averages.items %}
           <div class="likert-item">
             <div class="question">{{ question }}</div>
-            <div class="score">{{ score|floatformat:1 }}</div>
+            <div class="score">{{ score|floatformat:1 }}/5</div>
           </div>
         {% endfor %}
-      </div>
-    {% endif %}
-    
-    {% if feedback.free_responses %}
-      <div class="open-ended-feedback">
-        <h3>Written Feedback</h3>
+      {% else %}
+        <p class="no-data-message">No rating data available.</p>
+      {% endif %}
+    </div>
+
+    <div class="free-response-section">
+      <h3 class="section-title">Feedback Comments</h3>
+      {% if feedback.free_responses %}
         {% for category, responses in feedback.free_responses.items %}
-          <div class="feedback-category">
-            <h4>{{ category }}</h4>
-            {% for response in responses %}
-              <div class="feedback-card">{{ response }}</div>
-            {% empty %}
-              <div class="feedback-card">No responses for this category.</div>
-            {% endfor %}
+          <div class="response-category">
+            <h5>{{ category }}</h5>
+            <ul class="response-list">
+              {% for response in responses %}
+                <li class="response-item">{{ response }}</li>
+              {% endfor %}
+            </ul>
           </div>
         {% endfor %}
-      </div>
-    {% else %}
-      <div class="feedback-card">No written feedback is available.</div>
-    {% endif %}
-    
-    {% if not feedback.likert_averages and not feedback.free_responses %}
-      <div class="feedback-card">The instructor has not yet made feedback available.</div>
-    {% endif %}
+      {% else %}
+        <p class="no-data-message">No written feedback provided.</p>
+      {% endif %}
+    </div>
+
+    <div class="response-meta">
+      Total responses about you: {{ feedback.response_count }}
+    </div>
   </div>
+</div>
 {% endblock %}
