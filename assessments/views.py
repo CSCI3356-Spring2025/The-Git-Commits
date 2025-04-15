@@ -5,6 +5,8 @@ from django.views import View
 import datetime
 from django.utils import timezone
 
+from django.contrib import messages
+
 from landing.models import Course, Team
 from assessments.models import Assessment, AssessmentQuestion
 from oauth.models import User
@@ -496,6 +498,7 @@ class ProfessorFeedbackFinalView(RequireLoggedInMixin, View):
             "assessment_id": assessment_id,
             "team_id": team_id,
             "feedback": feedback_summary,
+            "member": evaluated_user
         }
 
         return render(request, "assessments/professor_feedback_final.html", context)

@@ -64,7 +64,7 @@
        background: #aae7f2;
        border-radius: 20px;
        width: 850px;
-       height: 64px;
+       height: 5rem;
        position: absolute;
        left: 50%;
        top: 40px;
@@ -79,7 +79,7 @@
      .page-title {
        color: #000000;
        font-family: "KoHo-Medium", sans-serif;
-       font-size: 32px;
+       font-size: 24px;
        font-weight: 500;
        text-align: center;
        margin: 0;
@@ -142,9 +142,7 @@
  {% block content %}
  <div class="full-page feedback-section">
    <div class="header-banner">
-     <h2 class="page-title">{{ assessment.title }} - Student Feedback Summary</h2>
-     <h3 class="team-info">{{ team.name }}</h3>
-     <h3 class="member-header">{{ member.name }}</h3>
+     <h2 class="page-title">{{ course.name }} {{assessment.title }} Feedback: {{member.name}}</h2>
    </div>
  
    <div class="member-feedback-section">
