@@ -171,17 +171,31 @@
           <div class="assessment-section">
             <h3>Assessments</h3>
             <div class="assessment-list">
-              {% with current_assessments=course.get_current_published_assessments %}
-                {% if current_assessments %}
-                  {% for assessment in current_assessments %}
-                    <a href="{% url 'assessments:student_assessment' assessment.pk %}" class="assessment-link">
-                      {{ assessment.title }}
-                    </a>
-                  {% endfor %}
-                {% else %}
-                  <div class="no-assessments">No current assessments for this course</div>
-                {% endif %}
-              {% endwith %}
+              {% if user_role == "admin" %}
+                {% with current_assessments=course.get_assessments %}
+                  {% if current_assessments %}
+                    {% for assessment in current_assessments %}
+                      <a href="{% url 'assessments:student_assessment' assessment.pk %}" class="assessment-link">
+                        {{ assessment.title }}
+                      </a>
+                    {% endfor %}
+                  {% else %}
+                    <div class="no-assessments">No current assessments for this course</div>
+                  {% endif %}
+                {% endwith %}
+              {% else %}
+                {% with current_assessments=course.get_current_published_assessments %}
+                  {% if current_assessments %}
+                    {% for assessment in current_assessments %}
+                      <a href="{% url 'assessments:student_assessment' assessment.pk %}" class="assessment-link">
+                        {{ assessment.title }}
+                      </a>
+                    {% endfor %}
+                  {% else %}
+                    <div class="no-assessments">No current assessments for this course</div>
+                  {% endif %}
+                {% endwith %}
+              {% endif %}
             </div>
           </div>
           

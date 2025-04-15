@@ -109,12 +109,6 @@
         border-radius: 50px;
       }
 
-      /* .outer-mid-btn { */
-      /*   background: #aae7f2; */
-      /*   border-radius: 50px; */
-      /*   padding: 10px 20px; */
-      /* } */
-
       .mid-btn-text {
         color: #000000;
         text-align: center;
@@ -191,19 +185,12 @@
     <!-- Control Buttons -->
     <div class="d-inline-flex">
       <div class="m-4">
+        <!-- TODO: should probably show a confirmation modal in case the   -->
+        <!-- user thinks this is deleting a question or clicks by accident -->
         <form method="post">
           {% csrf_token %}
           <input type="hidden" name="course_id" value="{{ course.id }}">
-          <input type="hidden" name="publish" value="question">
-          <button class="py-3 px-4 publish-text">Publish</button>
-        </form>
-      </div>
-
-      <div class="m-4">
-        <form method="post">
-          {% csrf_token %}
-          <input type="hidden" name="course_id" value="{{ course.id }}">
-          <input type="hidden" name="delete_assessment" value="assessment">
+          <input type="hidden" name="delete_assessment" value="{{ assessment.pk }}">
           <button class="py-3 px-4 red-btn">Delete</button>
         </form>
       </div>
@@ -234,7 +221,10 @@
               <label for="assessment_title_edit" class="form-label">Title:</label>
               <input type="text" name="assessment_title_edit" id="assessment_title_edit" value="{{ assessment.title }}" class="form-control">
               <br>
-              <label for="due_date" class="form-label">Title:</label>
+              <label for="publish_date" class="form-label">Publish date:</label>
+              <input type="datetime-local" name="publish_date" id="publish_date" value="{{ assessment.publish_date|date:'Y-m-d\TH:i' }}" class="form-control">
+              <br>
+              <label for="due_date" class="form-label">Due date:</label>
               <input type="datetime-local" name="due_date" id="due_date" value="{{ assessment.due_date|date:'Y-m-d\TH:i' }}" class="form-control">
               <br>
               <div class="form-check">

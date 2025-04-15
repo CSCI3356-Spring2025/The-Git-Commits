@@ -22,7 +22,8 @@ class Course(models.Model):
         return self.assessments.all()
 
     def get_current_published_assessments(self) -> models.QuerySet["assessments.Assessment"]:
-        return self.assessments.exclude(due_date__lt=datetime.datetime.now()).filter(published=True)
+        time_now = datetime.datetime.now()
+        return self.assessments.exclude(due_date__lt=time_now).filter(publish_date__lt=time_now)
 
 class Team(models.Model):
     # Members can be accessed with `team.members.all()`

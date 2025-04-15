@@ -7,8 +7,8 @@ from oauth.models import User
 class Assessment(models.Model):
     title = models.CharField(max_length=150)
     due_date = models.DateTimeField(null=True)
+    publish_date = models.DateTimeField(null=True)
     course = models.ForeignKey("landing.Course", models.CASCADE, related_name="assessments")
-    published = models.BooleanField(default=False)
     allow_self_assessment = models.BooleanField(default=False)
     
     def get_questions(self) -> models.QuerySet:

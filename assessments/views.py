@@ -99,10 +99,16 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
 class StudentAssessmentListView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
-        assessments = list(chain.from_iterable(
-            course.get_current_published_assessments()
-            for course in user.courses.all()
-        ))
+        if user.is_admin():
+            assessments = list(chain.from_iterable(
+                course.get_assessments()
+                for course in user.courses.all()
+            ))
+        else:
+            assessments = list(chain.from_iterable(
+                course.get_current_published_assessments()
+                for course in user.courses.all()
+            ))
 
         context = {
             "user_name": user.name,
@@ -136,27 +142,14 @@ class CreateAssessmentView(RequireAdminMixin, View):
                 return redirect(reverse("landing:dashboard"))
             course = first_course
 
-        # Determine which assessment this is for (creating a new one if necessary)
-        assessment_id = request.session.get("assessment_id", None)
-        if assessment_id:
-            try:
-                assessment = Assessment.objects.get(pk=assessment_id, course=course)
-            except Assessment.DoesNotExist:
-                assessment = Assessment.objects.create(
-                    course=course, 
-                    title="New Assessment", 
-                    due_date=None, 
-                    published=False
-                )
-                request.session["assessment_id"] = assessment.pk
-        else:
-            assessment = Assessment.objects.create(
-                course=course, 
-                title="New Assessment", 
-                due_date=None, 
-                published=False
-            )
-            request.session["assessment_id"] = assessment.pk
+        # GET requests are now only used to create a new assessment
+        assessment = Assessment.objects.create(
+            course=course, 
+            title="New Assessment", 
+            due_date=None, 
+            publish_date=None
+        )
+        request.session["assessment_id"] = assessment.pk
 
         context = {
             "assessment": assessment,
@@ -164,7 +157,7 @@ class CreateAssessmentView(RequireAdminMixin, View):
             "user_name": user.name,
             "user_role": user.role,
         }
-        return render(request, "assessment_creation.html", context)
+        return render(request, "assessments/assessment_creation.html", context)
 
     def post(self, request, *argv, **kwargs) -> HttpResponse:
         """Buttons that have to update the page send POST requests back to update the database
@@ -203,18 +196,19 @@ class CreateAssessmentView(RequireAdminMixin, View):
                 assessment = Assessment.objects.create(
                     course=course,
                     title="New Assessment",
-                    due_date=datetime.datetime.now() + datetime.timedelta(days=1),
-                    published=False
+                    due_date=None,
+                    publish_date=None
                 )
+                assessment.save()
                 request.session["assessment_id"] = assessment.pk
         else:
             assessment = Assessment.objects.create(
                 course=course,
                 title="New Assessment",
-                # Default to tomorrow for now
-                due_date=datetime.datetime.now() + datetime.timedelta(days=1),
-                published=False
+                due_date=None,
+                publish_date=None
             )
+            assessment.save()
             request.session["assessment_id"] = assessment.pk
 
         # Process the incoming action from the request data
@@ -225,8 +219,6 @@ class CreateAssessmentView(RequireAdminMixin, View):
             self.handle_remove(assessment, params["remove"])
         elif params.get("edit", None):
             self.handle_edit(params)
-        elif params.get("publish", None):
-            return self.handle_publish(request, assessment)
 
         elif params.get("edit_assessment", None):
             self.handle_edit_assessment(assessment, params)
@@ -240,7 +232,7 @@ class CreateAssessmentView(RequireAdminMixin, View):
             "user_role": user.role,
             # We don't need "user_team" for this view
         }
-        return render(request, "assessment_creation.html", context)
+        return render(request, "assessments/assessment_creation.html", context)
 
     def handle_add(self, assessment: Assessment) -> None:
         # Get the count of existing questions for this assessment to determine the next order value
@@ -278,26 +270,30 @@ class CreateAssessmentView(RequireAdminMixin, View):
 
         question.save()
 
-    def handle_publish(self, request: HttpRequest, assessment: Assessment) -> HttpResponse:
-        assessment.published = True
-        assessment.save()
-        del request.session["assessment_id"]
-        request.session.modified = True
-        return redirect("landing:dashboard")
-    
     def handle_edit_assessment(self, assessment: Assessment, params: QueryDict):
         title = params.get("assessment_title_edit", None)
         due_date = params.get("due_date", None)
+        publish_date = params.get("publish_date", None)
 
         allow_self_assessment = params.get("allow_self_assessment", None)
         
         if title is not None:
             assessment.title = title
+        if publish_date is not None:
+            print("Got publish date")
+            try:
+                assessment.publish_date = datetime.datetime.strptime(publish_date, "%Y-%m-%dT%H:%M")
+            except ValueError:
+                # Note that this can legitimately occur if they don't enter a time
+                print("Could not parse publish date")
+                pass
         if due_date is not None:
+            print("Got due date")
             try:
                 assessment.due_date = datetime.datetime.strptime(due_date, "%Y-%m-%dT%H:%M")
             except ValueError:
-                print("Could not parse time")
+                # Note that this can legitimately occur if they don't enter a time
+                print("Could not parse due date")
                 pass
         
         assessment.allow_self_assessment = allow_self_assessment == "on"
@@ -324,7 +320,11 @@ class CourseAssessmentsView(RequireLoggedInMixin, View):
         if course not in user.courses.all(): # and user.role != 'admin':
             return redirect(reverse("landing:dashboard"))
             
-        assessments = course.get_current_published_assessments()
+        if user.is_admin():
+            # Admins should be able to see unpublished and overdue assessments
+            assessments = course.get_assessments()
+        else:
+            assessments = course.get_current_published_assessments()
         
         context = {
             "user_name": user.name,
@@ -334,7 +334,7 @@ class CourseAssessmentsView(RequireLoggedInMixin, View):
             "assessments": assessments
         }
         
-        return render(request, "student_assessment_list.html", context)
+        return render(request, "assessments/student_assessment_list.html", context)
 
 class ProfessorFeedbackCoursesView(RequireLoggedInMixin, View):
     """First page: List all courses taught by the professor"""
