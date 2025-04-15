@@ -137,3 +137,5 @@ if DEBUG:
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 OAUTH_CLIENT_SECRET_PATH = BASE_DIR / 'client_secret.json'
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

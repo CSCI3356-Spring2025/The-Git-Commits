@@ -184,8 +184,8 @@
         <form method="post">
           {% csrf_token %}
           <input type="hidden" name="course_id" value="{{ course.id }}">
-          <button class="py-3 px-4 publish-text">Publish</button>
           <input type="hidden" name="publish" value="question">
+          <button class="py-3 px-4 publish-text">Publish</button>
         </form>
       </div>
 
@@ -193,8 +193,17 @@
         <form method="post">
           {% csrf_token %}
           <input type="hidden" name="course_id" value="{{ course.id }}">
-          <button class="py-3 px-4 mid-btn-text">Add Question</button>
+          <input type="hidden" name="delete_assessment" value="assessment">
+          <button class="py-3 px-4 red-btn">Delete</button>
+        </form>
+      </div>
+
+      <div class="m-4">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="course_id" value="{{ course.id }}">
           <input type="hidden" name="add" value="question">
+          <button class="py-3 px-4 mid-btn-text">Add Question</button>
         </form>
       </div>
     </div>

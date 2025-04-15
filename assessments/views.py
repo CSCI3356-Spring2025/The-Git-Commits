@@ -173,10 +173,9 @@ class CreateAssessmentView(RequireAdminMixin, View):
         user: User = kwargs["user"]
         course_id = request.POST.get('course_id')
 
-        # This param is set if we are editing an existing assessment
+        # This param is set if we start to edit an existing assessment
         assessment_id = request.POST.get("begin_assessment_edit", None)
         if assessment_id:
-            print("editing")
             request.session["assessment_id"] = assessment_id
         
         # If course_id is provided, use that specific course
@@ -225,10 +224,13 @@ class CreateAssessmentView(RequireAdminMixin, View):
             self.handle_remove(assessment, params["remove"])
         elif params.get("edit", None):
             self.handle_edit(params)
-        elif params.get("edit_assessment", None):
-            self.handle_edit_assessment(assessment, params)
         elif params.get("publish", None):
             return self.handle_publish(request, assessment)
+
+        elif params.get("edit_assessment", None):
+            self.handle_edit_assessment(assessment, params)
+        elif params.get("delete_assessment", None):
+            return self.delete_assessment(request, assessment, course_id)
 
         context = { 
             "assessment": assessment,
@@ -275,10 +277,16 @@ class CreateAssessmentView(RequireAdminMixin, View):
 
         question.save()
 
+    def handle_publish(self, request: HttpRequest, assessment: Assessment) -> HttpResponse:
+        assessment.published = True
+        assessment.save()
+        del request.session["assessment_id"]
+        request.session.modified = True
+        return redirect("landing:dashboard")
+    
     def handle_edit_assessment(self, assessment: Assessment, params: QueryDict):
         title = params.get("assessment_title_edit", None)
         due_date = params.get("due_date", None)
-        print(due_date)
 
         allow_self_assessment = params.get("allow_self_assessment", None)
         
@@ -295,14 +303,12 @@ class CreateAssessmentView(RequireAdminMixin, View):
         
         assessment.save()
 
-
-    def handle_publish(self, request: HttpRequest, assessment: Assessment) -> HttpResponse:
-        assessment.published = True
-        assessment.save()
+    def delete_assessment(self, request: HttpRequest, assessment: Assessment, course_id):
+        assessment.delete()
         del request.session["assessment_id"]
         request.session.modified = True
-        return redirect("landing:dashboard")
-    
+        return redirect("assessments:student_course_assessment_list", course_id=course_id)
+
 
 class CourseAssessmentsView(RequireLoggedInMixin, View):
     def get(self, request, *args, course_id="", **kwargs) -> HttpResponse:
