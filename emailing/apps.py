@@ -16,6 +16,11 @@ def background_email_process():
 
 
 def start_process(sender, **kwargs):
+    run_once = environ.get("PEERVUE_RUN_EMAIL_ONCE")
+    if run_once:
+        return
+    environ["PEERVUE_RUN_EMAIL_ONCE"] = "1"
+
     p = Process(target=background_email_process)
     print("Starting email background process")
     # check_and_send()
