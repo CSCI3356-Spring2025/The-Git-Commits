@@ -161,52 +161,48 @@
               <a href="{% url 'landing:team_creation' %}?course_id={{ course.id }}" class="assessment-link">
                 Manage Teams
               </a>
+              {% comment %}
               <a href="{% url 'assessments:assessment_creation' %}?course_id={{ course.id }}" class="assessment-link">
                 Create Assessment
               </a>
+              {% endcomment %}
             </div>
             {% endif %}
           </div>
           
           <div class="assessment-section">
-            <h3>Assessments</h3>
-            <div class="assessment-list">
-              {% if user_role == "admin" %}
-                {% with current_assessments=course.get_assessments %}
-                  {% if current_assessments %}
-                    {% for assessment in current_assessments %}
-                      <a href="{% url 'assessments:student_assessment' assessment.pk %}" class="assessment-link">
-                        {{ assessment.title }}
-                      </a>
-                    {% endfor %}
-                  {% else %}
-                    <div class="no-assessments">No current assessments for this course</div>
-                  {% endif %}
-                {% endwith %}
-              {% else %}
-                {% with current_assessments=course.get_current_published_assessments %}
-                  {% if current_assessments %}
-                    {% for assessment in current_assessments %}
-                      <a href="{% url 'assessments:student_assessment' assessment.pk %}" class="assessment-link">
-                        {{ assessment.title }}
-                      </a>
-                    {% endfor %}
-                  {% else %}
-                    <div class="no-assessments">No current assessments for this course</div>
-                  {% endif %}
-                {% endwith %}
-              {% endif %}
-            </div>
-          </div>
-          
+            
+  
+              {% if user_role == 'admin' %}
+              <h3>Teams</h3>
+              <div class="assessment-list">
+                {% if course.get_teams %}
+                  {% for team in course.get_teams %}
+                    <div class="assessment-link">{{ team.name }}</div>
+                  {% endfor %}
+                {% endif %}
+              </div>
+                {% endif %}
+
           {% if user_role != 'admin' and user_team %}
+          <h3>Your Team</h3>    
+          <div class="assessment-list">
+                
+                <div class="assessment-link">{{ user_team }}</div>
+              </div>
+          {% endif %}
+            
+          </div>
+
+          {% comment %}
           <div class="team-section">
             <h3>Your Team</h3>
             <div class="team-info">
               {{ user_team }}
             </div>
           </div>
-          {% endif %}
+          {% endcomment %}
+          
         </div>
       {% endfor %}
     {% else %}

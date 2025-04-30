@@ -9,6 +9,8 @@ urlpatterns = [
     path('assessment_creation/', views.CreateAssessmentView.as_view(), name='assessment_creation'),
     
     path('course/<int:course_id>/assessments/', views.CourseAssessmentsView.as_view(), name='student_course_assessment_list'),
+
+    path('professor_assessments/', views.ProfessorAssessmentListView.as_view(), name='professor_assessment_list'),
 ]
 
 """

@@ -23,6 +23,29 @@ from django.http.request import HttpRequest
 from django.contrib import messages
 
 
+class ProfessorAssessmentListView(RequireLoggedInMixin, View):
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        user: User = kwargs["user"]
+        
+        if user.role == 'admin':
+            courses = Course.objects.filter(members=user).prefetch_related('assessments')
+        else:
+            courses = Course.objects.filter(members=user).prefetch_related('assessments')
+        
+        context = {
+            "user_name": user.name,
+            "user_role": user.role,
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
+            "courses": courses
+        }
+        
+        success = request.GET.get('success')
+        if success == 'course_created':
+            context["success_message"] = "Course successfully created!"
+            
+        return render(request, "assessments/professor_assessment_list.html", context)
+        
 class StudentAssessmentView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs):
         user = kwargs["user"]
@@ -111,22 +134,24 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
 class StudentAssessmentListView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user: User = kwargs["user"]
-        if user.is_admin():
-            assessments = list(chain.from_iterable(
-                course.get_assessments()
-                for course in user.courses.all()
-            ))
+        
+        if user.role == 'admin':
+            courses = Course.objects.filter(members=user).prefetch_related('assessments')
         else:
-            assessments = list(chain.from_iterable(
-                course.get_current_published_assessments()
-                for course in user.courses.all()
-            ))
-
+            courses = Course.objects.filter(members=user).prefetch_related('assessments')
+        
         context = {
             "user_name": user.name,
             "user_role": user.role,
-            "assessments": assessments
+            "user_team": ", ".join(team.name for team in user.teams.all()) if user.teams.exists() else "",
+
+            "courses": courses
         }
+        
+        success = request.GET.get('success')
+        if success == 'course_created':
+            context["success_message"] = "Course successfully created!"
+            
         return render(request, "assessments/student_assessment_list.html", context)
     
     def post(self, request, *args, **kwargs):
@@ -392,6 +417,28 @@ class ProfessorFeedbackAssessmentsView(RequireLoggedInMixin, View):
         }
         
         return render(request, "assessments/professor_feedback_assessments.html", context)
+    
+    # This doesn't work, I'll redo this. currently this button is just for display (moved it from prof_feedback_final)
+    def post(self, request, *args, **kwargs) -> HttpResponse:
+        user: User = kwargs["user"]
+        course_id = kwargs.get('course_id')
+        assessment_id = kwargs.get('assessment_id')
+        team_id = kwargs.get('team_id')
+        member_id = kwargs.get('member_id')
+        
+        if user.role != 'admin':
+            return redirect('dashboard')
+        
+        # Get the assessment and set the publish date to now
+        assessment = get_object_or_404(Assessment, id=assessment_id, course__members=user)
+        assessment.responses_published = True
+        assessment.save()
+        
+        messages.success(request, f"Feedback for {assessment.title} has been published successfully!")
+        print("saves publish")
+
+        return redirect('assessments/professor_feedback_assessments.html')
+    
 
 class ProfessorFeedbackTeamsView(RequireLoggedInMixin, View):
     """Third page: List all teams for a specific course and assessment"""

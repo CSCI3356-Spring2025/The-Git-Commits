@@ -137,6 +137,7 @@
         font-size: 18px;
         color: #1b0061;
       }
+      
 
     </style>
 {% endblock %}
@@ -144,7 +145,7 @@
 {% block content %}
 
 <div class="course-list-container">
-  <h2 class="course-list-title">My Courses</h2>
+  <h2 class="course-list-title">Feedback</h2>
   
   <div class="course-list">
     {% if courses %}
@@ -158,6 +159,8 @@
             </div>
           </div>
           <a href="{% url 'landing:professor_feedback_assessments' course.pk %}" class="assessment-link">Review Feedback</a>
+
+
         </div>
       </div>
 

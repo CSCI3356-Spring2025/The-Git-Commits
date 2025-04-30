@@ -70,7 +70,7 @@
       .course-name {
         color: #000000;
         text-align: left;
-        font-size: 22px;
+        font-size: 24px;
         font-weight: 500;
       }
       
@@ -138,6 +138,21 @@
         color: #1b0061;
       }
 
+      .submit-button {
+       margin-top: 1rem;
+       background-color: #1b0061;
+       color: #ffffff;
+       border: none;
+       padding: 8px 16px;
+       font-size: 18px;
+       border-radius: 30px;
+       cursor: pointer;
+     }
+ 
+     .submit-button:hover {
+       background-color: #80c6d4;
+     }
+
     </style>
 {% endblock %}
 
@@ -153,9 +168,20 @@
           <div class="course-header">
             <div>
               <div class="course-name">
-                <a href="{% url 'landing:professor_feedback_teams' course_id=course_id assessment_id=assessment.pk %}">
+                <a href="{% url 'landing:professor_feedback_teams' course_id=course_id assessment_id=assessment.pk %}" style="color:#1b0061;">
                   {{ assessment.title }}
                 </a>
+                <div class="publish">
+                  
+                  <button class="submit-button">Publish Feedback</button>
+                  {% comment %}
+                  <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="submit-button">Publish Feedback</button>
+                  </form>
+                  {% endcomment %}
+                </div>
+
               </div>
             </div>
           </div>
