@@ -127,7 +127,7 @@
 {% block content %}
 
 <div class="course-list-container">
-  <h2 class="course-list-title">My Courses</h2>
+  <h2 class="course-list-title">My Feedback</h2>
   
   <div class="course-list">
     {% if courses %}
@@ -135,7 +135,7 @@
         <div class="course-item">
           <div class="course-header">
             <div>
-              <div class="course-name">{{ course.name }}</div>
+              <div class="course-name">{{ course.name }} {{ user.team.name }}</div>
               <div class="course-year">{{ course.year }} {{ course.semester }}</div>
             </div>
           </div>
@@ -160,14 +160,6 @@
             </div>
           </div>
           
-          {% if user_team %}
-          <div class="team-section">
-            <h3>Your Team</h3>
-            <div class="team-info">
-              {{ user_team }}
-            </div>
-          </div>
-          {% endif %}
         </div>
       {% endfor %}
     {% else %}
