@@ -332,6 +332,7 @@
               <div class="action-buttons">
                 <form action="{% url 'landing:team_creation' %}" method="GET" style="display: inline;">
                   <input type="hidden" name="edit_team" value="{{ team.pk }}">
+                  <input type="hidden" name="course_id" value="{{ course.id }}">
                   <button type="submit" class="submit-btn">Edit Team</button>
                 </form>
                 
