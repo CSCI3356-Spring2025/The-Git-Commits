@@ -64,6 +64,12 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
 
         # This assumes student is on a single team per course
         current_team = user.teams.filter(course=assessment.course).first()
+        
+        # Get list of team members already evaluated by this student
+        evaluated_members = StudentAssessmentResponse.objects.filter(
+            student=user,
+            assessment=assessment
+        ).values_list('evaluated_user', flat=True)
     
         context = {
             'assessment_title': assessment.title,
@@ -73,6 +79,7 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
             'user_name': user.name,
             'user_role': user.role,
             'current_team': current_team,
+            'evaluated_members': evaluated_members,
         }
         return render(request, 'assessments/student_assessment.html', context)
 
@@ -100,11 +107,36 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
         
         # Get the evaluated team member from the form
         evaluated_user_email = request.POST.get("team_member_evaluated")
+        if not evaluated_user_email:
+            messages.error(request, "Please select a team member to evaluate.")
+            return redirect(reverse("assessments:student_assessment", args=[assessment_id]))
+            
         try:
             evaluated_user = User.objects.get(email=evaluated_user_email)
         except User.DoesNotExist:
             messages.error(request, "Invalid team member selection")
-            return redirect(reverse("landing:student_assessment", kwargs={"user": user, "assessment_id": assessment_id}))
+            return redirect(reverse("assessments:student_assessment", args=[assessment_id]))
+        
+        # Check if this is a self-assessment and if it's allowed
+        if evaluated_user == user and not assessment.allow_self_assessment:
+            messages.error(request, "Self-assessment is not allowed for this assessment.")
+            return redirect(reverse("assessments:student_assessment", args=[assessment_id]))
+        
+        # Check if all required questions are answered
+        missing_answers = []
+        for question in assessment.get_questions():
+            if question.question_type == 'team_member':
+                continue
+                
+            answer_text = request.POST.get(f'question_{question.id}')
+            if question.required and not answer_text:
+                missing_answers.append(question.question)
+        
+        if missing_answers:
+            messages.error(request, "Please answer all required questions before submitting:")
+            for question in missing_answers:
+                messages.error(request, f"- {question}")
+            return redirect(reverse("assessments:student_assessment", args=[assessment_id]))
         
         # Create the response record with the evaluated user
         response = StudentAssessmentResponse(
@@ -128,7 +160,7 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
             )
             answer.save()
         
-        messages.success(request, f"Assessment for {evaluated_user} submitted successfully!") # need naming
+        messages.success(request, f"Assessment for {evaluated_user.name} submitted successfully!")
         return redirect('assessments:student_assessment_list')
 
 class StudentAssessmentListView(RequireLoggedInMixin, View):
