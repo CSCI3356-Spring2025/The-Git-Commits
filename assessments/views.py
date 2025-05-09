@@ -22,6 +22,8 @@ from .feedback import get_feedback_summary, alphabetize_free_responses, average_
 from django.http.request import HttpRequest
 from django.contrib import messages
 
+from datetime import datetime, timezone
+
 
 class ProfessorAssessmentListView(RequireLoggedInMixin, View):
     def get(self, request, *args, **kwargs) -> HttpResponse:
@@ -47,6 +49,27 @@ class ProfessorAssessmentListView(RequireLoggedInMixin, View):
         return render(request, "assessments/professor_assessment_list.html", context)
         
 class StudentAssessmentView(RequireLoggedInMixin, View):
+
+    def get_time_until(self, due_date):
+        if not due_date:
+            return None, False
+
+        now = datetime.now(timezone.utc)
+        delta = due_date - now
+
+        if delta.total_seconds() <= 0:
+            return "Past due", True
+
+        days = delta.days
+        seconds = delta.seconds
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+
+        time_str = f"{days}d {hours}h {minutes}m"
+        is_urgent = days < 1
+
+        return time_str, is_urgent
+
     def get(self, request, *args, **kwargs):
         user = kwargs["user"]
         assessment_id = kwargs["assessment_id"]
@@ -71,9 +94,13 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
             assessment=assessment
         ).values_list('evaluated_user', flat=True)
     
+        time_until_due, is_urgent = self.get_time_until(assessment.due_date)
+
         context = {
             'assessment_title': assessment.title,
             'due_date': assessment.due_date,
+            'time_until_due': time_until_due,
+            'due_soon': is_urgent,
             'questions': assessment.get_questions(),
             'assessment': assessment,
             'user_name': user.name,
@@ -351,7 +378,7 @@ class CreateAssessmentView(RequireAdminMixin, View):
         if publish_date is not None:
             print("Got publish date")
             try:
-                assessment.publish_date = datetime.datetime.strptime(publish_date, "%Y-%m-%dT%H:%M")
+                assessment.publish_date = datetime.strptime(publish_date, "%Y-%m-%dT%H:%M")
             except ValueError:
                 # Note that this can legitimately occur if they don't enter a time
                 print("Could not parse publish date")
@@ -359,7 +386,7 @@ class CreateAssessmentView(RequireAdminMixin, View):
         if due_date is not None:
             print("Got due date")
             try:
-                assessment.due_date = datetime.datetime.strptime(due_date, "%Y-%m-%dT%H:%M")
+                assessment.due_date = datetime.strptime(due_date, "%Y-%m-%dT%H:%M")
             except ValueError:
                 # Note that this can legitimately occur if they don't enter a time
                 print("Could not parse due date")
@@ -599,8 +626,6 @@ class ProfessorFeedbackFinalView(RequireLoggedInMixin, View):
         
         messages.success(request, f"Feedback for {assessment.title} has been published successfully!")
         return redirect('landing:professor_feedback_courses')
-
-
 
 
 class StudentCourseListView(RequireLoggedInMixin, View):
