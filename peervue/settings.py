@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os 
+import tempfile
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,6 +26,8 @@ SECRET_KEY = 'django-insecure-62wa6c*91^44z3tdebfe*d)h1a6=868*le#o(y(omez+(73u59
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+if os.environ.get("DEPLOYMENT"):
+    DEBUG = False
 
 # For fly.io
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "peervue.fly.dev"]
@@ -48,7 +51,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -56,6 +58,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if not DEBUG:
+    MIDDLEWARE.append('whitenoise.middleware.WhiteNoiseMiddleware')
 
 ROOT_URLCONF = 'peervue.urls'
 
@@ -150,6 +155,11 @@ USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 OAUTH_CLIENT_SECRET_PATH = BASE_DIR / 'client_secret.json'
+oauth_var = os.environ.get("OAUTH_CLIENT_SECRET")
+if oauth_var:
+    with tempfile.NamedTemporaryFile(mode="w",delete_on_close=False,delete=False) as file:
+        file.write(oauth_var)
+        OAUTH_CLIENT_SECRET_PATH = Path(file.name)
 
 # EMAIL
 # For running without actually sending emails, use this:
