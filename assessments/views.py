@@ -2,7 +2,7 @@ from django.http.request import QueryDict
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect, reverse
 from django.views import View
-import datetime
+from datetime import datetime
 from django.utils import timezone
 
 from django.contrib import messages
@@ -12,8 +12,6 @@ from assessments.models import Assessment, AssessmentQuestion
 from oauth.models import User
 from django.db.models.query import QuerySet
 from oauth.oauth import RequireLoggedInMixin, RequireAdminMixin
-
-from itertools import chain
 
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -47,6 +45,27 @@ class ProfessorAssessmentListView(RequireLoggedInMixin, View):
         return render(request, "assessments/professor_assessment_list.html", context)
         
 class StudentAssessmentView(RequireLoggedInMixin, View):
+
+    def get_time_until(self, due_date):
+        if not due_date:
+            return None, False
+
+        now = timezone.now()
+        delta = due_date - now
+
+        if delta.total_seconds() <= 0:
+            return "Past due", True
+
+        days = delta.days
+        seconds = delta.seconds
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+
+        time_str = f"{days}d {hours}h {minutes}m"
+        is_urgent = days < 1
+
+        return time_str, is_urgent
+
     def get(self, request, *args, **kwargs):
         user = kwargs["user"]
         assessment_id = kwargs["assessment_id"]
@@ -71,9 +90,13 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
             assessment=assessment
         ).values_list('evaluated_user', flat=True)
     
+        time_until_due, is_urgent = self.get_time_until(assessment.due_date)
+
         context = {
             'assessment_title': assessment.title,
             'due_date': assessment.due_date,
+            'time_until_due': time_until_due,
+            'due_soon': is_urgent,
             'questions': assessment.get_questions(),
             'assessment': assessment,
             'user_name': user.name,
@@ -349,21 +372,17 @@ class CreateAssessmentView(RequireAdminMixin, View):
         if title is not None:
             assessment.title = title
         if publish_date is not None:
-            print("Got publish date")
             try:
-                assessment.publish_date = datetime.datetime.strptime(publish_date, "%Y-%m-%dT%H:%M")
+                assessment.publish_date = datetime.strptime(publish_date, "%Y-%m-%dT%H:%M").replace(tzinfo=timezone.get_current_timezone())
             except ValueError:
                 # Note that this can legitimately occur if they don't enter a time
                 print("Could not parse publish date")
-                pass
         if due_date is not None:
-            print("Got due date")
             try:
-                assessment.due_date = datetime.datetime.strptime(due_date, "%Y-%m-%dT%H:%M")
+                assessment.due_date = datetime.strptime(due_date, "%Y-%m-%dT%H:%M").replace(tzinfo=timezone.get_current_timezone())
             except ValueError:
                 # Note that this can legitimately occur if they don't enter a time
                 print("Could not parse due date")
-                pass
         
         assessment.allow_self_assessment = allow_self_assessment == "on"
         
@@ -599,8 +618,6 @@ class ProfessorFeedbackFinalView(RequireLoggedInMixin, View):
         
         messages.success(request, f"Feedback for {assessment.title} has been published successfully!")
         return redirect('landing:professor_feedback_courses')
-
-
 
 
 class StudentCourseListView(RequireLoggedInMixin, View):

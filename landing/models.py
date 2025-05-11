@@ -3,6 +3,7 @@ from django.apps import apps
 from django.contrib import admin
 from django.contrib.auth.models import User
 import datetime
+from django.utils import timezone
 
 class Course(models.Model):
     name = models.CharField(max_length=150, unique=True)
@@ -22,7 +23,7 @@ class Course(models.Model):
         return self.assessments.all()
 
     def get_current_published_assessments(self) -> models.QuerySet["assessments.Assessment"]:
-        time_now = datetime.datetime.now()
+        time_now = timezone.now()
         return self.assessments.exclude(due_date__gt=time_now).filter(publish_date__lt=time_now)
 
 class Team(models.Model):

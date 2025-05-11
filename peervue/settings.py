@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-62wa6c*91^44z3tdebfe*d)h1a6=868*le#o(y(omez+(73u59
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# For fly.io
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "peervue.fly.dev"]
+CSRF_TRUSTED_ORIGINS = ['https://peervue.fly.dev']
 
 
 # Application definition
@@ -46,6 +48,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -78,10 +81,14 @@ WSGI_APPLICATION = 'peervue.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+DATABASE_PATH = os.environ.get("DATABASE_PATH")
+if not DATABASE_PATH:
+    DATABASE_PATH = str(BASE_DIR / 'db.sqlite3')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': DATABASE_PATH,
     }
 }
 
@@ -117,10 +124,12 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
+# Static files
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = 'static/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'staticfiles'
@@ -137,12 +146,15 @@ if DEBUG:
     # Allow OAuth with HTTP callback
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 OAUTH_CLIENT_SECRET_PATH = BASE_DIR / 'client_secret.json'
 
 # EMAIL
 # For running without actually sending emails, use this:
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

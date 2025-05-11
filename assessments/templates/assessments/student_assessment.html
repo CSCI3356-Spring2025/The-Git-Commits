@@ -221,10 +221,19 @@
       <div class="outer-assessment-title container">
           <div class="assessment-title inline">{{ assessment.title }}</div>
           {% if assessment.due_date %}
-            <div class="due-date inline">(Due: {{ assessment.due_date|date:"DATETIME_FORMAT" }})</div>
+            <div class="due-date inline">
+              (Due: {{ assessment.due_date|date:"DATETIME_FORMAT" }})
+              {% if time_until_due %}
+                –
+                <span {% if due_soon %}style="color: red;"{% endif %}>
+                  {{ time_until_due }}
+                </span>
+              {% endif %}
+            </div>
           {% else %}
             <div class="due-date inline">(No due date)</div>
           {% endif %}
+
           <!-- Edit button for admins -->
           {% if user_role == "admin" %}
             <br>

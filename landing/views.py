@@ -9,6 +9,7 @@ from oauth.models import User
 from django.db.models.query import QuerySet
 from landing.courses import create_new_team, create_new_course
 from oauth.oauth import RequireLoggedInMixin, RequireAdminMixin
+from emailing.emailing import send_email_invite
 
 
 def landing_page(request):
@@ -202,6 +203,7 @@ class CreateTeamView(RequireAdminMixin, View):
             }
             return render(request, 'landing/team_creation.html', context)
         except Exception as e:
+            print(e)
             all_students = course.members.filter(role='student')
             available_students = course.members.filter(role='student', teams__isnull=True)
             
@@ -408,6 +410,7 @@ class CreateTeamView(RequireAdminMixin, View):
                     role='student',
                 )
                 new_student.courses.add(course)
+                send_email_invite(student_email, course.name, request.build_absolute_uri(reverse("oauth:auth")))
                 success_message = f"Student '{student_name}' created and added to course!"
             
             all_students = course.members.filter(role='student')
