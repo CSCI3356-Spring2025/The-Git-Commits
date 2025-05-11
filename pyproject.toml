@@ -15,12 +15,13 @@ dependencies = [
   "django>=5.1.6",
   "django-stubs[compatible-mypy]>=5.1.1",
   "dj-database-url",
-
+  "gunicorn",
   # Google OAuth
   "google-auth",
   "google-auth-oauthlib",
   "google-auth-httplib2",
-  "google-api-python-client"
+  "google-api-python-client",
+  "whitenoise>=6.9.0",
 ]
 
 [dependency-groups]

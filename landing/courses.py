@@ -1,10 +1,18 @@
 from .models import Course, Team
 from oauth.models import User
 import datetime
+from django.utils import timezone
 
 def create_new_course(name: str) -> Course:
-    current_month = datetime.datetime.now().month
-    year = datetime.datetime.now().year
+    now = timezone.now()
+    current_month = now.month
+    year = now.year
+
+    # Many colleges do not use the Fall-Spring-Summer split, such as UCLA and UChicago
+    # Even at BC, there are half-semester courses and multiple summer sessions
+    # Furthermore, a professor may (possibly in the majority of cases) want to create a
+    # course before the start date
+    # This should be set by the professor
     if 1 <= current_month <= 5:
         semester = "Spring"
     elif 6 <= current_month <= 8:

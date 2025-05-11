@@ -2,7 +2,7 @@ from django.http.request import QueryDict
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect, reverse
 from django.views import View
-import datetime
+from datetime import datetime
 from django.utils import timezone
 
 from django.contrib import messages
@@ -13,16 +13,12 @@ from oauth.models import User
 from django.db.models.query import QuerySet
 from oauth.oauth import RequireLoggedInMixin, RequireAdminMixin
 
-from itertools import chain
-
 from django.shortcuts import render, redirect, get_object_or_404
 
 from .models import StudentAssessmentResponse, StudentAnswer
 from .feedback import get_feedback_summary, alphabetize_free_responses, average_likert_responses
 from django.http.request import HttpRequest
 from django.contrib import messages
-
-from datetime import datetime, timezone
 
 
 class ProfessorAssessmentListView(RequireLoggedInMixin, View):
@@ -54,7 +50,7 @@ class StudentAssessmentView(RequireLoggedInMixin, View):
         if not due_date:
             return None, False
 
-        now = datetime.now(timezone.utc)
+        now = timezone.now()
         delta = due_date - now
 
         if delta.total_seconds() <= 0:
@@ -376,21 +372,17 @@ class CreateAssessmentView(RequireAdminMixin, View):
         if title is not None:
             assessment.title = title
         if publish_date is not None:
-            print("Got publish date")
             try:
-                assessment.publish_date = datetime.strptime(publish_date, "%Y-%m-%dT%H:%M")
+                assessment.publish_date = datetime.strptime(publish_date, "%Y-%m-%dT%H:%M").replace(tzinfo=timezone.get_current_timezone())
             except ValueError:
                 # Note that this can legitimately occur if they don't enter a time
                 print("Could not parse publish date")
-                pass
         if due_date is not None:
-            print("Got due date")
             try:
-                assessment.due_date = datetime.strptime(due_date, "%Y-%m-%dT%H:%M")
+                assessment.due_date = datetime.strptime(due_date, "%Y-%m-%dT%H:%M").replace(tzinfo=timezone.get_current_timezone())
             except ValueError:
                 # Note that this can legitimately occur if they don't enter a time
                 print("Could not parse due date")
-                pass
         
         assessment.allow_self_assessment = allow_self_assessment == "on"
         
