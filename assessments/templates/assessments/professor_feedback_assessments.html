@@ -171,16 +171,16 @@
                 <a href="{% url 'landing:professor_feedback_teams' course_id=course_id assessment_id=assessment.pk %}" style="color:#1b0061;">
                   {{ assessment.title }}
                 </a>
+
+                {% comment %}
                 <div class="publish">
-                  
                   <button class="submit-button">Publish Feedback</button>
-                  {% comment %}
                   <form method="POST">
                     {% csrf_token %}
                     <button type="submit" class="submit-button">Publish Feedback</button>
                   </form>
-                  {% endcomment %}
                 </div>
+                {% endcomment %}
 
               </div>
             </div>

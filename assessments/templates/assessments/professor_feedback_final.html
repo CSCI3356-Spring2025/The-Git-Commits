@@ -182,13 +182,13 @@
        Total responses about this person: {{ feedback.response_count }}
      </div>
    </div>
-   {% comment %}
+
    <div class="publish">
     <form method="POST">
       {% csrf_token %}
       <button type="submit" class="submit-button">Publish Feedback</button>
     </form>
-    {% endcomment %}
+
   </div>
  </div>
  {% endblock %}
